@@ -6,11 +6,11 @@
 #include <SoftReset.h>
 #define DHT22_PIN 4
 #define HC165_pLoadPin 5
-#define HC165_pLoadPin 6
-#define HC165_pLoadPin 7
-#define HC165_pLoadPin 8
-#define AVR_RX_Equiv 10
-#define AVR_TX_Equiv 11
+#define HC165_clockEnablePin 6
+#define HC165_dataPin 7
+#define HC165_clockPin 8
+#define AVR_RX_Equiv 2
+#define AVR_TX_Equiv 3
 #define LED_RW_1 12
 #define MQ135_GasSens A3
 SoftwareSerial AVR_ESP_Comms(AVR_RX_Equiv, AVR_TX_Equiv);
@@ -20,23 +20,28 @@ SoftwareSerial AVR_ESP_Comms(AVR_RX_Equiv, AVR_TX_Equiv);
 #define CST_PreviousResult 2
 #define CST_IntervalHit 3
 #define CST_UnknownDefaultVal 0420
-
+//#define DEBUG_ENABLED 1
+#ifdef DEBUG_ENABLED
+#define Serial_DebugPrint(x) (Serial.print(x))
+#define Serial_DebugPrintln(x) (Serial.println(x))
+#else
+#define Serial_DebugPrint(x)
+#define Serial_DebugPrintln(x)
+#endif
 DHT DHT22_Sens(DHT22_PIN, DHT22);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 ShiftIn<1> Shifter_165N;
 
-int RW_Update = 0;
-String AVR_Response = "...";
-String ESP_Response = "...";
+short RW_Update = 0, Instance_Current = 0;
+String SerialResponse[] = {"[WTC]", "[OKY]"};
+byte InstanceChecker[] = {0, 0};
 byte ESPSerial = 0;
 bool Launch_Opt = false;
+bool ClearOnce = false;
 byte ShifterWidth_165[] = {0, 0, 0, 0, 0, 0, 0, 0};
-char LoopBackCommsTest(String Module_Response);
-void AVR_InstanceMode(unsigned short Instance_Options);
+byte Current_InstanceStore[] = {0, 0, 0};
+byte Locked_IterateData = 0;
 unsigned long SketchTime_Prev = 0;
-unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_Result);
-byte Shifter_IO_Check();
-
 byte border_bot_r[8] = {
     B00001,
     B00001,
@@ -46,7 +51,6 @@ byte border_bot_r[8] = {
     B00001,
     B00001,
     B11111};
-
 byte border_bot_l[8] = {
     B10000,
     B10000,
@@ -121,10 +125,10 @@ byte divider_char[8] = {
     B00100};
 void setup()
 {
-    Shifter_165N.begin(5, 6, 7, 8);
-    DHT22_Sens.begin();
-    Serial.begin(115200);
+    Serial.begin(9600);
     AVR_ESP_Comms.begin(9600);
+    Shifter_165N.begin(HC165_pLoadPin, HC165_clockEnablePin, HC165_dataPin, HC165_clockPin);
+    DHT22_Sens.begin();
     pinMode(LED_RW_1, OUTPUT);
     lcd.init();
     lcd.backlight();
@@ -160,69 +164,49 @@ void setup()
     lcd.setCursor(0, 0);
     lcd.print("[ Mode Selection ]");
     lcd.setCursor(0, 1);
-    lcd.write(2);
-    lcd.print("1");
-    lcd.write(3);
-    lcd.print(" ");
-    lcd.write(126);
-    lcd.print(" Server Mode");
+    lcd.print("[1] | Server Mode");
     lcd.setCursor(0, 2);
-    lcd.write(2);
-    lcd.print("2");
-    lcd.write(3);
-    lcd.print(" ");
-    lcd.write(126);
-    lcd.print(" Instance Mode");
+    lcd.print("[2] | NonF.Sys Mode");
     lcd.setCursor(0, 3);
-    lcd.write(2);
-    lcd.print("3");
-    lcd.write(3);
-    lcd.print(" ");
-    lcd.write(126);
-    lcd.print(" System Mode");
+    lcd.print("[3] | F.System Mode");
 }
-
 void loop()
 {
     Shifter_IO_Check();
     if (Launch_Opt == false)
     {
+        lcd.noBacklight();
+        lcd.clear();
+        lcd.backlight();
+        Launch_Opt = true;
         if (!ShifterWidth_165[0])
         {
-            lcd.noBacklight();
-            lcd.clear();
-            AVR_InstanceMode(1);
+            AVR_InstanceMode(0);
         }
         else if (!ShifterWidth_165[1])
         {
-            lcd.noBacklight();
-            lcd.clear();
-            delay(100);
-            lcd.backlight();
-            lcd.clear();
-            Launch_Opt = true;
+            AVR_InstanceMode(1);
         }
         else if (!ShifterWidth_165[2])
         {
-            lcd.noBacklight();
-            lcd.clear();
             AVR_InstanceMode(2);
         }
     }
     else
     {
-        TriButton_LCDChange();
+        Instance_Change();
+        DisplayI2C_OnInstance(Instance_Current);
     }
 }
-void TriButton_LCDChange()
+void Instance_Change()
 {
     if (!ShifterWidth_165[0])
     {
+        ShifterWidth_165[0] = 1;
         lcd.clear();
         while (1)
         {
             Shifter_IO_Check();
-            delay(300);
             lcd.setCursor(0, 0);
             lcd.print(F("[Server & AVR Menu ]"));
             lcd.setCursor(0, 1);
@@ -243,17 +227,18 @@ void TriButton_LCDChange()
             }
         }
     }
+    else if (!ShifterWidth_165[1])
+    {
+        lcd.clear();
+        NodeMCU_Status();
+    }
     else if (!ShifterWidth_165[2])
     {
         lcd.clear();
         NodeMCU_Status();
     }
-    else
-    {
-        MultiSens2LCD_I2C();
-    }
 }
-void MultiSens2LCD_I2C()
+void DisplayI2C_OnInstance(short Instance_Choice)
 {
     int RW_MQ135_GasSensRead = 0, MQ135_GasSensRead = 0;
     float RW_DHT22_HumidRead = 0, RW_DHT22_TempRead = 0,
@@ -362,7 +347,6 @@ void MultiSens2LCD_I2C()
             digitalWrite(LED_RW_1, HIGH);
             RW_MQ135_GasSensRead = MQ135_GasSensRead;
         }
-        //lcd.print(mq135_sensor.getCorrectedPPM(DHT.temperature, DHT.humidity), 0);
         lcd.print(MQ135_GasSensRead, DEC);
         lcd.print(F("ppm  ]"));
     }
@@ -374,6 +358,7 @@ void NodeMCU_Status()
 {
     while (1)
     {
+        Shifter_IO_Check();
         lcd.setCursor(0, 0);
         lcd.print("[NodeMCU Status]");
         lcd.setCursor(0, 1);
@@ -399,24 +384,40 @@ void NodeMCU_Status()
 
 // CUSTOM FUNCTIONS
 
-char LoopBackCommsTest(String Module_Response)
+int LoopBack_SerialComms()
 {
-    if (Module_Response.equals("AVR"))
+    int DataCheck;
+    if (AVR_ESP_Comms.available() > 0)
     {
-        while (AVR_ESP_Comms.available() > 0)
+        while (1)
         {
-            AVR_ESP_Comms.write("AVR_Comms_Test");
+            lcd.setCursor(9, 3);
+            AVR_ESP_Comms.write(1);
+            DataCheck = AVR_ESP_Comms.read();
+            if (DataCheck == 1)
+            {
+                lcd.print(DataCheck, DEC);
+                lcd.print(F(" | "));
+                lcd.print(SerialResponse[1]);
+                return 1;
+            }
+            else
+            {
+                lcd.print(DataCheck, DEC);
+                lcd.print(F(" | "));
+                lcd.print(SerialResponse[0]);
+                continue;
+            }
         }
-    }
-    else if (Module_Response.equals("ESP"))
-    {
     }
     else
     {
-        return "NULL";
+        lcd.print(DataCheck, DEC);
+        lcd.print(F(" | "));
+        lcd.print(SerialResponse[0]);
+        return 0;
     }
 }
-
 unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_Result)
 {
     while (1)
@@ -424,93 +425,135 @@ unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_R
         if ((millis() - SketchTime_Prev) >= Intervals_Millis)
         {
             SketchTime_Prev = millis();
-            switch (Target_Result)
+            if (Target_Result == CST_CurrentResult)
             {
-            case CST_CurrentResult:
                 SketchTime_Prev = 0;
                 return millis();
-            case CST_PreviousResult:
+            }
+            else if (Target_Result == CST_PreviousResult)
+            {
                 return SketchTime_Prev;
-            case CST_IntervalHit:
-                //Serial.print(millis());
-                //Serial.print(" - ");
-                //Serial.println(SketchTime_Prev);
+            }
+            else if (Target_Result == CST_IntervalHit)
+            {
+                Serial_DebugPrint(millis());
+                Serial_DebugPrint(F(" - "));
+                Serial_DebugPrintln(SketchTime_Prev);
                 continue;
-            default:
+            }
+            else
+            {
                 return CST_UnknownDefaultVal;
             }
         }
         else
         {
-            //Serial.print(millis());
-            //Serial.print(" - ");
-            //Serial.println(SketchTime_Prev);
+            Serial_DebugPrint(millis());
+            Serial_DebugPrint(F(" - "));
+            Serial_DebugPrintln(SketchTime_Prev);
         }
     }
 }
-
-void AVR_InstanceMode(unsigned short Instance_Options)
+void AVR_InstanceMode(short Instance_Options)
 {
-    lcd.backlight();
-    bool ClearOnce = false;
-    while (1)
+    while (ClearOnce != true)
     {
-        if (ClearOnce == true)
+        lcd.setCursor(0, 0);
+        lcd.print(F("Serial Connection"));
+        lcd.setCursor(0, 1);
+        lcd.print(F("Wait for LoopBack"));
+        lcd.setCursor(0, 2);
+        lcd.print(F("AVR & ESP Response"));
+        lcd.setCursor(0, 3);
+        lcd.print(F("Status "));
+        lcd.write(126);
+        lcd.print(F(" "));
+        if (LoopBack_SerialComms())
         {
-            LoopBackCommsTest("AVR");
-            LoopBackCommsTest("ESP");
-            lcd.setCursor(0, 0);
-            lcd.print(F("Serial Connection"));
-            lcd.setCursor(0, 1);
-            lcd.print(F("Waiting Comms..."));
-            lcd.write(126);
-            lcd.setCursor(0, 2);
-            lcd.print(F("AVR Response "));
-            lcd.write(126);
-            lcd.print(F(" "));
-            lcd.print(AVR_Response);
-            lcd.setCursor(0, 3);
-            lcd.print("ESP Response ");
-            lcd.write(126);
-            lcd.print(F(" "));
-            lcd.print(ESP_Response);
-            //while (1)
-            //{
-            //
-            //    if (AVR_ESP_Comms.available())
-            //    {
-            //        AVR_ESP_Comms.write(AVR_ESP_Comms.read());
-            //        break;
-            //    }
-            //}
+            ClearOnce = true;
+            delay(5000);
+            break;
         }
         else
         {
-            lcd.clear();
-            ClearOnce = true;
+            continue;
         }
     }
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Establish Instance");
+    if (Instance_Options == 0)
+    {
+        lcd.setCursor(0, 1);
+        lcd.print("To > Server Mode");
+        lcd.setCursor(0, 2);
+        lcd.print("Please wait...");
+        Current_InstanceStore[Instance_Options - 1] = 1;
+    }
+    else if (Instance_Options == 1)
+    {
+        lcd.setCursor(0, 1);
+        lcd.print("To > NonF.Sys Mode");
+        lcd.setCursor(0, 2);
+        lcd.print("Please wait...");
+        Current_InstanceStore[Instance_Options - 1] = 1;
+    }
+    else if (Instance_Options == 2)
+    {
+        lcd.setCursor(0, 1);
+        lcd.print("To > F.System Mode");
+        lcd.setCursor(0, 2);
+        lcd.print("Please wait...");
+        Current_InstanceStore[Instance_Options - 1] = 1;
+    }
+    delay(1200);
+    SetInstance_Mode();
 }
 
 byte Shifter_IO_Check()
 {
     if (Shifter_165N.update())
     {
-        //Serial.print("Shifter Updated...    -> ");
-        for (int i = 0; i < Shifter_165N.getDataWidth(); i++)
+        Serial_DebugPrint(F("Shifter Updated...    -> "));
+        for (int BitWidth = 0; BitWidth < Shifter_165N.getDataWidth(); BitWidth++)
         {
-            ShifterWidth_165[i] = Shifter_165N.state(i);
-            //Serial.print(Shifter_165N.state(i));
+            ShifterWidth_165[BitWidth] = Shifter_165N.state(BitWidth);
+            Serial_DebugPrint(Shifter_165N.state(BitWidth));
         }
-        //Serial.println(" ");
+        Serial_DebugPrintln(F(" "));
     }
     else
     {
-        //Serial.print("Shifter Not Changed... -> ");
+        Serial_DebugPrint(F("Shifter Not Changed... -> "));
+        for (int BitWidth = 0; BitWidth < Shifter_165N.getDataWidth(); BitWidth++)
+        {
+            Serial_DebugPrint(Shifter_165N.state(BitWidth));
+        }
     }
-    for (int i = 0; i < Shifter_165N.getDataWidth(); i++)
+    Serial_DebugPrintln(F(" "));
+}
+
+void SetInstance_Mode()
+{
+    short Instance_TrueState = 0;
+    if (!Locked_IterateData)
     {
-        //Serial.print(Shifter_165N.state(i));
+        for (short IterateData = 0; IterateData > 3; IterateData++)
+        {
+            if (Current_InstanceStore[IterateData] == 1)
+            {
+                Locked_IterateData = 1;
+                Instance_Current = Instance_TrueState;
+                break;
+            }
+            else
+            {
+                Instance_TrueState++;
+            }
+        }
     }
-    //Serial.println(" ");
+    else if (Locked_IterateData)
+    {
+        DisplayI2C_OnInstance(Instance_Current);
+    }
 }
