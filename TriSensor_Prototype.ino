@@ -155,7 +155,7 @@ void setup()
     lcd.write(0);
     lcd.print(F("   Janrey Licas   "));
     lcd.write(1);
-    delay(2500);
+    delay(2000);
     lcd.noBacklight();
     lcd.clear();
     delay(500);
@@ -175,21 +175,29 @@ void loop()
     Shifter_IO_Check();
     if (Launch_Opt == false)
     {
-        lcd.noBacklight();
-        lcd.clear();
-        lcd.backlight();
-        Launch_Opt = true;
         if (!ShifterWidth_165[0])
         {
+            lcd.noBacklight();
+            lcd.clear();
+            lcd.backlight();
             AVR_InstanceMode(0);
+            Launch_Opt = true;
         }
         else if (!ShifterWidth_165[1])
         {
+            lcd.noBacklight();
+            lcd.clear();
+            lcd.backlight();
             AVR_InstanceMode(1);
+            Launch_Opt = true;
         }
         else if (!ShifterWidth_165[2])
         {
+            lcd.noBacklight();
+            lcd.clear();
+            lcd.backlight();
             AVR_InstanceMode(2);
+            Launch_Opt = true;
         }
     }
     else
@@ -229,8 +237,7 @@ void Instance_Change()
     }
     else if (!ShifterWidth_165[1])
     {
-        lcd.clear();
-        NodeMCU_Status();
+        ;
     }
     else if (!ShifterWidth_165[2])
     {
@@ -240,7 +247,7 @@ void Instance_Change()
 }
 void DisplayI2C_OnInstance(short Instance_Choice)
 {
-    int RW_MQ135_GasSensRead = 0, MQ135_GasSensRead = 0;
+    short RW_MQ135_GasSensRead = 0, MQ135_GasSensRead = 0;
     float RW_DHT22_HumidRead = 0, RW_DHT22_TempRead = 0,
           DHT22_TempRead = DHT22_Sens.readTemperature(),
           DHT22_HumidRead = DHT22_Sens.readHumidity(),
@@ -299,7 +306,6 @@ void DisplayI2C_OnInstance(short Instance_Choice)
     lcd.print(F("[  Humid. "));
     lcd.write(126);
     lcd.print(F(" "));
-
     if (!ShifterWidth_165[6])
     {
         lcd.setCursor(12, 1);
@@ -368,7 +374,6 @@ void NodeMCU_Status()
         lcd.setCursor(0, 2);
         lcd.print("IP Add");
         lcd.write(126);
-        //lcd.print(AVR_ESP_Comms.write(WiFi.localIP()));
         lcd.setCursor(0, 3);
         lcd.print("U: | D: ");
         if (ShifterWidth_165[2])
@@ -381,9 +386,6 @@ void NodeMCU_Status()
     }
     delay(350);
 }
-
-// CUSTOM FUNCTIONS
-
 int LoopBack_SerialComms()
 {
     int DataCheck;
