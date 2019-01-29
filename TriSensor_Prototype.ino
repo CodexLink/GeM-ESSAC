@@ -3,15 +3,18 @@
 #include <Wire.h>
 #include <SoftwareSerial.h>
 #include <ShiftIn.h>
+#include <ShiftOut.h>
 #include <SoftReset.h>
 #define DHT22_PIN 4
 #define HC165_pLoadPin 5
 #define HC165_clockEnablePin 6
 #define HC165_dataPin 7
 #define HC165_clockPin 8
+#define HC595_clockPin 9
+#define HC595_latchPin 10
+#define HC595_dataPin 11
 #define AVR_RX_Equiv 2
 #define AVR_TX_Equiv 3
-#define LED_RW_1 12
 #define MQ135_GasSens A3
 SoftwareSerial AVR_ESP_Comms(AVR_RX_Equiv, AVR_TX_Equiv);
 #define Node_Stats_Enable 0xCD1200
@@ -31,9 +34,9 @@ SoftwareSerial AVR_ESP_Comms(AVR_RX_Equiv, AVR_TX_Equiv);
 DHT DHT22_Sens(DHT22_PIN, DHT22);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 ShiftIn<1> Shifter_165N;
-
+ShiftOut<1> Shifter_595N;
 short RW_Update = 0, Instance_Current = 0;
-String SerialResponse[] = {"[WTC]", "[OKY]"};
+String SerialResponse[] = {"[WTC]  ", "[OKY]  "};
 byte InstanceChecker[] = {0, 0};
 byte ESPSerial = 0;
 bool Launch_Opt = false;
@@ -42,94 +45,39 @@ byte ShifterWidth_165[] = {0, 0, 0, 0, 0, 0, 0, 0};
 byte Current_InstanceStore[] = {0, 0, 0};
 byte Locked_IterateData = 0;
 unsigned long SketchTime_Prev = 0;
-byte border_bot_r[8] = {
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B11111};
-byte border_bot_l[8] = {
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B11111};
-byte border_top_l[8] = {
-    B11111,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000};
-byte border_top_r[8] = {
-    B11111,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001};
-byte box_sqr_full_l[8] = {
-    B11111,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B11111};
-byte box_sqr_full_r[8] = {
-    B11111,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B11111};
-byte sd_brdr_l[8] = {
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000};
-byte sd_brdr_r[8] = {
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001,
-    B00001};
-byte divider_char[8] = {
-    B00100,
-    B00100,
-    B00100,
-    B00100,
-    B00100,
-    B00100,
-    B00100,
-    B00100};
+const byte border_bot_r[] = {B00001, B00001, B00001, B00001, B00001, B00001, B00001, B11111};
+const byte border_bot_l[] = {B10000, B10000, B10000, B10000, B10000, B10000, B10000, B11111};
+const byte border_top_l[] = {B11111, B10000, B10000, B10000, B10000, B10000, B10000, B10000};
+const byte border_top_r[] = {B11111, B00001, B00001, B00001, B00001, B00001, B00001, B00001};
+const byte box_sqr_full_l[] = {B11111, B10000, B10000, B10000, B10000, B10000, B10000, B11111};
+const byte box_sqr_full_r[] = {B11111, B00001, B00001, B00001, B00001, B00001, B00001, B11111};
+const byte sd_brdr_l[] = {B10000, B10000, B10000, B10000, B10000, B10000, B10000, B10000};
+const byte sd_brdr_r[] = {B00001, B00001, B00001, B00001, B00001, B00001, B00001, B00001};
+const byte divider_char[] = {B00100, B00100, B00100, B00100, B00100, B00100, B00100, B00100};
+const byte SingleSegment[14][8] = {
+    {1, 1, 1, 1, 1, 1, 0, 0}, // 0
+    {0, 0, 0, 0, 0, 0, 0, 0}, // 1
+    {1, 1, 0, 1, 1, 0, 1, 0}, // 2
+    {1, 1, 1, 1, 0, 0, 1, 0}, // 3
+    {0, 1, 1, 0, 0, 1, 1, 0}, // 4
+    {1, 0, 1, 1, 0, 1, 1, 0}, // 5
+    {1, 0, 1, 1, 1, 1, 1, 0}, // 6
+    {1, 1, 1, 0, 0, 0, 0, 0}, // 7
+    {1, 1, 1, 1, 1, 1, 1, 0}, // 8
+    {1, 1, 1, 1, 0, 1, 1, 0}, // 9
+    {0, 0, 0, 0, 0, 0, 1, 0}, // Dash
+    {1, 0, 0, 1, 1, 1, 1, 0}, // E
+    {1, 0, 1, 1, 1, 1, 1, 0}, // S
+    {0, 0, 0, 0, 0, 0, 0, 0}, // F
+};
+
 void setup()
 {
     Serial.begin(9600);
     AVR_ESP_Comms.begin(9600);
     Shifter_165N.begin(HC165_pLoadPin, HC165_clockEnablePin, HC165_dataPin, HC165_clockPin);
+    Shifter_595N.begin(HC595_dataPin, HC595_clockPin, HC595_latchPin);
     DHT22_Sens.begin();
-    pinMode(LED_RW_1, OUTPUT);
     lcd.init();
     lcd.backlight();
     lcd.createChar(0, border_bot_l);
@@ -251,8 +199,10 @@ void DisplayI2C_OnInstance(short Instance_Choice)
     float RW_DHT22_HumidRead = 0, RW_DHT22_TempRead = 0,
           DHT22_TempRead = DHT22_Sens.readTemperature(),
           DHT22_HumidRead = DHT22_Sens.readHumidity(),
-          DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
-    if (isnan(DHT22_TempRead) || isnan(DHT22_HumidRead) || isnan(DHT22_HtInxRead))
+          DHT22_HtInxRead =
+              DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
+    if (isnan(DHT22_TempRead) || isnan(DHT22_HumidRead) ||
+        isnan(DHT22_HtInxRead))
     {
         lcd.setCursor(0, 0);
         lcd.print(F("Failed to read from DHT sensor!"));
@@ -291,11 +241,11 @@ void DisplayI2C_OnInstance(short Instance_Choice)
     {
         if (RW_DHT22_TempRead == DHT22_TempRead)
         {
-            digitalWrite(LED_RW_1, LOW);
+            // digitalWrite(LED_RW_1, LOW);
         }
         else
         {
-            digitalWrite(LED_RW_1, HIGH);
+            // digitalWrite(LED_RW_1, HIGH);
             RW_DHT22_TempRead = DHT22_TempRead;
         }
         lcd.print(DHT22_TempRead, 1);
@@ -319,11 +269,11 @@ void DisplayI2C_OnInstance(short Instance_Choice)
     {
         if (RW_DHT22_HumidRead == DHT22_HumidRead)
         {
-            digitalWrite(LED_RW_1, LOW);
+            // digitalWrite(LED_RW_1, LOW);
         }
         else
         {
-            digitalWrite(LED_RW_1, HIGH);
+            // digitalWrite(LED_RW_1, HIGH);
             RW_DHT22_HumidRead = DHT22_HumidRead;
         }
         lcd.print(DHT22_HumidRead, 1);
@@ -346,11 +296,11 @@ void DisplayI2C_OnInstance(short Instance_Choice)
     {
         if (RW_MQ135_GasSensRead == MQ135_GasSensRead)
         {
-            digitalWrite(LED_RW_1, LOW);
+            // digitalWrite(LED_RW_1, LOW);
         }
         else
         {
-            digitalWrite(LED_RW_1, HIGH);
+            // digitalWrite(LED_RW_1, HIGH);
             RW_MQ135_GasSensRead = MQ135_GasSensRead;
         }
         lcd.print(MQ135_GasSensRead, DEC);
@@ -420,7 +370,8 @@ int LoopBack_SerialComms()
         return 0;
     }
 }
-unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_Result)
+unsigned long Current_SketchTimer(long Intervals_Millis,
+                                  unsigned short Target_Result)
 {
     while (1)
     {
