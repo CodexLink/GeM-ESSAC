@@ -27,50 +27,57 @@ SoftwareSerial AVR_ESP_Comms(AVR_RX_Equiv, AVR_TX_Equiv);
 #ifdef DEBUG_ENABLED
 #define Serial_DebugPrint(x) (Serial.print(x))
 #define Serial_DebugPrintln(x) (Serial.println(x))
+Serial.print(F("Hello! You just activated my debugging mode."));
+Serial.print(F("All Serial_DebugPrint and PrintLn will display."));
 #else
 #define Serial_DebugPrint(x)
 #define Serial_DebugPrintln(x)
 #endif
+
 DHT DHT22_Sens(DHT22_PIN, DHT22);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 ShiftIn<1> Shifter_165N;
 ShiftOut<1> Shifter_595N;
-short RW_Update = 0, Instance_Current = 0;
-String SerialResponse[] = {"[WTC]  ", "[OKY]  "};
-byte InstanceChecker[] = {0, 0};
-byte ESPSerial = 0;
-bool Launch_Opt = false;
-bool ClearOnce = false;
-byte ShifterWidth_165[] = {0, 0, 0, 0, 0, 0, 0, 0};
-byte Current_InstanceStore[] = {0, 0, 0};
-byte Locked_IterateData = 0;
-unsigned long SketchTime_Prev = 0;
-const byte border_bot_r[] = {B00001, B00001, B00001, B00001, B00001, B00001, B00001, B11111};
-const byte border_bot_l[] = {B10000, B10000, B10000, B10000, B10000, B10000, B10000, B11111};
-const byte border_top_l[] = {B11111, B10000, B10000, B10000, B10000, B10000, B10000, B10000};
-const byte border_top_r[] = {B11111, B00001, B00001, B00001, B00001, B00001, B00001, B00001};
-const byte box_sqr_full_l[] = {B11111, B10000, B10000, B10000, B10000, B10000, B10000, B11111};
-const byte box_sqr_full_r[] = {B11111, B00001, B00001, B00001, B00001, B00001, B00001, B11111};
-const byte sd_brdr_l[] = {B10000, B10000, B10000, B10000, B10000, B10000, B10000, B10000};
-const byte sd_brdr_r[] = {B00001, B00001, B00001, B00001, B00001, B00001, B00001, B00001};
-const byte divider_char[] = {B00100, B00100, B00100, B00100, B00100, B00100, B00100, B00100};
-const byte SingleSegment[14][8] = {
-    {1, 1, 1, 1, 1, 1, 0, 0}, // 0
-    {0, 0, 0, 0, 0, 0, 0, 0}, // 1
-    {1, 1, 0, 1, 1, 0, 1, 0}, // 2
-    {1, 1, 1, 1, 0, 0, 1, 0}, // 3
-    {0, 1, 1, 0, 0, 1, 1, 0}, // 4
-    {1, 0, 1, 1, 0, 1, 1, 0}, // 5
-    {1, 0, 1, 1, 1, 1, 1, 0}, // 6
-    {1, 1, 1, 0, 0, 0, 0, 0}, // 7
-    {1, 1, 1, 1, 1, 1, 1, 0}, // 8
-    {1, 1, 1, 1, 0, 1, 1, 0}, // 9
-    {0, 0, 0, 0, 0, 0, 1, 0}, // Dash
-    {1, 0, 0, 1, 1, 1, 1, 0}, // E
-    {1, 0, 1, 1, 1, 1, 1, 0}, // S
-    {0, 0, 0, 0, 0, 0, 0, 0}, // F
+const byte border_bot_r[] = {B00001, B00001, B00001, B00001, B00001, B00001, B00001, B11111},
+           border_bot_l[] = {B10000, B10000, B10000, B10000, B10000, B10000, B10000, B11111},
+           border_top_l[] = {B11111, B10000, B10000, B10000, B10000, B10000, B10000, B10000},
+           border_top_r[] = {B11111, B00001, B00001, B00001, B00001, B00001, B00001, B00001},
+           box_sqr_full_l[] = {B11111, B10000, B10000, B10000, B10000, B10000, B10000, B11111},
+           box_sqr_full_r[] = {B11111, B00001, B00001, B00001, B00001, B00001, B00001, B11111},
+           sd_brdr_l[] = {B10000, B10000, B10000, B10000, B10000, B10000, B10000, B10000},
+           sd_brdr_r[] = {B00001, B00001, B00001, B00001, B00001, B00001, B00001, B00001},
+           divider_char[] = {B00100, B00100, B00100, B00100, B00100, B00100, B00100, B00100},
+           SingleSegment[14][8] = {
+               {1, 1, 1, 1, 1, 1, 0, 0}, // 0
+               {0, 1, 1, 0, 0, 0, 0, 0}, // 1
+               {1, 1, 0, 1, 1, 0, 1, 0}, // 2
+               {1, 1, 1, 1, 0, 0, 1, 0}, // 3
+               {0, 1, 1, 0, 0, 1, 1, 0}, // 4
+               {1, 0, 1, 1, 0, 1, 1, 0}, // 5
+               {1, 0, 1, 1, 1, 1, 1, 0}, // 6
+               {1, 1, 1, 0, 0, 0, 0, 0}, // 7
+               {1, 1, 1, 1, 1, 1, 1, 0}, // 8
+               {1, 1, 1, 1, 0, 1, 1, 0}, // 9
+               {0, 0, 0, 0, 0, 0, 1, 0}, // Dash
+               {1, 0, 0, 1, 1, 1, 1, 0}, // E
+               {1, 0, 1, 1, 1, 1, 1, 0}, // S
+               {0, 0, 0, 0, 0, 0, 0, 0}, // F
 };
-
+bool Launch_Opt = false, ClearOnce = false;
+short RW_Update = 0, Instance_Current = 0,
+      Blink_Byte = 0, LastVal_Trigger_1 = 0,
+      LastVal_Trigger_2 = 0, RW_MQ135_GasSensRead = 0,
+      MQ135_GasSensRead = 0;
+unsigned long SketchTime_Prev = 0;
+float RW_DHT22_HumidRead = 0,
+      RW_DHT22_TempRead = 0;
+String SerialResponse[] = {"[WTC]  ", "[OKY]  "};
+byte InstanceChecker[] = {0, 0},
+     ESPSerial = 0,
+     ShifterWidth_165[] = {0, 0, 0, 0, 0, 0, 0, 0},
+     Current_InstanceStore[] = {0, 0, 0},
+     Locked_IterateData = 0,
+     DataChange_Counter[3] = {0, 0, 0};
 void setup()
 {
     Serial.begin(9600);
@@ -110,13 +117,11 @@ void setup()
     lcd.backlight();
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("[ Mode Selection ]");
+    lcd.print(F("[ Mode Selection ]"));
     lcd.setCursor(0, 1);
-    lcd.print("[1] | Server Mode");
+    lcd.print(F("[1] | Server Mode"));
     lcd.setCursor(0, 2);
-    lcd.print("[2] | NonF.Sys Mode");
-    lcd.setCursor(0, 3);
-    lcd.print("[3] | F.System Mode");
+    lcd.print(F("[2] | NonF.Sys Mode"));
 }
 void loop()
 {
@@ -139,19 +144,11 @@ void loop()
             AVR_InstanceMode(1);
             Launch_Opt = true;
         }
-        else if (!ShifterWidth_165[2])
-        {
-            lcd.noBacklight();
-            lcd.clear();
-            lcd.backlight();
-            AVR_InstanceMode(2);
-            Launch_Opt = true;
-        }
     }
     else
     {
         Instance_Change();
-        DisplayI2C_OnInstance(Instance_Current);
+        DisplayI2C_OnInstance();
     }
 }
 void Instance_Change()
@@ -193,122 +190,135 @@ void Instance_Change()
         NodeMCU_Status();
     }
 }
-void DisplayI2C_OnInstance(short Instance_Choice)
+void DisplayI2C_OnInstance()
 {
-    short RW_MQ135_GasSensRead = 0, MQ135_GasSensRead = 0;
-    float RW_DHT22_HumidRead = 0, RW_DHT22_TempRead = 0,
-          DHT22_TempRead = DHT22_Sens.readTemperature(),
-          DHT22_HumidRead = DHT22_Sens.readHumidity(),
-          DHT22_HtInxRead =
-              DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
-    if (isnan(DHT22_TempRead) || isnan(DHT22_HumidRead) ||
-        isnan(DHT22_HtInxRead))
+    if (Current_InstanceStore[0])
     {
         lcd.setCursor(0, 0);
-        lcd.print(F("Failed to read from DHT sensor!"));
+        lcd.print(F("Server Instance"));
         lcd.setCursor(0, 1);
-        lcd.print(F("Failed to read from DHT sensor!"));
+        lcd.print(F("SSID: "));
+        lcd.setCursor(0, 2);
+        lcd.print(F("Connection: "));
+        lcd.setCursor(0, 3);
+        lcd.print(F("Menu          Status"));
     }
-    MQ135_GasSensRead = analogRead(MQ135_GasSens);
-    if (!ShifterWidth_165[4])
+    else if (Current_InstanceStore[1])
     {
-        lcd.noBacklight();
-        lcd.noDisplay();
-    }
-    else
-    {
-        lcd.backlight();
-        lcd.display();
-    }
-    if (!ShifterWidth_165[5])
-    {
-    }
-    lcd.setCursor(0, 0);
-    lcd.print(F("[  Temp. "));
-    lcd.write(126);
-    lcd.print(F(" "));
-    if (!ShifterWidth_165[6])
-    {
-        lcd.setCursor(11, 0);
-        lcd.print(char(255));
-        lcd.print(char(255));
-        lcd.print(".");
-        lcd.print(char(255));
-        lcd.print(char(223));
-        lcd.print(F("C  ]"));
-    }
-    else
-    {
-        if (RW_DHT22_TempRead == DHT22_TempRead)
+        float DHT22_TempRead = DHT22_Sens.readTemperature(),
+              DHT22_HumidRead = DHT22_Sens.readHumidity(),
+              DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
+        if (isnan(DHT22_TempRead) || isnan(DHT22_HumidRead) ||
+            isnan(DHT22_HtInxRead))
         {
-            // digitalWrite(LED_RW_1, LOW);
+            lcd.setCursor(11, 0);
+            lcd.print(F("? ERR"));
+            lcd.setCursor(12, 1);
+            lcd.print(F("? ERR"));
+        }
+        MQ135_GasSensRead = analogRead(MQ135_GasSens);
+        if (!ShifterWidth_165[4])
+        {
+            lcd.noBacklight();
+            lcd.noDisplay();
         }
         else
         {
-            // digitalWrite(LED_RW_1, HIGH);
-            RW_DHT22_TempRead = DHT22_TempRead;
+            lcd.backlight();
+            lcd.display();
         }
-        lcd.print(DHT22_TempRead, 1);
-        lcd.print(char(223));
-        lcd.print(F("C  ]"));
-    }
-    lcd.setCursor(0, 1);
-    lcd.print(F("[  Humid. "));
-    lcd.write(126);
-    lcd.print(F(" "));
-    if (!ShifterWidth_165[6])
-    {
-        lcd.setCursor(12, 1);
-        lcd.print(char(255));
-        lcd.print(char(255));
-        lcd.print(".");
-        lcd.print(char(255));
-        lcd.print(F("%  ]"));
-    }
-    else
-    {
-        if (RW_DHT22_HumidRead == DHT22_HumidRead)
+        if (!ShifterWidth_165[5])
         {
-            // digitalWrite(LED_RW_1, LOW);
+        }
+        lcd.setCursor(0, 0);
+        lcd.print(F("[  Temp. "));
+        lcd.write(126);
+        lcd.print(F(" "));
+        if (!ShifterWidth_165[6])
+        {
+            lcd.setCursor(11, 0);
+            lcd.print(char(255));
+            lcd.print(char(255));
+            lcd.print(F("."));
+            lcd.print(char(255));
+            lcd.print(char(223));
+            lcd.print(F("C  ]"));
         }
         else
         {
-            // digitalWrite(LED_RW_1, HIGH);
-            RW_DHT22_HumidRead = DHT22_HumidRead;
-        }
-        lcd.print(DHT22_HumidRead, 1);
-        lcd.print(F("%  ]"));
-    }
-    lcd.setCursor(0, 2);
-    lcd.print(F("[  AirQ. "));
-    lcd.write(126);
-    lcd.print(F(" "));
-    if (!ShifterWidth_165[7])
-    {
+            if (RW_DHT22_TempRead != DHT22_TempRead)
+            {
+                DataChange_Counter[0] = 1;
+                RW_DHT22_TempRead = DHT22_TempRead;
+            }
+            else
+            {
+                DataChange_Counter[0] = 0;
+            }
 
-        lcd.setCursor(11, 2);
-        lcd.print(char(255));
-        lcd.print(char(255));
-        lcd.print(char(255));
-        lcd.print(F("ppm  ]"));
-    }
-    else
-    {
-        if (RW_MQ135_GasSensRead == MQ135_GasSensRead)
+            lcd.print(DHT22_TempRead, 1);
+            lcd.print(char(223));
+            lcd.print(F("C  ]"));
+        }
+        lcd.setCursor(0, 1);
+        lcd.print(F("[  Humid. "));
+        lcd.write(126);
+        lcd.print(F(" "));
+        if (!ShifterWidth_165[6])
         {
-            // digitalWrite(LED_RW_1, LOW);
+            lcd.setCursor(12, 1);
+            lcd.print(char(255));
+            lcd.print(char(255));
+            lcd.print(F("."));
+            lcd.print(char(255));
+            lcd.print(F("%  ]"));
         }
         else
         {
-            // digitalWrite(LED_RW_1, HIGH);
-            RW_MQ135_GasSensRead = MQ135_GasSensRead;
+            if (RW_DHT22_HumidRead != DHT22_HumidRead)
+            {
+                DataChange_Counter[1] = 1;
+                RW_DHT22_HumidRead = DHT22_HumidRead;
+            }
+            else
+            {
+                DataChange_Counter[1] = 0;
+            }
+
+            lcd.print(DHT22_HumidRead, 1);
+            lcd.print(F("%  ]"));
         }
-        lcd.print(MQ135_GasSensRead, DEC);
-        lcd.print(F("ppm  ]"));
+        lcd.setCursor(0, 2);
+        lcd.print(F("[  AirQ. "));
+        lcd.write(126);
+        lcd.print(F(" "));
+        if (!ShifterWidth_165[7])
+        {
+            lcd.setCursor(11, 2);
+            lcd.print(char(255));
+            lcd.print(char(255));
+            lcd.print(char(255));
+            lcd.print(F("ppm  ]"));
+        }
+        else
+        {
+            if (RW_MQ135_GasSensRead != MQ135_GasSensRead)
+            {
+                DataChange_Counter[2] = 1;
+                RW_MQ135_GasSensRead = MQ135_GasSensRead;
+            }
+            else
+            {
+                DataChange_Counter[2] = 0;
+            }
+            lcd.print(MQ135_GasSensRead, DEC);
+            lcd.print(F("ppm  ]"));
+        }
+        lcd.setCursor(0, 3);
+        lcd.print(F("Menu  SensInfo  WiFi"));
+        DigitalSegment_Write(1);
+        delay(50);
     }
-    lcd.setCursor(0, 3);
-    lcd.print("Menu  SensInfo  WiFi");
-    delay(50);
 }
 void NodeMCU_Status()
 {
@@ -316,16 +326,16 @@ void NodeMCU_Status()
     {
         Shifter_IO_Check();
         lcd.setCursor(0, 0);
-        lcd.print("[NodeMCU Status]");
+        lcd.print(F("[NodeMCU Status]"));
         lcd.setCursor(0, 1);
-        lcd.print("AP");
+        lcd.print(F("AP"));
         lcd.write(126);
-        lcd.print("Xiaomi");
+        lcd.print(F("Xiaomi"));
         lcd.setCursor(0, 2);
-        lcd.print("IP Add");
+        lcd.print(F("IP Add"));
         lcd.write(126);
         lcd.setCursor(0, 3);
-        lcd.print("U: | D: ");
+        lcd.print(F("U: | D: "));
         if (ShifterWidth_165[2])
         {
         }
@@ -336,14 +346,14 @@ void NodeMCU_Status()
     }
     delay(350);
 }
-int LoopBack_SerialComms()
+byte LoopBack_SerialComms()
 {
-    int DataCheck;
+    short DataCheck;
     if (AVR_ESP_Comms.available() > 0)
     {
         while (1)
         {
-            lcd.setCursor(9, 3);
+            lcd.setCursor(9, 2);
             AVR_ESP_Comms.write(1);
             DataCheck = AVR_ESP_Comms.read();
             if (DataCheck == 1)
@@ -370,32 +380,26 @@ int LoopBack_SerialComms()
         return 0;
     }
 }
-unsigned long Current_SketchTimer(long Intervals_Millis,
-                                  unsigned short Target_Result)
+unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_Result)
 {
     while (1)
     {
         if ((millis() - SketchTime_Prev) >= Intervals_Millis)
         {
             SketchTime_Prev = millis();
-            if (Target_Result == CST_CurrentResult)
+            switch (Target_Result)
             {
+            case CST_CurrentResult:
                 SketchTime_Prev = 0;
                 return millis();
-            }
-            else if (Target_Result == CST_PreviousResult)
-            {
+            case CST_PreviousResult:
                 return SketchTime_Prev;
-            }
-            else if (Target_Result == CST_IntervalHit)
-            {
+            case CST_IntervalHit:
                 Serial_DebugPrint(millis());
                 Serial_DebugPrint(F(" - "));
                 Serial_DebugPrintln(SketchTime_Prev);
-                continue;
-            }
-            else
-            {
+                return 1;
+            default:
                 return CST_UnknownDefaultVal;
             }
         }
@@ -414,17 +418,15 @@ void AVR_InstanceMode(short Instance_Options)
         lcd.setCursor(0, 0);
         lcd.print(F("Serial Connection"));
         lcd.setCursor(0, 1);
-        lcd.print(F("Wait for LoopBack"));
+        lcd.print(F("Loopback Check"));
         lcd.setCursor(0, 2);
-        lcd.print(F("AVR & ESP Response"));
-        lcd.setCursor(0, 3);
         lcd.print(F("Status "));
         lcd.write(126);
         lcd.print(F(" "));
         if (LoopBack_SerialComms())
         {
             ClearOnce = true;
-            delay(5000);
+            delay(900);
             break;
         }
         else
@@ -434,41 +436,33 @@ void AVR_InstanceMode(short Instance_Options)
     }
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Establish Instance");
+    lcd.print(F("Establish Instance"));
     if (Instance_Options == 0)
     {
         lcd.setCursor(0, 1);
-        lcd.print("To > Server Mode");
+        lcd.print(F("To > Server Mode"));
         lcd.setCursor(0, 2);
-        lcd.print("Please wait...");
-        Current_InstanceStore[Instance_Options - 1] = 1;
+        lcd.print(F("Please wait..."));
+        Current_InstanceStore[Instance_Options] = 1;
     }
     else if (Instance_Options == 1)
     {
         lcd.setCursor(0, 1);
-        lcd.print("To > NonF.Sys Mode");
+        lcd.print(F("To > F.System Mode"));
         lcd.setCursor(0, 2);
-        lcd.print("Please wait...");
-        Current_InstanceStore[Instance_Options - 1] = 1;
+        lcd.print(F("Please wait..."));
+        Current_InstanceStore[Instance_Options] = 1;
     }
-    else if (Instance_Options == 2)
-    {
-        lcd.setCursor(0, 1);
-        lcd.print("To > F.System Mode");
-        lcd.setCursor(0, 2);
-        lcd.print("Please wait...");
-        Current_InstanceStore[Instance_Options - 1] = 1;
-    }
-    delay(1200);
-    SetInstance_Mode();
+    delay(500);
+    lcd.clear();
 }
 
 byte Shifter_IO_Check()
 {
     if (Shifter_165N.update())
     {
-        Serial_DebugPrint(F("Shifter Updated...    -> "));
-        for (int BitWidth = 0; BitWidth < Shifter_165N.getDataWidth(); BitWidth++)
+        Serial_DebugPrint(F("[SHIFTER INFO] Shifter 165N Updated...    -> "));
+        for (short BitWidth = 0; BitWidth < Shifter_165N.getDataWidth(); BitWidth++)
         {
             ShifterWidth_165[BitWidth] = Shifter_165N.state(BitWidth);
             Serial_DebugPrint(Shifter_165N.state(BitWidth));
@@ -477,8 +471,8 @@ byte Shifter_IO_Check()
     }
     else
     {
-        Serial_DebugPrint(F("Shifter Not Changed... -> "));
-        for (int BitWidth = 0; BitWidth < Shifter_165N.getDataWidth(); BitWidth++)
+        Serial_DebugPrint(F("[SHIFTER INFO] Shifter 165N Unchanged... -> "));
+        for (short BitWidth = 0; BitWidth < Shifter_165N.getDataWidth(); BitWidth++)
         {
             Serial_DebugPrint(Shifter_165N.state(BitWidth));
         }
@@ -486,27 +480,60 @@ byte Shifter_IO_Check()
     Serial_DebugPrintln(F(" "));
 }
 
-void SetInstance_Mode()
+void DigitalSegment_Write(byte Dec_Trigger)
 {
-    short Instance_TrueState = 0;
-    if (!Locked_IterateData)
+    short Val = 0;
+    if (Dec_Trigger != LastVal_Trigger_1)
     {
-        for (short IterateData = 0; IterateData > 3; IterateData++)
+        switch (Dec_Trigger)
         {
-            if (Current_InstanceStore[IterateData] == 1)
-            {
-                Locked_IterateData = 1;
-                Instance_Current = Instance_TrueState;
-                break;
-            }
-            else
-            {
-                Instance_TrueState++;
-            }
+        case 0:
+            Shifter_595N.set(Shifter_595N.getDataWidth() - 1, 0);
+            Shifter_595N.write();
+            LastVal_Trigger_1 = Dec_Trigger;
+        case 1:
+            Shifter_595N.set(Shifter_595N.getDataWidth() - 1, 1);
+            Shifter_595N.write();
+            LastVal_Trigger_1 = Dec_Trigger;
         }
     }
-    else if (Locked_IterateData)
+    for (short i = 0; i < 3; i++)
     {
-        DisplayI2C_OnInstance(Instance_Current);
+        Val += DataChange_Counter[i];
+    }
+    if (Val != LastVal_Trigger_2)
+    {
+        Serial_DebugPrint(F("[DISPLAY INFO] Single Segment Updated to Val > "));
+        Serial_DebugPrintln(Val);
+        switch (Val)
+        {
+        case 0:
+            for (short ElementCounter = 0; ElementCounter < Shifter_595N.getDataWidth() - 1; ElementCounter++)
+            {
+                Shifter_595N.set(ElementCounter, SingleSegment[0][ElementCounter]);
+                Shifter_595N.write();
+            }
+            LastVal_Trigger_2 = Val;
+        case -1:
+            Shifter_595N.setAllLow();
+            Shifter_595N.write();
+            LastVal_Trigger_2 = Val;
+        case -2:
+            Shifter_595N.setAllHigh();
+            Shifter_595N.write();
+            LastVal_Trigger_2 = Val;
+        default:
+            for (short ElementCounter = 0; ElementCounter < Shifter_595N.getDataWidth() - 1; ElementCounter++)
+            {
+                Shifter_595N.set(ElementCounter, SingleSegment[Val][ElementCounter]);
+                Shifter_595N.write();
+            }
+            LastVal_Trigger_2 = Val;
+        }
+    }
+    else
+    {
+        Serial_DebugPrint(F("[DISPLAY INFO] Single Segment Updated to Val > "));
+        Serial_DebugPrintln(Val);
     }
 }
