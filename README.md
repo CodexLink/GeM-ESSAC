@@ -1,8 +1,7 @@
 # Welcome!
-Current: Personal Essential Tool - Personal Environment Monitoring and Fidelity (802.11) Fidelity Attacking Device
+Current Name: Personal Essential Tool - Personal Environment Monitoring and Fidelity (802.11) Fidelity Attacking Device
+
 Old Name: AVR_ESP-DD-TRISenS_Prototype
-
-
 
 # Requirements
 
