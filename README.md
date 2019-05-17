@@ -1,12 +1,22 @@
-# AVR_ESP-DD-TRISenS_Prototype
-
-- Title stands for AVR Chip Prototype and ESP (NodeMCU) DirectedDigital - TriSensor Prototype
-
-This personal project was intended for my personal purposes. Any distribution should under be in license that redirects the original source code. Please refer to the license for more information about distribution.
-
-[reserved] For more info please go to.....,=
+# Welcome!
+Current: Personal Essential Tool - Personal Environment Monitoring and Fidelity (802.11) Fidelity Attacking Device
+Old Name: AVR_ESP-DD-TRISenS_Prototype
 
 
-NOTICE: Recode Action will be held for sometime in April or End of March. Note to myself.
+
+# Requirements
+
+## Tools
+## Parts
+## Optionals
+
+# Stages of Building
+## Circuit
+## Arduino Code
+## PCB Design
+
+## Credits
+##
 
 
+A Personal Project by Janrey Licas
