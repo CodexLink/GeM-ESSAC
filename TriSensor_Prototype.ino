@@ -109,15 +109,20 @@ const byte ArrowChar_Updaters[3][8] = {
 // Battery Char Positional Holders
 short Battery_PosX = 0, Battery_PosY = 0, BatteryIntDispX = 0, BatteryIntDispY = 0;
 
+// 7 Digit Segment Variables
 short LastVal_Trigger_1 = 0, LastVal_Trigger_2 = 0, DataChange_Counter[4] = {0, 0, 0, 0};
 
-unsigned long SketchTime_Prev = 0; // Millis Value Holder
+// Customized Millis Previous On Hold Value
+unsigned long SketchTime_Prev = 0;
 
+// Sensor Value Initializers
 float RW_DHT22_HumidRead = 0,
       RW_DHT22_TempRead = 0,
       RW_DHT22_HtInxRead = 0;
-
 short RW_MQ135_GasSensRead = 0;
+
+// Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
+short LCD_SetScrollX = 0;
 
 void setup()
 {
@@ -154,56 +159,79 @@ static void DisplayI2C_OnInstance()
           DHT22_HumidRead = DHT22_Sens.readHumidity(),
           DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false),
           MQ135_GasSensRead = MQ135_Sens.getPPM(); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
+    short Sens_TruthResult = 0;
 
-    // Add Battery Function Display at LCD_StartPositionX and LCD_EndPositionY and Mode
-    LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY);
-
-    for (unsigned short LCD_SetScrollY = LCD_StartPositionY + 1; LCD_SetScrollY != LCD_EndPositionY; LCD_SetScrollY++)
+    for (unsigned short LCD_SetScrollY = LCD_StartPositionY; LCD_SetScrollY != LCD_EndPositionY; LCD_SetScrollY++)
     {
         LCD_I2C.setCursor(LCD_StartPositionX, LCD_SetScrollY);
         switch (LCD_SetScrollY)
         {
-        case 1:
-            // Unary Operator within Unary Operator... LOL
-            (isnan(DHT22_TempRead)) ? (LCD_I2C.print(F("TE:ERROR")), ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2)) : ((RW_DHT22_TempRead != DHT22_TempRead) ? (DataChange_Counter[0] = 1, RW_DHT22_TempRead = DHT22_TempRead) : DataChange_Counter[0] = 0);
+        case 0: // Ready the battery here in this case. I don't want to read it outside, don't ask why.
+            CustomCharBattery_Write();
+            LCD_I2C.setCursor(LCD_StartPositionX + 1, LCD_SetScrollY);
+            BatteryCalculate_Formatter("Percent");
 
-            (RW_MQ135_GasSensRead != MQ135_GasSensRead) ? (DataChange_Counter[3] = 1, RW_MQ135_GasSensRead = MQ135_GasSensRead) : DataChange_Counter[3] = 0;
-            LCD_I2C.setCursor(0, 0);
-            LCD_I2C.print(F("TE:"));
-            LCD_I2C.print(DHT22_TempRead, 1);
-            (MQ135_GasSensRead > 999) ? LCD_I2C.print(MQ135_GasSensRead, 0) : LCD_I2C.print(MQ135_GasSensRead, 1);
-        case 2:
-            if (isnan(DHT22_HumidRead))
+            // Add Communication Header Here For Status
+        case 1:
+            if (isnan(DHT22_TempRead))
             {
-                LCD_I2C.print(char(223));
-                LCD_I2C.print(F("C | HU:"));
-                LCD_I2C.print(DHT22_HumidRead, 1);
-                LCD_I2C.print(F("%"));
+                LCD_I2C.print(F("TE"));
+                LCD_I2C.write(126);
+                LCD_I2C.print(F(StringLength_Process("ERROR")));
+                ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0
             }
             else
             {
-                (RW_DHT22_HumidRead != DHT22_HumidRead) ? (DataChange_Counter[1] = 1, RW_DHT22_HumidRead = DHT22_HumidRead) : DataChange_Counter[1] = 0;
+                Sens_TruthResult = Compare_SensCalc(DHT22_TempRead, RW_DHT22_TempRead);
+                (Sens_TruthResult == 1) ? (DataChange_Counter[0] = 1, RW_DHT22_TempRead = DHT22_TempRead) : ((Sens_TruthResult == -1) ? (DataChange_Counter[0] = 1) : (DataChange_Counter[0] = 0));
+                LCD_I2C.print(F("TE"));
+                LCD_I2C.write(126);
+                LCD_I2C.print(DHT22_TempRead, 1);
+                LCD_I2C.write((StringLength_Process("C"));
+            }
+            // I can't read Sensor Disconnections, the only way is to put resistor and read something about it. ALl I know is that I should be able to tell if that <something> is low...
+            Sens_TruthResult = Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead);
+            (Sens_TruthResult == 1) ? (DataChange_Counter[3] = 1, RW_MQ135_GasSensRead = MQ135_GasSensRead) : ((Sens_TruthResult == -1) ? (DataChange_Counter[3] = 1) : (DataChange_Counter[3] = 0));
+            (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
+
+        case 2:
+            if (isnan(DHT22_HumidRead))
+            {
+                LCD_I2C.print(F("HU"));
+                LCD_I2C.write(126);
+                LCD_I2C.print(F(StringLength_Process("ERROR")));
+                ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0, Unknown
+            }
+            else
+            {
+                Sens_TruthResult = Compare_SensCalc(DHT22_HumidRead, RW_DHT22_HumidRead);
+                (Sens_TruthResult == 1) ? (DataChange_Counter[1] = 1, RW_DHT22_HumidRead = DHT22_HumidRead) : ((Sens_TruthResult == -1) ? (DataChange_Counter[1] = 1) : (DataChange_Counter[1] = 0));
             }
 
         case 3:
             if (isnan(DHT22_HtInxRead))
             {
-                LCD_I2C.setCursor(0, 1);
-                LCD_I2C.print(F("HI:"));
-                LCD_I2C.print(DHT22_HtInxRead, 1);
-                LCD_I2C.print(char(223));
-                LCD_I2C.print(F("C | AQ:"));
+                LCD_I2C.print(F("HI"));
+                LCD_I2C.write(126);
+                LCD_I2C.print(F("ERROR"));
+                ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0, Unknown
             }
             else
             {
-                (RW_DHT22_HtInxRead != DHT22_HtInxRead) ? (DataChange_Counter[2] = 1, RW_DHT22_HtInxRead = DHT22_HtInxRead) : DataChange_Counter[2] = 0;
-            }
+                Sens_TruthResult = Compare_SensCalc(DHT22_HtInxRead, RW_DHT22_HtInxRead);
+                (Sens_TruthResult == 1) ? (DataChange_Counter[2] = 1, RW_DHT22_HtInxRead = DHT22_HtInxRead) : ((Sens_TruthResult == -1) ? (DataChange_Counter[2] = 1) : (DataChange_Counter[2] = 0));
 
-        default:
-            DigitalSegment_Write(1);
-            delay(100);
+            }
         }
+        LCD_SetScrollX = 0; // Reset when Case Execution Ends.
+        DigitalSegment_Write(1);
+        delay(100);
     }
+}
+
+static short StringLength_Process(char* String)
+{
+    LCD_SetScrollX += strlen(String); // THis was an absolute length value, no need to change of something else.
 }
 
 static unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_Result)
@@ -312,7 +340,25 @@ static void DigitalSegment_Write(byte Decimal_DisplaySwitch)
         SerialPrimary(println, Val);
     }
 }
-
+// Since we can't pass a condition to accept float or short on a function, type cast it in the loop section instead and set variables in float to reduce anxiety or overthinking.
+static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead)
+{
+    if (BasePinSensRead <= RW_PlaceHolderRead)
+    {
+        ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 0);
+        return -1;
+    }
+    else if (BasePinSensRead >= RW_PlaceHolderRead)
+    {
+        ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 1);
+        return 1;
+    }
+    else
+    {
+        ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2);
+        return 0;
+    }
+}
 // MRFCC RFID Functions
 
 //static void MRFCC() {}
@@ -322,29 +368,30 @@ static void DigitalSegment_Write(byte Decimal_DisplaySwitch)
 
 // Battery Indicators and Computation Functions
 
-// This Function Below is Case Sensitive!
-static void BatteryCalculation_PercentOrVolts(char *ModeDisplay)
+// This Function Below is Case Sensitive! Also this funciton, will run once. Implementation of OTA Changes will be implemented soon when the whole project is at final stage.
+static const char *BatteryCalculate_Formatter(char *ModeDisplay)
 {
+    const char DisplayFormat[2] = {"V", "%"};
+    static float BatteryBaseValue = 0;
     // Calculation is here
 
     if (strcmp(ModeDisplay, "Voltage") == 0)
     {
-
-        SerialPrimary(println, "[Battery Calculation Mode] - Display.");
+        SerialPrimary(println, "[Battery Calculation Mode] - Set to Voltage Display.");
+        LCD_I2C.print();
+        LCD_I2C.print(F(DisplayFormat[0]));
     }
     else if (strcmp(ModeDisplay, "Percent") == 0)
     {
-
-        SerialPrimary(println, "[Battery Calculation Mode] - Display.");
+        SerialPrimary(println, "[Battery Calculation Mode] -Set to Battery Percentage Display.");
+        LCD_I2C.print();
+        LCD_I2C.print(F(DisplayFormat[1]));
     }
     else
     {
         // Might Display Percent Instead, which is Default
         SerialPrimary(println, "[Battery Calculation Mode] - Unknown Value. Set to Percent Display.");
     }
-}
-static short BatteryVoltagetoPercent_Write()
-{
 }
 
 static void CustomCharBattery_Write(short CurrentRead_BatteryLevel)
