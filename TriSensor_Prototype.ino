@@ -110,10 +110,10 @@ const byte ArrowChar_Updaters[3][8] = {
 short Battery_PosX = 0, Battery_PosY = 0, BatteryIntDispX = 0, BatteryIntDispY = 0;
 
 // 7 Digit Segment Variables
-short LastVal_Trigger_1 = 0, LastVal_Trigger_2 = 0, DataCounter_Update[4] = {0, 0, 0, 0};
+short LastVal_Trigger_1 = 0, LastVal_Trigger_2 = 0;
 
-// Function Return Value in Array Form
-short Sens_TruthResult[4] = {0};
+// 7 Digit Segment and Sensor Computation Comparison Data Variable Handlers
+byte DataCounter_Update[4] = {0, 0, 0, 0};
 // Customized Millis Previous On Hold Value
 unsigned long SketchTime_Prev = 0;
 
@@ -163,47 +163,62 @@ static void DisplayI2C_OnInstance()
           DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false),
           MQ135_GasSensRead = MQ135_Sens.getPPM(); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
 
-    for (unsigned short LCD_SetScrollY = LCD_StartPositionY; LCD_SetScrollY <= LCD_EndPositionY; LCD_SetScrollY++)
+    for (unsigned short LCDScrollY_Index = LCD_StartPositionY; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
     {
         SerialPrimary(print, "UPDATE LCD Scroll -> ");
         SerialPrimary(print, LCD_SetScrollX);
         SerialPrimary(print, ", ");
-        SerialPrimary(println, LCD_SetScrollY);
-        LCD_I2C.setCursor(LCD_StartPositionX, LCD_SetScrollY);
-        switch (LCD_SetScrollY)
+        SerialPrimary(println, LCDScrollY_Index);
+        LCD_I2C.setCursor(LCD_StartPositionX, LCDScrollY_Index);
+
+        switch (LCDScrollY_Index)
         {
         case 0: // Ready the battery here in this case. I don't want to read it outside, don't ask why.
+            SerialPrimary(println, "I hit case 0");
             short BatteryCurrentRead = Battery_CapCalc();
             CustomCharBattery_Write(BatteryCurrentRead);
-            LCD_I2C.setCursor(LCD_StartPositionX + 1, LCD_SetScrollY);
+            LCD_I2C.setCursor(LCD_StartPositionX + 1, LCDScrollY_Index);
             BatteryDisp_Format(BatteryCurrentRead, "Percent");
-            SerialPrimary(println,"AVOID on Case 0");
+            SerialPrimary(println, "AVOID on Case 0");
             // Add Communication Header Here For Status
         case 1:
+            SerialPrimary(println, "I hit case 1");
             if (isnan(DHT22_TempRead))
             {
+                SerialPrimary(println, "I hit case 1 if statement");
                 ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0
                 LCD_I2C.print(F("TE"));
                 LCD_I2C.write(126);
                 LCD_I2C.print(F("ERROR"));
+
+                Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCDScrollY_Index);
+
+                (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
+                (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
             }
             else
             {
-                Sens_TruthResult[0] = Compare_SensCalc(DHT22_TempRead, RW_DHT22_TempRead);
-                (Sens_TruthResult[0] == 1) ? (DataCounter_Update[0] = 1, RW_DHT22_TempRead = DHT22_TempRead) : ((Sens_TruthResult[0] == -1) ? (DataCounter_Update[0] = 1) : (DataCounter_Update[0] = 0));
+                SerialPrimary(println, "I hit case 1 else statement");
+                Compare_SensCalc(DHT22_TempRead, RW_DHT22_TempRead, LCDScrollY_Index - 1);
+
+                (DataCounter_Update[LCDScrollY_Index - 1] == 1) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
                 LCD_I2C.print(F("TE"));
                 LCD_I2C.write(126);
                 LCD_I2C.print(DHT22_TempRead, 1);
                 LCD_I2C.print("C ");
+
+                Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCDScrollY_Index);
+
+                (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
+                (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
             }
             // I can't read Sensor Disconnections, the only way is to put resistor and read something about it. ALl I know is that I should be able to tell if that <something> is low...
-            Sens_TruthResult[1] = Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead);
-            (Sens_TruthResult[1] == 1) ? (DataCounter_Update[3] = 1, RW_MQ135_GasSensRead = MQ135_GasSensRead) : ((Sens_TruthResult[1] == -1) ? (DataCounter_Update[3] = 1) : (DataCounter_Update[3] = 0));
-            (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
 
         case 2:
+            SerialPrimary(println, "I hit case 2");
             if (isnan(DHT22_HumidRead))
             {
+                SerialPrimary(println, "I hit case 2 if statement");
                 ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0, Unknown
                 LCD_I2C.print(F("HU"));
                 LCD_I2C.write(126);
@@ -211,13 +226,16 @@ static void DisplayI2C_OnInstance()
             }
             else
             {
-                Sens_TruthResult[2] = Compare_SensCalc(DHT22_HumidRead, RW_DHT22_HumidRead);
-                (Sens_TruthResult[2] == 1) ? (DataCounter_Update[1] = 1, RW_DHT22_HumidRead = DHT22_HumidRead) : ((Sens_TruthResult[2] == -1) ? (DataCounter_Update[1] = 1) : (DataCounter_Update[1] = 0));
+                SerialPrimary(println, "I hit case 2 else statement");
+                Compare_SensCalc(DHT22_HumidRead, RW_DHT22_HumidRead, LCDScrollY_Index);
+                (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_DHT22_HumidRead = DHT22_HumidRead) : (0);
             }
-
+            continue;
         case 3:
+            SerialPrimary(println, "I hit case 3");
             if (isnan(DHT22_HtInxRead))
             {
+                SerialPrimary(println, "I hit case 3 if statement");
                 LCD_I2C.print(F("HI"));
                 LCD_I2C.write(126);
                 LCD_I2C.print(F("ERROR"));
@@ -225,12 +243,14 @@ static void DisplayI2C_OnInstance()
             }
             else
             {
-                Sens_TruthResult[3] = Compare_SensCalc(DHT22_HtInxRead, RW_DHT22_HtInxRead);
-                (Sens_TruthResult[3] == 1) ? (DataCounter_Update[2] = 1, RW_DHT22_HtInxRead = DHT22_HtInxRead) : ((Sens_TruthResult[3] == -1) ? (DataCounter_Update[2] = 1) : (DataCounter_Update[2] = 0));
+                SerialPrimary(println, "I hit case 3 else statement");
+                Compare_SensCalc(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCDScrollY_Index);
+                (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead) : (0);
             }
+            break;
         }
-        LCD_SetScrollX = 0; // Reset when Case Execution Ends.
         DigitalSegment_Write(1);
+        LCD_SetScrollX = 0; // Reset when Case Execution Ends.
         delay(2000);
     }
 }
@@ -273,14 +293,14 @@ static void ArrowChar_Indicators(unsigned short PosX, unsigned short PosY, unsig
     switch (Receiver_Integer)
     {
     case 0:
+        LCD_I2C.setCursor(PosX, PosY);
         LCD_I2C.print(ArrowChar_Updaters[0][8]);
-        LCD_I2C.setCursor(PosX, PosY);
     case 1:
+        LCD_I2C.setCursor(PosX, PosY);
         LCD_I2C.print(ArrowChar_Updaters[1][8]);
-        LCD_I2C.setCursor(PosX, PosY);
     default:
-        LCD_I2C.print(ArrowChar_Updaters[2][8]);
         LCD_I2C.setCursor(PosX, PosY);
+        LCD_I2C.print(ArrowChar_Updaters[2][8]);
     }
 }
 
@@ -304,6 +324,7 @@ static void DigitalSegment_Write(byte Decimal_DisplaySwitch)
     for (short i = 0; i < 4; i++)
     {
         Val += DataCounter_Update[i];
+        SerialPrimary(print, DataCounter_Update[i]);
     }
     if (Val != LastVal_Trigger_2)
     {
@@ -342,7 +363,7 @@ static void DigitalSegment_Write(byte Decimal_DisplaySwitch)
     }
 }
 // Since we can't pass a condition to accept float or short on a function, type cast it in the loop section instead and set variables in float to reduce anxiety or overthinking.
-static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead)
+static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead, unsigned short CaseIndex)
 {
     if (BasePinSensRead < RW_PlaceHolderRead)
     {
@@ -352,7 +373,7 @@ static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead)
         SerialPrimary(print, RW_PlaceHolderRead);
         SerialPrimary(println, " Returns -1, Less Than");
         ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 0);
-        return -1;
+        return DataCounter_Update[CaseIndex] = 1;
     }
     else if (BasePinSensRead > RW_PlaceHolderRead)
     {
@@ -362,7 +383,7 @@ static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead)
         SerialPrimary(print, RW_PlaceHolderRead);
         SerialPrimary(println, " Returns 1, Greater Than");
         ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 1);
-        return 1;
+        return DataCounter_Update[CaseIndex] = 1;
     }
     else
     {
@@ -372,7 +393,7 @@ static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead)
         SerialPrimary(print, RW_PlaceHolderRead);
         SerialPrimary(println, " Returns 0, Equal");
         ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2);
-        return 0;
+        return DataCounter_Update[CaseIndex] = 0;
     }
 }
 // MRFCC RFID Functions
@@ -389,6 +410,7 @@ static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead)
 static float Battery_CapCalc()
 {
 }
+
 static const char *BatteryDisp_Format(short BatteryLoad, char *ModeDisplay)
 {
     const char DisplayFormat[2] = {'V', '%'};
