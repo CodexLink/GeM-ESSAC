@@ -1,16 +1,16 @@
 /* 
-Current Name: PortESTTool-PerEMNFAD "Portable Essential Tool - Personal Environment Monitoring and Fidelity 802.11 Attacking Device"  Prototype
+Current Name: PortESTTool-PerEMNFAD "Portable Essential Tool - Personal Environment Monitoring and Fidelity 802.11 Attacking Device" Prototype
 
 Old Name: DD-TriSenS "Digital Device - Tri-Sensor" Prototype
 
 Author Name : Janrey "CodexLink" Licas
-Created On: Unknown, Somewhere on Fall 2018
+Created On: Unknown, Somewhere on Fall 2019
+Flashable To : Any Flashable Device, Recommended To - Arduino
 License: GPL-3.0
 */
 #include <DHT.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
-#include <ShiftIn.h>
 #include <ShiftOut.h>
 #include <SoftReset.h>
 #include <EEPROM.h>
@@ -123,9 +123,6 @@ float RW_DHT22_HumidRead = 0,
       RW_DHT22_HtInxRead = 0;
 short RW_MQ135_GasSensRead = 0;
 
-// Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
-short LCD_SetScrollX = 0;
-
 void setup()
 {
     SerialPrimary(begin, 115200);
@@ -162,30 +159,27 @@ static void DisplayI2C_OnInstance()
           DHT22_HumidRead = DHT22_Sens.readHumidity(),
           DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false),
           MQ135_GasSensRead = MQ135_Sens.getPPM(); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
-
+                                                   // Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
+    short LCD_SetScrollX = 0;
     for (unsigned short LCDScrollY_Index = LCD_StartPositionY; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
     {
-        SerialPrimary(print, "UPDATE LCD Scroll -> ");
-        SerialPrimary(print, LCD_SetScrollX);
-        SerialPrimary(print, ", ");
+        SerialPrimary(print, "[UPDATE] Current LCD Y Axis Scroll Value -> ");
         SerialPrimary(println, LCDScrollY_Index);
         LCD_I2C.setCursor(LCD_StartPositionX, LCDScrollY_Index);
 
         switch (LCDScrollY_Index)
         {
         case 0: // Ready the battery here in this case. I don't want to read it outside, don't ask why.
-            SerialPrimary(println, "I hit case 0");
-            short BatteryCurrentRead = Battery_CapCalc();
+            //short BatteryCurrentRead = Battery_CapCalc();
             CustomCharBattery_Write(BatteryCurrentRead);
-            LCD_I2C.setCursor(LCD_StartPositionX + 1, LCDScrollY_Index);
-            BatteryDisp_Format(BatteryCurrentRead, "Percent");
-            SerialPrimary(println, "AVOID on Case 0");
+            //LCD_I2C.setCursor(LCD_StartPositionX + 1, //LCDScrollY_Index);
+            //BatteryDisp_Format(BatteryCurrentRead, "Percent");
             // Add Communication Header Here For Status
+            break;
+
         case 1:
-            SerialPrimary(println, "I hit case 1");
             if (isnan(DHT22_TempRead))
             {
-                SerialPrimary(println, "I hit case 1 if statement");
                 ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0
                 LCD_I2C.print(F("TE"));
                 LCD_I2C.write(126);
@@ -195,10 +189,10 @@ static void DisplayI2C_OnInstance()
 
                 (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
                 (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
+                break;
             }
             else
             {
-                SerialPrimary(println, "I hit case 1 else statement");
                 Compare_SensCalc(DHT22_TempRead, RW_DHT22_TempRead, LCDScrollY_Index - 1);
 
                 (DataCounter_Update[LCDScrollY_Index - 1] == 1) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
@@ -211,48 +205,45 @@ static void DisplayI2C_OnInstance()
 
                 (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
                 (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
+                break;
             }
+
             // I can't read Sensor Disconnections, the only way is to put resistor and read something about it. ALl I know is that I should be able to tell if that <something> is low...
 
         case 2:
-            SerialPrimary(println, "I hit case 2");
             if (isnan(DHT22_HumidRead))
             {
-                SerialPrimary(println, "I hit case 2 if statement");
                 ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0, Unknown
                 LCD_I2C.print(F("HU"));
                 LCD_I2C.write(126);
                 LCD_I2C.print(F("ERROR"));
+                break;
             }
             else
             {
-                SerialPrimary(println, "I hit case 2 else statement");
                 Compare_SensCalc(DHT22_HumidRead, RW_DHT22_HumidRead, LCDScrollY_Index);
                 (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_DHT22_HumidRead = DHT22_HumidRead) : (0);
+                break;
             }
-            continue;
+
         case 3:
-            SerialPrimary(println, "I hit case 3");
             if (isnan(DHT22_HtInxRead))
             {
-                SerialPrimary(println, "I hit case 3 if statement");
                 LCD_I2C.print(F("HI"));
                 LCD_I2C.write(126);
                 LCD_I2C.print(F("ERROR"));
                 ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0, Unknown
+                break;
             }
             else
             {
-                SerialPrimary(println, "I hit case 3 else statement");
                 Compare_SensCalc(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCDScrollY_Index);
                 (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead) : (0);
+                break;
             }
-            break;
         }
-        DigitalSegment_Write(1);
-        LCD_SetScrollX = 0; // Reset when Case Execution Ends.
-        delay(2000);
     }
+    DS_DisplayStatus(1);
 }
 
 static unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_Result)
@@ -304,9 +295,10 @@ static void ArrowChar_Indicators(unsigned short PosX, unsigned short PosY, unsig
     }
 }
 
-static void DigitalSegment_Write(byte Decimal_DisplaySwitch)
+static void DS_DisplayStatus(byte Decimal_DisplaySwitch)
 {
-    static short Val = 0;
+    static unsigned short Val;
+    // Sets Decimal Positional
     if (Decimal_DisplaySwitch != LastVal_Trigger_1)
     {
         switch (Decimal_DisplaySwitch)
@@ -321,11 +313,12 @@ static void DigitalSegment_Write(byte Decimal_DisplaySwitch)
             LastVal_Trigger_1 = Decimal_DisplaySwitch;
         }
     }
-    for (short i = 0; i < 4; i++)
+    for (unsigned short i = 0; i < 4; i++)
     {
         Val += DataCounter_Update[i];
         SerialPrimary(print, DataCounter_Update[i]);
     }
+
     if (Val != LastVal_Trigger_2)
     {
         SerialPrimary(print, F("[SINGLE SEGMENT] Value Updated To "));
@@ -358,7 +351,7 @@ static void DigitalSegment_Write(byte Decimal_DisplaySwitch)
     }
     else
     {
-        SerialPrimary(print, F("[SINGLE SEGMENT] Not Updated, Value is  "));
+        SerialPrimary(print, F("[SINGLE SEGMENT] Not Updated, Value is "));
         SerialPrimary(println, Val);
     }
 }
