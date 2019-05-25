@@ -33,7 +33,7 @@ License: GPL-3.0
 #define SerialPrimary(x, y) Serial.x(y)
 #define SerialSecondary(x, y) Serial1.x(y)
 
-#define DEBUG_ENABLED 0
+#define DEBUG_ENABLED 1
 
 #if DEBUG_ENABLED == 1
 #if x == println || print
@@ -157,22 +157,22 @@ static void DisplayI2C_OnInstance()
           DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
     unsigned short MQ135_GasSensRead = MQ135_Sens.getPPM(); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
     // Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
-    SerialPrimary(println, (""));
+    SerialPrimary(println, "");
     for (unsigned short LCDScrollY_Index = LCD_StartPositionY, LCD_SetScrollX = 0; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
     {
         SerialPrimary(print, "[LCD POS.] LCD Y Axis Scroll Value at ");
         SerialPrimary(println, LCDScrollY_Index);
 
+        // Might Remove This One...
         LCD_I2C.setCursor(LCD_StartPositionX, LCDScrollY_Index);
 
         switch (LCDScrollY_Index)
         {
         case 0: // Ready the battery here in this case. I don't want to read it outside, don't ask why.
             static short BatteryCurrentRead = Battery_CapCalc();
-            CustomCharBattery_Write(BatteryCurrentRead);
-            LCD_I2C.setCursor(LCD_StartPositionX + 1, LCDScrollY_Index);
-            BatteryDisp_Format(BatteryCurrentRead, "Percent");
-            // Add Communication Header Here For Status
+            CustomCharBattery_Write(BatteryCurrentRead, LCD_StartPositionX, LCDScrollY_Index);
+            BatteryDisp_Format(BatteryCurrentRead, "Capacity");
+            CommsHeader_Status();
             break;
 
         case 1:
@@ -242,6 +242,7 @@ static void DisplayI2C_OnInstance()
         }
     }
     DS_DisplayStatus();
+    delay(100); // Added because "Calm down, senpai! You can't read those values in such a milliseconds.". I agree.
 }
 
 static unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_Result)
@@ -328,7 +329,7 @@ static void DS_DisplayStatus()
         SerialPrimary(println, Current_TotalSumOnArr);
     }
 
-    if (Current_SketchTimer(1000, CST_IntervalHit))
+    if (Current_SketchTimer(900, CST_IntervalHit))
     {
 
         if (Current_DecSwitch != LastSave_DecSwitch)
@@ -401,32 +402,76 @@ static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead, u
 
 // Battery Indicators and Computation Functions
 
-// This Function Below is Case Sensitive! Also this funciton, will run once. Implementation of OTA Changes will be implemented soon when the whole project is at final stage.
+static void CustomCharBattery_Write(short CurrentRead_BatteryLevel, unsigned short LCD_StartPosX, unsigned short LCD_StartPosY)
+{
+    switch (CurrentRead_BatteryLevel)
+    {
+    case 1 ... 19:
+        LCD_I2C.createChar(0, BatteryDisplay_Icon[1]);
+        LCD_I2C.setCursor(LCD_StartPosX, LCD_StartPosY);
+        LCD_I2C.write(0);
+        break;
+
+    case 20 ... 39:
+        LCD_I2C.createChar(0, BatteryDisplay_Icon[2]);
+        LCD_I2C.setCursor(LCD_StartPosX, LCD_StartPosY);
+        LCD_I2C.write(0);
+        break;
+
+    case 40 ... 59:
+        LCD_I2C.createChar(0, BatteryDisplay_Icon[3]);
+        LCD_I2C.setCursor(LCD_StartPosX, LCD_StartPosY);
+        LCD_I2C.write(0);
+        break;
+
+    case 60 ... 79:
+        LCD_I2C.createChar(0, BatteryDisplay_Icon[4]);
+        LCD_I2C.setCursor(LCD_StartPosX, LCD_StartPosY);
+        LCD_I2C.write(0);
+        break;
+
+    case 80 ... 100:
+        LCD_I2C.createChar(0, BatteryDisplay_Icon[5]);
+        LCD_I2C.setCursor(LCD_StartPosX, LCD_StartPosY);
+        LCD_I2C.write(0);
+        break;
+
+    default:
+        LCD_I2C.createChar(0, BatteryDisplay_Icon[0]);
+        LCD_I2C.setCursor(LCD_StartPosX, LCD_StartPosY);
+        LCD_I2C.write(0);
+        break;
+    }
+}
 
 static float Battery_CapCalc()
 {
-    ;
+    return 100; // PlaceHolder Function
 }
 
-static const char *BatteryDisp_Format(short BatteryLoad, char *ModeDisplay)
+// Battery Display Formatter - This Function Below is Case Sensitive! Also this funciton, will run once. Implementation of OTA Changes will be implemented soon when the whole project is at final stage.
+
+static const char *BatteryDisp_Format(unsigned short BatteryLoad, const char *ModeDisplay)
 {
     const char DisplayFormat[2] = {'V', '%'};
     static float BatteryBaseValue = 0;
-    static char ModeDisplay_SaveState[7] = {0};
+    static const char *ModeDisplay_SaveState;
     // Calculation is here
-    if (strcmp(ModeDisplay, ModeDisplay_SaveState) == 0)
+    if (strcmp(ModeDisplay, ModeDisplay_SaveState) != 0)
     {
         if (strcmp(ModeDisplay, "Voltage") == 0)
         {
             SerialPrimary(println, F("[Battery Calculation Mode] - Set to Voltage Display."));
             LCD_I2C.print(BatteryLoad);
             LCD_I2C.print(DisplayFormat[0]);
+            LCD_I2C.print(" ");
         }
-        else if (strcmp(ModeDisplay, "Percent") == 0)
+        else if (strcmp(ModeDisplay, "Capacity") == 0)
         {
             SerialPrimary(println, F("[Battery Calculation Mode] - Set to Battery Percentage Display."));
             LCD_I2C.print(BatteryLoad);
             LCD_I2C.print(DisplayFormat[1]);
+            LCD_I2C.print(" ");
         }
         else
         {
@@ -436,44 +481,8 @@ static const char *BatteryDisp_Format(short BatteryLoad, char *ModeDisplay)
     }
 }
 
-static void CustomCharBattery_Write(short CurrentRead_BatteryLevel)
+// Device Communications Status Display - Max of 14 Words
+static void CommsHeader_Status()
 {
-    static unsigned short Battery_LastSaveLevel;
-    if (Battery_LastSaveLevel != CurrentRead_BatteryLevel)
-    {
-        Battery_LastSaveLevel = CurrentRead_BatteryLevel;
-        LCD_I2C.setCursor(Battery_PosX, Battery_PosY);
-        switch (CurrentRead_BatteryLevel)
-        {
-        case 1 ... 19:
-            LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[1]);
-            LCD_I2C.write(0);
-            break;
-
-        case 20 ... 39:
-            LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[2]);
-            LCD_I2C.write(0);
-            break;
-
-        case 40 ... 59:
-            LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[3]);
-            LCD_I2C.write(0);
-            break;
-
-        case 60 ... 79:
-            LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[4]);
-            LCD_I2C.write(0);
-            break;
-
-        case 80 ... 100:
-            LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[5]);
-            LCD_I2C.write(0);
-            break;
-
-        default:
-            LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[0]);
-            LCD_I2C.write(0);
-            break;
-        }
-    }
+    LCD_I2C.print("CommsIsRllyFun");
 }
