@@ -17,6 +17,7 @@ License: GPL-3.0
 #include <SPI.h>
 #include <MFRC522.h>
 #include "MQ135.h"
+
 #define DHT22_PIN 22
 
 #define HC595_dataPin 23
@@ -32,9 +33,9 @@ License: GPL-3.0
 #define SerialPrimary(x, y) Serial.x(y)
 #define SerialSecondary(x, y) Serial1.x(y)
 
-#define DEBUG_ENABLED 1
+#define DEBUG_ENABLED 0
 
-#ifdef DEBUG_ENABLED
+#if DEBUG_ENABLED == 1
 #if x == println || print
 #define SerialPrimary(x, y) Serial.x(y)
 #define SerialSecondary(x, y) Serial1.x(y)
@@ -74,21 +75,21 @@ MQ135 MQ135_Sens = MQ135(MQ135_GasSens);
 ShiftOut<1> Shifter_595N;
 
 // Char Custom Displays in Multidimensional Array
-const byte SingleSegment_Values[14][8] = {
-    {1, 1, 1, 1, 1, 1, 0, 0}, // 0
-    {0, 1, 1, 0, 0, 0, 0, 0}, // 1
-    {1, 1, 0, 1, 1, 0, 1, 0}, // 2
-    {1, 1, 1, 1, 0, 0, 1, 0}, // 3
-    {0, 1, 1, 0, 0, 1, 1, 0}, // 4
-    {1, 0, 1, 1, 0, 1, 1, 0}, // 5
-    {1, 0, 1, 1, 1, 1, 1, 0}, // 6
-    {1, 1, 1, 0, 0, 0, 0, 0}, // 7
-    {1, 1, 1, 1, 1, 1, 1, 0}, // 8
-    {1, 1, 1, 1, 0, 1, 1, 0}, // 9
-    {0, 0, 0, 0, 0, 0, 1, 0}, // Dash
-    {1, 0, 0, 1, 1, 1, 1, 0}, // E
-    {1, 0, 1, 1, 1, 1, 1, 0}, // S
-    {0, 0, 0, 0, 0, 0, 0, 0}  // F
+const byte SingleSegment_Values[14][7] = {
+    {1, 1, 1, 1, 1, 1, 0}, // Removed 8th Index, 0
+    {0, 1, 1, 0, 0, 0, 0}, // Removed 8th Index, 1
+    {1, 1, 0, 1, 1, 0, 1}, // Removed 8th Index, 2
+    {1, 1, 1, 1, 0, 0, 1}, // Removed 8th Index, 3
+    {0, 1, 1, 0, 0, 1, 1}, // Removed 8th Index, 4
+    {1, 0, 1, 1, 0, 1, 1}, // Removed 8th Index, 5
+    {1, 0, 1, 1, 1, 1, 1}, // Removed 8th Index, 6
+    {1, 1, 1, 0, 0, 0, 0}, // Removed 8th Index, 7
+    {1, 1, 1, 1, 1, 1, 1}, // Removed 8th Index, 8
+    {1, 1, 1, 1, 0, 1, 1}, // Removed 8th Index, 9
+    {0, 0, 0, 0, 0, 0, 1}, // Removed 8th Index, Dash
+    {1, 0, 0, 1, 1, 1, 1}, // Removed 8th Index, E
+    {1, 0, 1, 1, 1, 1, 1}, // Removed 8th Index, S
+    {0, 0, 0, 0, 0, 0, 0}  // Removed 8th Index, F
 };
 
 byte BatteryDisplay_Icon[6][8] = {
@@ -107,21 +108,12 @@ const byte ArrowChar_Updaters[3][8] = {
 };
 
 // Battery Char Positional Holders
-short Battery_PosX = 0, Battery_PosY = 0, BatteryIntDispX = 0, BatteryIntDispY = 0;
-
-// 7 Digit Segment Variables
-short LastVal_Trigger_1 = 0, LastVal_Trigger_2 = 0;
+unsigned short Battery_PosX = 0, Battery_PosY = 0, BatteryIntDispX = 0, BatteryIntDispY = 0;
 
 // 7 Digit Segment and Sensor Computation Comparison Data Variable Handlers
 byte DataCounter_Update[4] = {0, 0, 0, 0};
 // Customized Millis Previous On Hold Value
 unsigned long SketchTime_Prev = 0;
-
-// Sensor Value Initializers
-float RW_DHT22_HumidRead = 0,
-      RW_DHT22_TempRead = 0,
-      RW_DHT22_HtInxRead = 0;
-short RW_MQ135_GasSensRead = 0;
 
 void setup()
 {
@@ -154,26 +146,32 @@ void loop()
 }
 static void DisplayI2C_OnInstance()
 {
+    // Sensor Value Initializers
+    static float RW_DHT22_HumidRead = 0,
+                 RW_DHT22_TempRead = 0,
+                 RW_DHT22_HtInxRead = 0;
+    static unsigned short RW_MQ135_GasSensRead = 0;
     // Insert Command Here for Reading Functions....
     float DHT22_TempRead = DHT22_Sens.readTemperature(),
           DHT22_HumidRead = DHT22_Sens.readHumidity(),
-          DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false),
-          MQ135_GasSensRead = MQ135_Sens.getPPM(); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
-                                                   // Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
-    short LCD_SetScrollX = 0;
-    for (unsigned short LCDScrollY_Index = LCD_StartPositionY; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
+          DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
+    unsigned short MQ135_GasSensRead = MQ135_Sens.getPPM(); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
+    // Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
+    SerialPrimary(println, (""));
+    for (unsigned short LCDScrollY_Index = LCD_StartPositionY, LCD_SetScrollX = 0; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
     {
-        SerialPrimary(print, "[UPDATE] Current LCD Y Axis Scroll Value -> ");
+        SerialPrimary(print, "[LCD POS.] LCD Y Axis Scroll Value at ");
         SerialPrimary(println, LCDScrollY_Index);
+
         LCD_I2C.setCursor(LCD_StartPositionX, LCDScrollY_Index);
 
         switch (LCDScrollY_Index)
         {
         case 0: // Ready the battery here in this case. I don't want to read it outside, don't ask why.
-            //short BatteryCurrentRead = Battery_CapCalc();
+            static short BatteryCurrentRead = Battery_CapCalc();
             CustomCharBattery_Write(BatteryCurrentRead);
-            //LCD_I2C.setCursor(LCD_StartPositionX + 1, //LCDScrollY_Index);
-            //BatteryDisp_Format(BatteryCurrentRead, "Percent");
+            LCD_I2C.setCursor(LCD_StartPositionX + 1, LCDScrollY_Index);
+            BatteryDisp_Format(BatteryCurrentRead, "Percent");
             // Add Communication Header Here For Status
             break;
 
@@ -185,7 +183,7 @@ static void DisplayI2C_OnInstance()
                 LCD_I2C.write(126);
                 LCD_I2C.print(F("ERROR"));
 
-                Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCDScrollY_Index);
+                Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCDScrollY_Index, "MQ135");
 
                 (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
                 (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
@@ -193,7 +191,7 @@ static void DisplayI2C_OnInstance()
             }
             else
             {
-                Compare_SensCalc(DHT22_TempRead, RW_DHT22_TempRead, LCDScrollY_Index - 1);
+                Compare_SensCalc(DHT22_TempRead, RW_DHT22_TempRead, LCDScrollY_Index - 1, "DHT22-TEMP");
 
                 (DataCounter_Update[LCDScrollY_Index - 1] == 1) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
                 LCD_I2C.print(F("TE"));
@@ -201,7 +199,7 @@ static void DisplayI2C_OnInstance()
                 LCD_I2C.print(DHT22_TempRead, 1);
                 LCD_I2C.print("C ");
 
-                Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCDScrollY_Index);
+                Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCDScrollY_Index, "MQ135");
 
                 (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
                 (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
@@ -221,7 +219,7 @@ static void DisplayI2C_OnInstance()
             }
             else
             {
-                Compare_SensCalc(DHT22_HumidRead, RW_DHT22_HumidRead, LCDScrollY_Index);
+                Compare_SensCalc(DHT22_HumidRead, RW_DHT22_HumidRead, LCDScrollY_Index, "DHT22-HUMID");
                 (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_DHT22_HumidRead = DHT22_HumidRead) : (0);
                 break;
             }
@@ -237,13 +235,13 @@ static void DisplayI2C_OnInstance()
             }
             else
             {
-                Compare_SensCalc(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCDScrollY_Index);
+                Compare_SensCalc(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCDScrollY_Index, "DHT22-HTINX");
                 (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead) : (0);
                 break;
             }
         }
     }
-    DS_DisplayStatus(1);
+    DS_DisplayStatus();
 }
 
 static unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_Result)
@@ -258,26 +256,24 @@ static unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short T
             case CST_CurrentResult:
                 SketchTime_Prev = 0;
                 return millis();
+                break;
             case CST_PreviousResult:
                 return SketchTime_Prev;
+                break;
             case CST_IntervalHit:
-                SerialPrimary(print, millis());
-                SerialPrimary(print, F(" - "));
-                SerialPrimary(println, SketchTime_Prev);
                 return 1;
+                break;
             default:
                 return CST_UnknownDefaultVal;
+                break;
             }
         }
         else
         {
-            SerialPrimary(print, millis());
-            SerialPrimary(print, F(" - "));
-            SerialPrimary(println, SketchTime_Prev);
+            return 0;
         }
     }
 }
-
 // Display Status Indicators Hardware and I2C
 static void ArrowChar_Indicators(unsigned short PosX, unsigned short PosY, unsigned short Receiver_Integer)
 {
@@ -286,105 +282,112 @@ static void ArrowChar_Indicators(unsigned short PosX, unsigned short PosY, unsig
     case 0:
         LCD_I2C.setCursor(PosX, PosY);
         LCD_I2C.print(ArrowChar_Updaters[0][8]);
+        break;
     case 1:
         LCD_I2C.setCursor(PosX, PosY);
         LCD_I2C.print(ArrowChar_Updaters[1][8]);
+        break;
     default:
         LCD_I2C.setCursor(PosX, PosY);
         LCD_I2C.print(ArrowChar_Updaters[2][8]);
+        break;
     }
 }
 
-static void DS_DisplayStatus(byte Decimal_DisplaySwitch)
+static void DS_DisplayStatus()
 {
-    static unsigned short Val;
-    // Sets Decimal Positional
-    if (Decimal_DisplaySwitch != LastVal_Trigger_1)
-    {
-        switch (Decimal_DisplaySwitch)
-        {
-        case 0:
-            Shifter_595N.set(Shifter_595N.getDataWidth() - 1, 0);
-            Shifter_595N.write();
-            LastVal_Trigger_1 = Decimal_DisplaySwitch;
-        case 1:
-            Shifter_595N.set(Shifter_595N.getDataWidth() - 1, 1);
-            Shifter_595N.write();
-            LastVal_Trigger_1 = Decimal_DisplaySwitch;
-        }
-    }
-    for (unsigned short i = 0; i < 4; i++)
-    {
-        Val += DataCounter_Update[i];
-        SerialPrimary(print, DataCounter_Update[i]);
-    }
+    static unsigned short LastSave_TotalSumOnArr = 0;
+    static byte LastSave_DecSwitch, Current_DecSwitch = 1;
 
-    if (Val != LastVal_Trigger_2)
+    unsigned short Current_TotalSumOnArr = 0; // Reports Total Sum of DataCounter_Update
+
+    // Just in case, I wasn't kind of woke enough from knowing what this switch-case do. This one access 8th element of the array from Decimal Point.
+    // Reads Data from DataCounter_Update
+    SerialPrimary(print, "[Digit Segment Array] > |");
+    for (unsigned short ArrayAccess = 0; ArrayAccess < 4; ArrayAccess++)
     {
-        SerialPrimary(print, F("[SINGLE SEGMENT] Value Updated To "));
-        SerialPrimary(println, Val);
-        switch (Val)
+        Current_TotalSumOnArr += DataCounter_Update[ArrayAccess];
+        SerialPrimary(print, DataCounter_Update[ArrayAccess]);
+    }
+    SerialPrimary(println, "|");
+
+    if (Current_TotalSumOnArr != LastSave_TotalSumOnArr)
+    {
+        SerialPrimary(print, F("[SINGLE SEGMENT] Total Sum Value Updated > "));
+        SerialPrimary(println, Current_TotalSumOnArr);
+        for (unsigned short DigitalSegment_WriteIterator = 0; DigitalSegment_WriteIterator <= Shifter_595N.getDataWidth() - 2; DigitalSegment_WriteIterator++)
         {
-        case 0:
-            for (short ElementCounter = 0; ElementCounter < Shifter_595N.getDataWidth() - 1; ElementCounter++)
-            {
-                Shifter_595N.set(ElementCounter, SingleSegment_Values[0][ElementCounter]);
-                Shifter_595N.write();
-            }
-            LastVal_Trigger_2 = Val;
-        case -1:
-            Shifter_595N.setAllLow();
-            Shifter_595N.write();
-            LastVal_Trigger_2 = Val;
-        case -2:
-            Shifter_595N.setAllHigh();
-            Shifter_595N.write();
-            LastVal_Trigger_2 = Val;
-        default:
-            for (short ElementCounter = 0; ElementCounter < Shifter_595N.getDataWidth() - 1; ElementCounter++)
-            {
-                Shifter_595N.set(ElementCounter, SingleSegment_Values[Val][ElementCounter]);
-                Shifter_595N.write();
-            }
-            LastVal_Trigger_2 = Val;
+            Shifter_595N.set(DigitalSegment_WriteIterator, SingleSegment_Values[Current_TotalSumOnArr][DigitalSegment_WriteIterator]);
         }
+        Shifter_595N.write();
+        LastSave_TotalSumOnArr = Current_TotalSumOnArr;
     }
     else
     {
-        SerialPrimary(print, F("[SINGLE SEGMENT] Not Updated, Value is "));
-        SerialPrimary(println, Val);
+        SerialPrimary(print, F("[SINGLE SEGMENT] Total Sum Value Not Updated > "));
+        SerialPrimary(println, Current_TotalSumOnArr);
+    }
+
+    if (Current_SketchTimer(1000, CST_IntervalHit))
+    {
+
+        if (Current_DecSwitch != LastSave_DecSwitch)
+        {
+            Shifter_595N.set(Shifter_595N.getDataWidth() - 1, Current_DecSwitch);
+            Shifter_595N.write();
+            switch (Current_DecSwitch)
+            {
+            case 0:
+                LastSave_DecSwitch = Current_DecSwitch;
+                Current_DecSwitch = 1;
+                break;
+            case 1:
+                LastSave_DecSwitch = Current_DecSwitch;
+                Current_DecSwitch = 0;
+                break;
+            }
+        }
     }
 }
-// Since we can't pass a condition to accept float or short on a function, type cast it in the loop section instead and set variables in float to reduce anxiety or overthinking.
-static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead, unsigned short CaseIndex)
+
+/* Extended Dependent Variable for Digital Segment Updater. Extended for Functionality of On-Display LCD Arrow Char Difference Value from Last Save and Current Read of Sensors.
+Needs BasePinReading, Variable for LastStorage, CaseIndex from Loop and Sensor Identification
+*/
+static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead, unsigned short CaseIndex, const char *SensorIdentifier)
 {
     if (BasePinSensRead < RW_PlaceHolderRead)
     {
-        SerialPrimary(print, "SENSOR READING - > BasePin > ");
+        SerialPrimary(print, F("[SENS READ, "));
+        SerialPrimary(print, SensorIdentifier);
+        SerialPrimary(print, F("] > ( BaseReadPin > "));
         SerialPrimary(print, BasePinSensRead);
-        SerialPrimary(print, " |<| PlaceholderPin > ");
+        SerialPrimary(print, F(" |<| StaticLastReadPin > "));
         SerialPrimary(print, RW_PlaceHolderRead);
-        SerialPrimary(println, " Returns -1, Less Than");
+        SerialPrimary(println, F(" ) Returns -1, Less Than"));
         ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 0);
         return DataCounter_Update[CaseIndex] = 1;
     }
     else if (BasePinSensRead > RW_PlaceHolderRead)
     {
-        SerialPrimary(print, "SENSOR READING - > BasePin > ");
+        SerialPrimary(print, F("[SENS READ, "));
+        SerialPrimary(print, SensorIdentifier);
+        SerialPrimary(print, F("] > ( BaseReadPin > "));
         SerialPrimary(print, BasePinSensRead);
-        SerialPrimary(print, " |>| PlaceholderPin > ");
+        SerialPrimary(print, F(" |>| StaticLastReadPin > "));
         SerialPrimary(print, RW_PlaceHolderRead);
-        SerialPrimary(println, " Returns 1, Greater Than");
+        SerialPrimary(println, F(" ) Returns 1, Greater Than"));
         ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 1);
         return DataCounter_Update[CaseIndex] = 1;
     }
     else
     {
-        SerialPrimary(print, "SENSOR READING - > BasePin > ");
+        SerialPrimary(print, F("[SENS READ, "));
+        SerialPrimary(print, SensorIdentifier);
+        SerialPrimary(print, F("] > ( BaseReadPin > "));
         SerialPrimary(print, BasePinSensRead);
-        SerialPrimary(print, " |=| PlaceholderPin > ");
+        SerialPrimary(print, F(" |=| StaticLastReadPin > "));
         SerialPrimary(print, RW_PlaceHolderRead);
-        SerialPrimary(println, " Returns 0, Equal");
+        SerialPrimary(println, F(" ) Returns 0, Equal"));
         ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2);
         return DataCounter_Update[CaseIndex] = 0;
     }
@@ -402,6 +405,7 @@ static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead, u
 
 static float Battery_CapCalc()
 {
+    ;
 }
 
 static const char *BatteryDisp_Format(short BatteryLoad, char *ModeDisplay)
@@ -444,26 +448,32 @@ static void CustomCharBattery_Write(short CurrentRead_BatteryLevel)
         case 1 ... 19:
             LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[1]);
             LCD_I2C.write(0);
+            break;
 
         case 20 ... 39:
             LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[2]);
             LCD_I2C.write(0);
+            break;
 
         case 40 ... 59:
             LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[3]);
             LCD_I2C.write(0);
+            break;
 
         case 60 ... 79:
             LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[4]);
             LCD_I2C.write(0);
+            break;
 
         case 80 ... 100:
             LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[5]);
             LCD_I2C.write(0);
+            break;
 
         default:
             LCD_I2C.createChar(0, (uint8_t)BatteryDisplay_Icon[0]);
             LCD_I2C.write(0);
+            break;
         }
     }
 }
