@@ -132,7 +132,7 @@ void setup()
     LCD_I2C.setCursor(0, 2);
     LCD_I2C.print(F("    By CodexLink    "));
     LCD_I2C.setCursor(0, 3);
-    LCD_I2C.print(F("Ver. Commit 05172019"));
+    LCD_I2C.print(F("Ver. Commit 05262019"));
     delay(2000);
     LCD_I2C.noBacklight();
     LCD_I2C.clear();
@@ -160,12 +160,6 @@ static void DisplayI2C_OnInstance()
     SerialPrimary(println, "");
     for (unsigned short LCDScrollY_Index = LCD_StartPositionY, LCD_SetScrollX = 0; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
     {
-        SerialPrimary(print, "[LCD POS.] LCD Y Axis Scroll Value at ");
-        SerialPrimary(println, LCDScrollY_Index);
-
-        // Might Remove This One...
-        LCD_I2C.setCursor(LCD_StartPositionX, LCDScrollY_Index);
-
         switch (LCDScrollY_Index)
         {
         case 0: // Ready the battery here in this case. I don't want to read it outside, don't ask why.
@@ -178,71 +172,91 @@ static void DisplayI2C_OnInstance()
         case 1:
             if (isnan(DHT22_TempRead))
             {
-                ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0
+                ArrowChar_Indicators(LCD_StartPositionX, LCDScrollY_Index, 2); // 0,2,0
                 LCD_I2C.print(F("TE"));
                 LCD_I2C.write(126);
                 LCD_I2C.print(F("ERROR"));
 
                 Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCDScrollY_Index, "MQ135");
+                ArrowChar_Indicators(LCD_StartPositionX + 11, LCDScrollY_Index, 2); // 0,2,0
 
-                (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
-                (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
+                (DataCounter_Update[LCDScrollY_Index]) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
+                (MQ135_GasSensRead > 999) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("999+"))) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(MQ135_GasSensRead, DEC));
                 break;
             }
             else
             {
                 Compare_SensCalc(DHT22_TempRead, RW_DHT22_TempRead, LCDScrollY_Index - 1, "DHT22-TEMP");
+                ArrowChar_Indicators(LCD_StartPositionX, LCDScrollY_Index, 2); // 0,2,0
 
-                (DataCounter_Update[LCDScrollY_Index - 1] == 1) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
-                LCD_I2C.print(F("TE"));
-                LCD_I2C.write(126);
-                LCD_I2C.print(DHT22_TempRead, 1);
-                LCD_I2C.print("C ");
+                (DataCounter_Update[LCDScrollY_Index - 1]) ? (RW_DHT22_TempRead = DHT22_TempRead, LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_TempRead, 1), LCD_I2C.print(F("C"))) : (0);
 
                 Compare_SensCalc(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCDScrollY_Index, "MQ135");
+                ArrowChar_Indicators(LCD_StartPositionX + 11, LCDScrollY_Index, 2); // 0,2,0
 
-                (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
-                (MQ135_GasSensRead > 999) ? LCD_I2C.print(F("> 999")) : LCD_I2C.print(MQ135_GasSensRead, DEC);
+                (DataCounter_Update[LCDScrollY_Index]) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
+                (MQ135_GasSensRead >= 999) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("999+"))) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(MQ135_GasSensRead, DEC));
                 break;
             }
-
             // I can't read Sensor Disconnections, the only way is to put resistor and read something about it. ALl I know is that I should be able to tell if that <something> is low...
 
         case 2:
             if (isnan(DHT22_HumidRead))
             {
-                ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0, Unknown
+                ArrowChar_Indicators(LCD_StartPositionX, LCDScrollY_Index, 2); // 0,0, Unknown
                 LCD_I2C.print(F("HU"));
                 LCD_I2C.write(126);
                 LCD_I2C.print(F("ERROR"));
+                ArrowChar_Indicators(LCD_StartPositionX + 11, LCDScrollY_Index, 2); // 0,2,0
+                LCD_I2C.print("SB");
+                LCD_I2C.write(126);
+                LCD_I2C.print("N/A B");
                 break;
             }
             else
             {
                 Compare_SensCalc(DHT22_HumidRead, RW_DHT22_HumidRead, LCDScrollY_Index, "DHT22-HUMID");
-                (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_DHT22_HumidRead = DHT22_HumidRead) : (0);
+                ArrowChar_Indicators(LCD_StartPositionX, LCDScrollY_Index, 2); // 0,2,0
+
+                (DataCounter_Update[LCDScrollY_Index]) ? (RW_DHT22_HumidRead = DHT22_HumidRead, LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HumidRead, 1), LCD_I2C.print("%")) : (0);
+
+                ArrowChar_Indicators(LCD_StartPositionX + 11, LCDScrollY_Index, 2); // 0,2,0
+                LCD_I2C.print("SB");
+                LCD_I2C.write(126);
+                LCD_I2C.print("N/A B");
+
                 break;
             }
 
         case 3:
             if (isnan(DHT22_HtInxRead))
             {
+                ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0, Unknown
                 LCD_I2C.print(F("HI"));
                 LCD_I2C.write(126);
                 LCD_I2C.print(F("ERROR"));
-                ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2); // 0,0, Unknown
+                ArrowChar_Indicators(LCD_StartPositionX + 11, LCDScrollY_Index, 2); // 0,2,0
+                LCD_I2C.print("NS");
+                LCD_I2C.write(126);
+                LCD_I2C.print("Unkn."); // Create Function here known as static const char* NodeComms_Status();
                 break;
             }
             else
             {
                 Compare_SensCalc(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCDScrollY_Index, "DHT22-HTINX");
-                (DataCounter_Update[LCDScrollY_Index] == 1) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead) : (0);
+                ArrowChar_Indicators(LCD_StartPositionX, LCDScrollY_Index, 2); //
+
+                (DataCounter_Update[LCDScrollY_Index]) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead, LCD_I2C.print(F("HI")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HtInxRead, 1), LCD_I2C.print("C")) : (0);
+                ArrowChar_Indicators(LCD_StartPositionX + 11, LCDScrollY_Index, 2); // 0,2,0
+                LCD_I2C.print("NS");
+                LCD_I2C.write(126);
+                LCD_I2C.print("Unkn."); // Create Function here known as static const char* NodeComms_Status();
                 break;
             }
         }
     }
     DS_DisplayStatus();
-    delay(100); // Added because "Calm down, senpai! You can't read those values in such a milliseconds.". I agree.
+    delay(150); // Added because "Calm down, senpai! You can't read those values in such a milliseconds.". I agree.
 }
 
 static unsigned long Current_SketchTimer(long Intervals_Millis, unsigned short Target_Result)
@@ -281,16 +295,19 @@ static void ArrowChar_Indicators(unsigned short PosX, unsigned short PosY, unsig
     switch (Receiver_Integer)
     {
     case 0:
+        LCD_I2C.createChar(1, ArrowChar_Updaters[0]);
         LCD_I2C.setCursor(PosX, PosY);
-        LCD_I2C.print(ArrowChar_Updaters[0][8]);
+        LCD_I2C.write(1);
         break;
     case 1:
+        LCD_I2C.createChar(1, ArrowChar_Updaters[1]);
         LCD_I2C.setCursor(PosX, PosY);
-        LCD_I2C.print(ArrowChar_Updaters[1][8]);
+        LCD_I2C.write(1);
         break;
     default:
+        LCD_I2C.createChar(1, ArrowChar_Updaters[2]);
         LCD_I2C.setCursor(PosX, PosY);
-        LCD_I2C.print(ArrowChar_Updaters[2][8]);
+        LCD_I2C.write(1);
         break;
     }
 }
@@ -329,7 +346,7 @@ static void DS_DisplayStatus()
         SerialPrimary(println, Current_TotalSumOnArr);
     }
 
-    if (Current_SketchTimer(900, CST_IntervalHit))
+    if (Current_SketchTimer(850, CST_IntervalHit))
     {
 
         if (Current_DecSwitch != LastSave_DecSwitch)
@@ -366,7 +383,8 @@ static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead, u
         SerialPrimary(print, RW_PlaceHolderRead);
         SerialPrimary(println, F(" ) Returns -1, Less Than"));
         ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 0);
-        return DataCounter_Update[CaseIndex] = 1;
+        DataCounter_Update[CaseIndex] = 1;
+        //return 1;
     }
     else if (BasePinSensRead > RW_PlaceHolderRead)
     {
@@ -378,7 +396,8 @@ static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead, u
         SerialPrimary(print, RW_PlaceHolderRead);
         SerialPrimary(println, F(" ) Returns 1, Greater Than"));
         ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 1);
-        return DataCounter_Update[CaseIndex] = 1;
+        DataCounter_Update[CaseIndex] = 1;
+        //return 1;
     }
     else
     {
@@ -390,7 +409,8 @@ static short Compare_SensCalc(float BasePinSensRead, float RW_PlaceHolderRead, u
         SerialPrimary(print, RW_PlaceHolderRead);
         SerialPrimary(println, F(" ) Returns 0, Equal"));
         ArrowChar_Indicators(LCD_StartPositionX, LCD_EndPositionY, 2);
-        return DataCounter_Update[CaseIndex] = 0;
+        DataCounter_Update[CaseIndex] = 0;
+        //return 0;
     }
 }
 // MRFCC RFID Functions
