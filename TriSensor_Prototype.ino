@@ -35,7 +35,7 @@ License: GPL-3.0
 #define SerialHost_Call(x, y) Serial.x(y)
 #define SerialListen_Call(x, y) Serial1.x(y)
 
-#define DEBUG_ENABLED 0
+#define DEBUG_ENABLED 1
 
 #if DEBUG_ENABLED == 1
 #if x == println || print
@@ -136,7 +136,7 @@ void setup()
     LCD_I2C.setCursor(0, 2);
     LCD_I2C.print(F("    By CodexLink    "));
     LCD_I2C.setCursor(0, 3);
-    LCD_I2C.print(F("Ver. Commit 05262019"));
+    LCD_I2C.print(F("Ver. Commit 05312019"));
     delay(2000);
     LCD_I2C.noBacklight();
     LCD_I2C.clear();
@@ -153,20 +153,21 @@ void loop()
 static void DisplayI2C_OnInstance()
 {
     // Sensor Value Initializers
-    static float RW_DHT22_HumidRead = 0,
-                 RW_DHT22_TempRead = 0,
-                 RW_DHT22_HtInxRead = 0;
-    static uint16_t RW_MQ135_GasSensRead = 0;
+    static float RW_DHT22_HumidRead,
+        RW_DHT22_TempRead,
+        RW_DHT22_HtInxRead;
+    static uint16_t RW_MQ135_GasSensRead;
     // Insert Command Here for Reading Functions....
 
     static uint16_t SRAM_RecentFreeMem;
-    static uint8_t Serial_RecentByteCount;
+    static uint8_t Serial_RecentByteCount = 1;
 
     float DHT22_TempRead = DHT22_Sens.readTemperature(),
           DHT22_HumidRead = DHT22_Sens.readHumidity(),
           DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
     uint16_t MQ135_GasSensRead = MQ135_Sens.getPPM(); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
     // Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
+
     SerialHost_Call(println, F("")); // For Debugging Purposes
 
     for (size_t LCDScrollY_Index = LCD_StartPositionY, LCD_SetScrollX = 0; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
@@ -181,89 +182,43 @@ static void DisplayI2C_OnInstance()
             break;
 
         case 1:
-            if (isnan(DHT22_TempRead))
-            {
-                DataSens_DispUpdater(0, 0, LCD_StartPositionX, LCDScrollY_Index, '-', 1, "DHT22-TEMP");
-                LCD_I2C.print(F("TE"));
-                LCD_I2C.write(126);
-                LCD_I2C.print(F("ERROR"));
 
-                DataSens_DispUpdater(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 0, "MQ135");
+            DataSens_DispUpdater(DHT22_TempRead, RW_DHT22_TempRead, LCD_StartPositionX, LCDScrollY_Index, '-', 1, "DHT22-TEMP");
 
-                (DataCounter_Update[LCDScrollY_Index]) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
-                (MQ135_GasSensRead > 999) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("999+"))) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(MQ135_GasSensRead, DEC));
-                //delay(3200);;
-                break;
-            }
-            else
-            {
-                DataSens_DispUpdater(DHT22_TempRead, RW_DHT22_TempRead, LCD_StartPositionX, LCDScrollY_Index, '-', 1, "DHT22-TEMP");
+            (isnan(DHT22_TempRead)) ? (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_TempRead, 1), LCD_I2C.print(F("C")));
 
-                (DataCounter_Update[LCDScrollY_Index - 1]) ? (RW_DHT22_TempRead = DHT22_TempRead, LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_TempRead, 1), LCD_I2C.print(F("C"))) : (0);
+            (DataCounter_Update[LCDScrollY_Index - 1]) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
 
-                DataSens_DispUpdater(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 0, "MQ135");
+            DataSens_DispUpdater(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 0, "MQ135");
 
-                (DataCounter_Update[LCDScrollY_Index]) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
+            (!MQ135_GasSensRead) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print("Error")) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), (MQ135_GasSensRead >= 999) ? LCD_I2C.print("999+ ") : (MQ135_GasSensRead <= 99) ? LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print("   ") : LCD_I2C.print(MQ135_GasSensRead, DEC));
 
-                (MQ135_GasSensRead >= 999) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("999+"))) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(MQ135_GasSensRead, DEC));
-                //delay(3200);;
-                break;
-            }
+            (DataCounter_Update[LCDScrollY_Index]) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
+
+            //(MQ135_GasSensRead >= 999) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("999+"))) :
+            break;
             // I can't read Sensor Disconnections, the only way is to put resistor and read something about it. ALl I know is that I should be able to tell if that <something> is low...
 
         case 2:
-            if (isnan(DHT22_HumidRead))
-            {
-                DataSens_DispUpdater(0, 0, LCD_StartPositionX, LCDScrollY_Index, '+', 0, "DHT22-HUMID");
-                LCD_I2C.print(F("HU"));
-                LCD_I2C.write(126);
-                LCD_I2C.print(F("ERROR"));
+            DataSens_DispUpdater(DHT22_HumidRead, RW_DHT22_HumidRead, LCD_StartPositionX, LCDScrollY_Index, '+', 0, "DHT22-HUMID");
 
-                DataSens_DispUpdater(freeMemory(), SRAM_RecentFreeMem, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 1, "SRAM-USAGE");
+            (isnan(DHT22_HumidRead)) ? (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(("Error "))) : (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HumidRead, 1), LCD_I2C.print(F("%")));
 
-                (DataCounter_Update[LCDScrollY_Index + 1]) ? (SRAM_RecentFreeMem = freeMemory(), LCD_I2C.print(F("FM")), LCD_I2C.write(126), LCD_I2C.print(freeMemory()), LCD_I2C.print(F("B"))) : (0);
-                //delay(3200);;
-                break;
-            }
-            else
-            {
-                DataSens_DispUpdater(DHT22_HumidRead, RW_DHT22_HumidRead, LCD_StartPositionX, LCDScrollY_Index, '+', 0, "DHT22-HUMID");
-
-                (DataCounter_Update[LCDScrollY_Index]) ? (RW_DHT22_HumidRead = DHT22_HumidRead, LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HumidRead, 1), LCD_I2C.print(F("%"))) : (0);
-
-                DataSens_DispUpdater(freeMemory(), SRAM_RecentFreeMem, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 1, "SRAM-USAGE");
-
-                (DataCounter_Update[LCDScrollY_Index + 1]) ? (SRAM_RecentFreeMem = freeMemory(), LCD_I2C.print(F("FM")), LCD_I2C.write(126), LCD_I2C.print(freeMemory()), LCD_I2C.print(F("B"))) : (0);
-                //delay(3200);;
-                break;
-            }
+            (DataCounter_Update[LCDScrollY_Index]) ? (RW_DHT22_HumidRead = DHT22_HumidRead) : (0);
+            DataSens_DispUpdater(freeMemory(), SRAM_RecentFreeMem, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 1, "SRAM-USAGE");
+            (DataCounter_Update[LCDScrollY_Index + 1]) ? (SRAM_RecentFreeMem = freeMemory(), LCD_I2C.print(F("FM")), LCD_I2C.write(126), LCD_I2C.print(freeMemory()), LCD_I2C.print(F("B"))) : (0);
+            break;
 
         case 3:
-            if (isnan(DHT22_HtInxRead))
-            {
-                DataSens_DispUpdater(0, 0, LCD_StartPositionX, LCDScrollY_Index, '+', 1, "DHT22-HT_INX");
-                LCD_I2C.print(F("HI"));
-                LCD_I2C.write(126);
-                LCD_I2C.print(F("ERROR"));
+            DataSens_DispUpdater(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCD_StartPositionX, LCDScrollY_Index, '+', 1, "DHT22-HT_INX");
 
-                DataSens_DispUpdater(SerialComms_Host.available(), Serial_RecentByteCount, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 2, "Serial_ByteCount");
+            (isnan(DHT22_HtInxRead)) ? (LCD_I2C.print(F("HI")), LCD_I2C.write(126), LCD_I2C.print(("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HtInxRead, 1), LCD_I2C.print(F("C")));
+            (DataCounter_Update[LCDScrollY_Index + 1]) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead) : (0);
 
-                (DataCounter_Update[LCDScrollY_Index + 2]) ? (Serial_RecentByteCount = SerialComms_Host.available(), LCD_I2C.print(F("SB")), LCD_I2C.write(126), LCD_I2C.print(SerialComms_Host.available()), LCD_I2C.print(F("B"))) : (0);
-                //delay(3200);;
-                break;
-            }
-            else
-            {
-                DataSens_DispUpdater(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCD_StartPositionX, LCDScrollY_Index, '+', 1, "DHT22-HT_INX");
+            DataSens_DispUpdater(SerialComms_Host.available(), Serial_RecentByteCount, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 2, "Serial_ByteCount");
 
-                (DataCounter_Update[LCDScrollY_Index + 1]) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead, LCD_I2C.print(F("HI")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HtInxRead, 1), LCD_I2C.print(F("C"))) : (0);
-
-                DataSens_DispUpdater(SerialComms_Host.available(), Serial_RecentByteCount, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 2, "Serial_ByteCount");
-
-                (DataCounter_Update[LCDScrollY_Index + 2]) ? (Serial_RecentByteCount = SerialComms_Host.available(), LCD_I2C.print(F("SB")), LCD_I2C.write(126), LCD_I2C.print(SerialComms_Host.available()), LCD_I2C.print(F("B"))) : (0);
-                //delay(3200);;
-                break;
-            }
+            (DataCounter_Update[LCDScrollY_Index + 2]) ? (Serial_RecentByteCount = SerialComms_Host.available(), LCD_I2C.print(F("SB")), LCD_I2C.write(126), LCD_I2C.print(SerialComms_Host.available()), LCD_I2C.print(F("B"))) : (0);
+            break;
         }
     }
     SegmentDisp_Update();
@@ -303,6 +258,27 @@ static uint32_t Current_SketchTimer(uint32_t Intervals_Millis, uint16_t Target_R
     }
 }
 
+/*LCD Custom Function for Clearing Unwanted Characters*/
+
+static int LCDWrite_AwareSpaceInt(uint16_t PassedValue, uint8_t SpaceSize)
+{
+    // https://stackoverflow.com/questions/3068397/finding-the-length-of-an-integer-in-c
+    uint32_t intlen = floor(log10(abs(PassedValue))) + 1;  // I understand this, except I forgot how calculation of log10 does. Closer calculation concept I know is byte to base 10 (decimal)
+    LCD_I2C.print(PassedValue);
+    for (size_t SpaceManipulate = 0; SpaceManipulate < SpaceSize - intlen; SpaceManipulate++)
+    {
+        LCD_I2C.print(" ");
+    }
+}
+
+static void LCDWrite_AwareSpaceStr(const char *PassedString, uint8_t SpaceSize)
+{
+    LCD_I2C.print(PassedString);
+    for (uint8_t SpaceManipulate = 0; SpaceManipulate < SpaceSize - strlen(PassedString); SpaceManipulate++)
+    {
+        LCD_I2C.print(" ");
+    }
+}
 /* 
 Mainstream Functions Section - Set of Functions that utilize the whole processes by displaying,
 computing, comparing, storing, outputting, transferring of the data from Sensors or from Arduino Data itself.
@@ -341,6 +317,14 @@ static short DataSens_DispUpdater(float BasePinSensRead, float SaveState_RecentR
         Compare_DataCounterUpdate = 0;
         LCD_writeCharIndex = 3;
     }
+
+    SerialHost_Call(print, "Value Identifier -> ");
+    SerialHost_Call(print, Value_Indentifier);
+    SerialHost_Call(print, " has been placed on Pos (");
+    SerialHost_Call(print, LCD_PosX);
+    SerialHost_Call(print, ", ");
+    SerialHost_Call(println, Sens_LCD_CaseIndex);
+    SerialHost_Call(print, ")");
 
     LCD_I2C.createChar(LCD_writeCharIndex, ArrowChar_UpdateDisp[Compare_ArrowReturnIndex]);
     LCD_I2C.setCursor(LCD_PosX, Sens_LCD_CaseIndex);
@@ -395,18 +379,9 @@ static void CustomCharBattery_Write(short CurrentRead_BatteryLevel, uint16_t LCD
 
 static uint8_t Battery_CapCalc()
 {
+    static uint8_t Static_BatterLevelStress = 69;
 
-    //if (Current_SketchTimer(500, CST_IntervalHit))
-    //{
-    for (size_t ReturnValue = 100; ReturnValue != 0; ReturnValue--)
-    {
-        return ReturnValue;
-    }
-    for (size_t ReturnValue = 0; ReturnValue != 100; ReturnValue++)
-    {
-        return ReturnValue;
-    }
-    //}
+    return Static_BatterLevelStress;
 }
 // Battery Display Formatter - This Function Below is Case Sensitive! Also this funciton, will run once. Implementation of OTA Changes will be implemented soon when the whole project is at final stage.
 
@@ -467,7 +442,7 @@ static void SegmentDisp_Update()
     // Just in case, I wasn't kind of woke enough from knowing what this switch-case do. This one access 8th element of the array from Decimal Point.
     // Reads Data from DataCounter_Update
     SerialHost_Call(print, F("[Digit Segment Array] > |"));
-    for (size_t ArrayAccess = 0; ArrayAccess < 4; ArrayAccess++)
+    for (size_t ArrayAccess = 0; ArrayAccess < 6; ArrayAccess++)
     {
         Current_TotalSumOnArr += DataCounter_Update[ArrayAccess];
         SerialHost_Call(print, DataCounter_Update[ArrayAccess]);
