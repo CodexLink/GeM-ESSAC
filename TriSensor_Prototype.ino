@@ -185,24 +185,23 @@ static void DisplayI2C_OnInstance()
 
             DataSens_DispUpdater(DHT22_TempRead, RW_DHT22_TempRead, LCD_StartPositionX, LCDScrollY_Index, '-', 1, "DHT22-TEMP");
 
-            (isnan(DHT22_TempRead)) ? (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_TempRead, 1), LCD_I2C.print(F("C")));
+            (isnan(DHT22_TempRead)) ? (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_TempRead, 1), LCD_I2C.print(F("C")));
 
             (DataCounter_Update[LCDScrollY_Index - 1]) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
 
             DataSens_DispUpdater(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 0, "MQ135");
 
-            (!MQ135_GasSensRead) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print("Error")) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), (MQ135_GasSensRead >= 999) ? LCD_I2C.print("999+ ") : (MQ135_GasSensRead <= 99) ? LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print("   ") : LCD_I2C.print(MQ135_GasSensRead, DEC));
+            (!MQ135_GasSensRead) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("Error"))) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), (MQ135_GasSensRead >= 999) ? LCD_I2C.print("999+") : (MQ135_GasSensRead <= 99) ? LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print(F("  ")) : LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print(F(" ")));
 
             (DataCounter_Update[LCDScrollY_Index]) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
 
-            //(MQ135_GasSensRead >= 999) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("999+"))) :
             break;
             // I can't read Sensor Disconnections, the only way is to put resistor and read something about it. ALl I know is that I should be able to tell if that <something> is low...
 
         case 2:
             DataSens_DispUpdater(DHT22_HumidRead, RW_DHT22_HumidRead, LCD_StartPositionX, LCDScrollY_Index, '+', 0, "DHT22-HUMID");
 
-            (isnan(DHT22_HumidRead)) ? (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(("Error "))) : (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HumidRead, 1), LCD_I2C.print(F("%")));
+            (isnan(DHT22_HumidRead)) ? (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HumidRead, 1), LCD_I2C.print(F("%")));
 
             (DataCounter_Update[LCDScrollY_Index]) ? (RW_DHT22_HumidRead = DHT22_HumidRead) : (0);
             DataSens_DispUpdater(freeMemory(), SRAM_RecentFreeMem, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 1, "SRAM-USAGE");
@@ -212,7 +211,7 @@ static void DisplayI2C_OnInstance()
         case 3:
             DataSens_DispUpdater(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCD_StartPositionX, LCDScrollY_Index, '+', 1, "DHT22-HT_INX");
 
-            (isnan(DHT22_HtInxRead)) ? (LCD_I2C.print(F("HI")), LCD_I2C.write(126), LCD_I2C.print(("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HtInxRead, 1), LCD_I2C.print(F("C")));
+            (isnan(DHT22_HtInxRead)) ? (LCD_I2C.print(F("HI")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HtInxRead, 1), LCD_I2C.print(F("C")));
             (DataCounter_Update[LCDScrollY_Index + 1]) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead) : (0);
 
             DataSens_DispUpdater(SerialComms_Host.available(), Serial_RecentByteCount, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 2, "Serial_ByteCount");
@@ -267,7 +266,7 @@ static int LCDWrite_AwareSpaceInt(uint16_t PassedValue, uint8_t SpaceSize)
     LCD_I2C.print(PassedValue);
     for (size_t SpaceManipulate = 0; SpaceManipulate < SpaceSize - intlen; SpaceManipulate++)
     {
-        LCD_I2C.print(" ");
+        LCD_I2C.print(F(" "));
     }
 }
 
@@ -276,7 +275,7 @@ static void LCDWrite_AwareSpaceStr(const char *PassedString, uint8_t SpaceSize)
     LCD_I2C.print(PassedString);
     for (uint8_t SpaceManipulate = 0; SpaceManipulate < SpaceSize - strlen(PassedString); SpaceManipulate++)
     {
-        LCD_I2C.print(" ");
+        LCD_I2C.print(F(" "));
     }
 }
 /* 
