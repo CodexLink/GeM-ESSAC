@@ -11,9 +11,9 @@ License: GPL-3.0
 #include <DHT.h>
 #include <LiquidCrystal_I2C.h>
 #include <ShiftOut.h>
+#include <MFRC522.h>
 #include <EEPROM.h>
 #include <SPI.h>
-#include <MFRC522.h>
 #include "MQ135.h"
 #include <MemoryFree.h>
 
@@ -30,7 +30,7 @@ License: GPL-3.0
 
 // Serial Identifiers and Other Definitives
 #define SerialComms_Host Serial
-#define SerialComms_Listen Serial1
+#define SerialComms_Listener Serial1
 
 #define SerialHost_Call(x, y) Serial.x(y)
 #define SerialListen_Call(x, y) Serial1.x(y)
@@ -226,35 +226,9 @@ static void DisplayI2C_OnInstance()
 // LOOP FUNCTION END Section
 
 /*Arduino Base Function, Customized Millis Timer for Clean and Elegant Calling of the Typical If-Else Statement */
-static uint32_t Current_SketchTimer(uint32_t Intervals_Millis, uint16_t Target_Result)
+static uint32_t SketchTime_IntervalHit(uint32_t Intervals_Millis)
 {
-    while (1)
-    {
-        if ((millis() - SketchTime_Prev) >= Intervals_Millis)
-        {
-            SketchTime_Prev = millis();
-            switch (Target_Result)
-            {
-            case CST_CurrentResult:
-                SketchTime_Prev = 0;
-                return millis();
-                break;
-            case CST_PreviousResult:
-                return SketchTime_Prev;
-                break;
-            case CST_IntervalHit:
-                return 1;
-                break;
-            default:
-                return CST_UnknownDefaultVal;
-                break;
-            }
-        }
-        else
-        {
-            return 0;
-        }
-    }
+    ((millis() - SketchTime_Prev) >= Intervals_Millis) ? SketchTime_Prev = millis(), return 1 : return 0;
 }
 
 /*LCD Custom Function for Clearing Unwanted Characters*/
@@ -262,7 +236,7 @@ static uint32_t Current_SketchTimer(uint32_t Intervals_Millis, uint16_t Target_R
 static int LCDWrite_AwareSpaceInt(uint16_t PassedValue, uint8_t SpaceSize)
 {
     // https://stackoverflow.com/questions/3068397/finding-the-length-of-an-integer-in-c
-    uint32_t intlen = floor(log10(abs(PassedValue))) + 1;  // I understand this, except I forgot how calculation of log10 does. Closer calculation concept I know is byte to base 10 (decimal)
+    uint32_t intlen = floor(log10(abs(PassedValue))) + 1; // I understand this, except I forgot how calculation of log10 does. Closer calculation concept I know is byte to base 10 (decimal)
     LCD_I2C.print(PassedValue);
     for (size_t SpaceManipulate = 0; SpaceManipulate < SpaceSize - intlen; SpaceManipulate++)
     {
@@ -465,7 +439,7 @@ static void SegmentDisp_Update()
         SerialHost_Call(println, Current_TotalSumOnArr);
     }
 
-    if (Current_SketchTimer(1000, CST_IntervalHit))
+    if (SketchTime_IntervalHit(1000))
     {
 
         if (Current_DecSwitch != LastSave_DecSwitch)
