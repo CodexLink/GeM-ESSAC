@@ -165,7 +165,7 @@ static void DisplayI2C_OnInstance()
     float DHT22_TempRead = DHT22_Sens.readTemperature(),
           DHT22_HumidRead = DHT22_Sens.readHumidity(),
           DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
-    uint16_t MQ135_GasSensRead = MQ135_Sens.getPPM(); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
+    uint16_t MQ135_GasSensRead = MQ135_Sens.getCorrectedPPM(DHT22_TempRead, DHT22_HumidRead); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
     // Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
 
     SerialHost_Call(println, F("")); // For Debugging Purposes
@@ -228,7 +228,15 @@ static void DisplayI2C_OnInstance()
 /*Arduino Base Function, Customized Millis Timer for Clean and Elegant Calling of the Typical If-Else Statement */
 static uint32_t SketchTime_IntervalHit(uint32_t Intervals_Millis)
 {
-    ((millis() - SketchTime_Prev) >= Intervals_Millis) ? SketchTime_Prev = millis(), return 1 : return 0;
+    if (millis() - SketchTime_Prev >= Intervals_Millis)
+    {
+        SketchTime_Prev = millis();
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 /*LCD Custom Function for Clearing Unwanted Characters*/
