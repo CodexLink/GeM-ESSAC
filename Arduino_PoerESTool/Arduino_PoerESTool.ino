@@ -23,6 +23,9 @@ License: GPL-3.0
 #define HC595_latchPin 24
 #define HC595_clockPin 25
 
+#define SwitchMode_One 26
+#define SwitchMode_Two 27
+
 #define MFRC22_RST_PIN 49
 #define MFRC22_SS_PIN 53
 
@@ -137,6 +140,9 @@ void setup()
     LCD_I2C.print(F("    By CodexLink    "));
     LCD_I2C.setCursor(0, 3);
     LCD_I2C.print(F("Ver. Commit 05312019"));
+    pinMode()
+    SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP for the Switches of LCD Modes..."));
+
     delay(2000);
     LCD_I2C.noBacklight();
     LCD_I2C.clear();
