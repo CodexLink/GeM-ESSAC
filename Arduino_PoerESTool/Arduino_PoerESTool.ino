@@ -26,6 +26,14 @@ License: GPL-3.0
 #define SwitchMode_One 26
 #define SwitchMode_Two 27
 
+// This was due to common annode or cathode.
+
+#define Switch_ContainMode(x) ((digitalRead(x) == INVERSE_HIGH) ? 1 : 0)
+#define Switch_ModeUpdateCheck(x, y) (y != x) ? (LCD_I2C.clear(), y = x) : (false)
+
+#define INVERSE_LOW HIGH
+#define INVERSE_HIGH LOW
+
 #define MFRC22_RST_PIN 49
 #define MFRC22_SS_PIN 53
 
@@ -131,6 +139,10 @@ void setup()
     Shifter_595N.begin(HC595_dataPin, HC595_clockPin, HC595_latchPin);
     DHT22_Sens.begin();
     LCD_I2C.init();
+    SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP for the Switches of LCD Modes..."));
+    pinMode(SwitchMode_One, INPUT_PULLUP);
+    pinMode(SwitchMode_Two, INPUT_PULLUP);
+    SerialHost_Call(println, F("[Initialization] Done..."));
     LCD_I2C.backlight();
     LCD_I2C.setCursor(0, 0);
     LCD_I2C.print(F(" Hello and Welcome! "));
@@ -140,9 +152,6 @@ void setup()
     LCD_I2C.print(F("    By CodexLink    "));
     LCD_I2C.setCursor(0, 3);
     LCD_I2C.print(F("Ver. Commit 05312019"));
-    pinMode()
-    SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP for the Switches of LCD Modes..."));
-
     delay(2000);
     LCD_I2C.noBacklight();
     LCD_I2C.clear();
@@ -162,71 +171,91 @@ static void DisplayI2C_OnInstance()
     static float RW_DHT22_HumidRead,
         RW_DHT22_TempRead,
         RW_DHT22_HtInxRead;
-    static uint16_t RW_MQ135_GasSensRead;
-    // Insert Command Here for Reading Functions....
-
-    static uint16_t SRAM_RecentFreeMem;
+    static uint8_t RW_SwitchLCD_ScreenMode_One, RW_SwitchLCD_ScreenMode_Two;
     static uint8_t Serial_RecentByteCount = 1;
-
+    static uint16_t RW_MQ135_GasSensRead;
+    static uint16_t SRAM_RecentFreeMem;
+    // Insert Command Here for Reading Functions....
     float DHT22_TempRead = DHT22_Sens.readTemperature(),
           DHT22_HumidRead = DHT22_Sens.readHumidity(),
           DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
-    uint16_t MQ135_GasSensRead = MQ135_Sens.getCorrectedPPM(DHT22_TempRead, DHT22_HumidRead); // MQ135_GasSensRead = analogRead(MQ135_GasSens);
+    uint8_t SwitchLCD_ScreenMode[2] = {Switch_ContainMode(SwitchMode_One), Switch_ContainMode(SwitchMode_Two)};
+    uint16_t MQ135_GasSensRead = MQ135_Sens.getCorrectedPPM(DHT22_TempRead, DHT22_HumidRead);
     // Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
 
     SerialHost_Call(println, F("")); // For Debugging Purposes
+    Switch_ModeUpdateCheck(SwitchLCD_ScreenMode[0], RW_SwitchLCD_ScreenMode_One);
+    Switch_ModeUpdateCheck(SwitchLCD_ScreenMode[1], RW_SwitchLCD_ScreenMode_Two);
 
-    for (size_t LCDScrollY_Index = LCD_StartPositionY, LCD_SetScrollX = 0; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
+    if (SwitchLCD_ScreenMode[0] && !SwitchLCD_ScreenMode[1])
     {
-        switch (LCDScrollY_Index)
+        for (size_t LCDScrollY_Index = LCD_StartPositionY, LCD_SetScrollX = 0; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
         {
-        case 0: // Ready the battery here in this case. I don't want to read it outside, don't ask why.
-            static uint8_t BatteryCurrentRead = Battery_CapCalc();
-            CustomCharBattery_Write(BatteryCurrentRead, LCD_StartPositionX, LCDScrollY_Index);
-            BatteryDisp_Format(BatteryCurrentRead, "Capacity");
-            CommsHeader_Status();
-            break;
+            switch (LCDScrollY_Index)
+            {
+            case 0: // Ready the battery here in this case. I don't want to read it outside, don't ask why.
+                static uint8_t BatteryCurrentRead = Battery_CapCalc();
+                CustomCharBattery_Write(BatteryCurrentRead, LCD_StartPositionX, LCDScrollY_Index);
+                BatteryDisp_Format(BatteryCurrentRead, "Capacity");
+                CommsHeader_Status();
+                break;
 
-        case 1:
+            case 1:
 
-            DataSens_DispUpdater(DHT22_TempRead, RW_DHT22_TempRead, LCD_StartPositionX, LCDScrollY_Index, '-', 1, "DHT22-TEMP");
+                DataSens_DispUpdater(DHT22_TempRead, RW_DHT22_TempRead, LCD_StartPositionX, LCDScrollY_Index, '-', 1, "DHT22-TEMP");
 
-            (isnan(DHT22_TempRead)) ? (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_TempRead, 1), LCD_I2C.print(F("C")));
+                (isnan(DHT22_TempRead)) ? (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_TempRead, 1), LCD_I2C.print(F("C")));
 
-            (DataCounter_Update[LCDScrollY_Index - 1]) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
+                (DataCounter_Update[LCDScrollY_Index - 1]) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
 
-            DataSens_DispUpdater(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 0, "MQ135");
+                DataSens_DispUpdater(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 0, "MQ135");
 
-            (!MQ135_GasSensRead) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("Error"))) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), (MQ135_GasSensRead >= 999) ? LCD_I2C.print("999+") : (MQ135_GasSensRead <= 99) ? LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print(F("  ")) : LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print(F(" ")));
+                (!MQ135_GasSensRead) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("Error"))) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), (MQ135_GasSensRead >= 999) ? LCD_I2C.print("999+") : (MQ135_GasSensRead <= 99) ? LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print(F("  ")) : LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print(F(" ")));
 
-            (DataCounter_Update[LCDScrollY_Index]) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
+                (DataCounter_Update[LCDScrollY_Index]) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
 
-            break;
-            // I can't read Sensor Disconnections, the only way is to put resistor and read something about it. ALl I know is that I should be able to tell if that <something> is low...
+                break;
+                // I can't read Sensor Disconnections, the only way is to put resistor and read something about it. ALl I know is that I should be able to tell if that <something> is low...
 
-        case 2:
-            DataSens_DispUpdater(DHT22_HumidRead, RW_DHT22_HumidRead, LCD_StartPositionX, LCDScrollY_Index, '+', 0, "DHT22-HUMID");
+            case 2:
+                DataSens_DispUpdater(DHT22_HumidRead, RW_DHT22_HumidRead, LCD_StartPositionX, LCDScrollY_Index, '+', 0, "DHT22-HUMID");
 
-            (isnan(DHT22_HumidRead)) ? (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HumidRead, 1), LCD_I2C.print(F("%")));
+                (isnan(DHT22_HumidRead)) ? (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("HU")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HumidRead, 1), LCD_I2C.print(F("%")));
 
-            (DataCounter_Update[LCDScrollY_Index]) ? (RW_DHT22_HumidRead = DHT22_HumidRead) : (0);
-            DataSens_DispUpdater(freeMemory(), SRAM_RecentFreeMem, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 1, "SRAM-USAGE");
-            (DataCounter_Update[LCDScrollY_Index + 1]) ? (SRAM_RecentFreeMem = freeMemory(), LCD_I2C.print(F("FM")), LCD_I2C.write(126), LCD_I2C.print(freeMemory()), LCD_I2C.print(F("B"))) : (0);
-            break;
+                (DataCounter_Update[LCDScrollY_Index]) ? (RW_DHT22_HumidRead = DHT22_HumidRead) : (0);
+                DataSens_DispUpdater(freeMemory(), SRAM_RecentFreeMem, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 1, "SRAM-USAGE");
+                (DataCounter_Update[LCDScrollY_Index + 1]) ? (SRAM_RecentFreeMem = freeMemory(), LCD_I2C.print(F("FM")), LCD_I2C.write(126), LCD_I2C.print(freeMemory()), LCD_I2C.print(F("B"))) : (0);
+                break;
 
-        case 3:
-            DataSens_DispUpdater(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCD_StartPositionX, LCDScrollY_Index, '+', 1, "DHT22-HT_INX");
+            case 3:
+                DataSens_DispUpdater(DHT22_HtInxRead, RW_DHT22_HtInxRead, LCD_StartPositionX, LCDScrollY_Index, '+', 1, "DHT22-HT_INX");
 
-            (isnan(DHT22_HtInxRead)) ? (LCD_I2C.print(F("HI")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HtInxRead, 1), LCD_I2C.print(F("C")));
-            (DataCounter_Update[LCDScrollY_Index + 1]) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead) : (0);
+                (isnan(DHT22_HtInxRead)) ? (LCD_I2C.print(F("HI")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_HtInxRead, 1), LCD_I2C.print(F("C")));
+                (DataCounter_Update[LCDScrollY_Index + 1]) ? (RW_DHT22_HtInxRead = DHT22_HtInxRead) : (0);
 
-            DataSens_DispUpdater(SerialComms_Host.available(), Serial_RecentByteCount, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 2, "Serial_ByteCount");
+                DataSens_DispUpdater(SerialComms_Host.available(), Serial_RecentByteCount, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 2, "Serial_ByteCount");
 
-            (DataCounter_Update[LCDScrollY_Index + 2]) ? (Serial_RecentByteCount = SerialComms_Host.available(), LCD_I2C.print(F("SB")), LCD_I2C.write(126), LCD_I2C.print(SerialComms_Host.available()), LCD_I2C.print(F("B"))) : (0);
-            break;
+                (DataCounter_Update[LCDScrollY_Index + 2]) ? (Serial_RecentByteCount = SerialComms_Host.available(), LCD_I2C.print(F("SB")), LCD_I2C.write(126), LCD_I2C.print(SerialComms_Host.available()), LCD_I2C.print(F("B"))) : (0);
+                break;
+            }
         }
+        SegmentDisp_Update();
     }
-    SegmentDisp_Update();
+    else if (SwitchLCD_ScreenMode[0] && SwitchLCD_ScreenMode[1])
+    {
+        LCD_I2C.setCursor(0, 0);
+        LCD_I2C.print("Mode 2 Switch");
+    }
+    else if (!SwitchLCD_ScreenMode[0] && SwitchLCD_ScreenMode[1])
+    {
+        LCD_I2C.setCursor(0, 0);
+        LCD_I2C.print("Mode 3 Switch");
+    }
+    else if (!SwitchLCD_ScreenMode[0] && !SwitchLCD_ScreenMode[1])
+    {
+        LCD_I2C.setCursor(0, 0);
+        LCD_I2C.print("Mode 4 Switch");
+    }
 }
 
 // LOOP FUNCTION END Section
@@ -288,7 +317,8 @@ static short DataSens_DispUpdater(float BasePinSensRead, float SaveState_RecentR
     {
         SerialHost_Call(println, F(" ) Returns Less Than, (0 @ ArrowChar_Container, 1 on DataCounter_Update)"));
         Compare_ArrowReturnIndex = 0;
-        LCD_writeCharIndex, Compare_DataCounterUpdate = 1;
+        Compare_DataCounterUpdate = 1;
+        LCD_writeCharIndex = 1;
     }
     else if (BasePinSensRead > SaveState_RecentRead)
     {
