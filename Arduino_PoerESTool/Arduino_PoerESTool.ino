@@ -14,8 +14,13 @@ License: GPL-3.0
 #include <MFRC522.h>
 #include <EEPROM.h>
 #include <SPI.h>
-#include "MQ135.h"
+#include <MQ135.h>
 #include <MemoryFree.h>
+#include <DS1302.h>
+
+#define RTCResetPin 2
+#define RTCDataPin 3
+#define RTCClockPin 4
 
 #define DHT22_PIN 22
 
@@ -29,7 +34,8 @@ License: GPL-3.0
 // This was due to common annode or cathode.
 
 #define Switch_ContainMode(x) ((digitalRead(x) == INVERSE_HIGH) ? 1 : 0)
-#define Switch_ModeUpdateCheck(x, y) (y != x) ? (LCD_I2C.clear(), y = x) : (false)
+#define Switch_ModeUpdateCheck(x, y) (y != x) ? (LCD_I2C.clear(), y = x) : (0)
+#define ModeTransitionStart(x) (LCD_I2C.setCursor(0, 0), LCD_I2C.print(x))
 
 #define INVERSE_LOW HIGH
 #define INVERSE_HIGH LOW
@@ -82,27 +88,31 @@ License: GPL-3.0
 // Sensor Initializers
 DHT DHT22_Sens(DHT22_PIN, DHT22);
 LiquidCrystal_I2C LCD_I2C(0x27, 20, 4);
+DS1302 RTCModule(RTCResetPin, RTCDataPin, RTCClockPin);
 MQ135 MQ135_Sens = MQ135(MQ135_GasSens);
 
 // Shifter Out Initializer
 ShiftOut<1> Shifter_595N;
 
 // Char Custom Displays in Multidimensional Array
-const uint8_t SingleSegment_Values[14][7] = {
-    {1, 1, 1, 1, 1, 1, 0}, // Removed 8th Index, 0
-    {0, 1, 1, 0, 0, 0, 0}, // Removed 8th Index, 1
-    {1, 1, 0, 1, 1, 0, 1}, // Removed 8th Index, 2
-    {1, 1, 1, 1, 0, 0, 1}, // Removed 8th Index, 3
-    {0, 1, 1, 0, 0, 1, 1}, // Removed 8th Index, 4
-    {1, 0, 1, 1, 0, 1, 1}, // Removed 8th Index, 5
-    {1, 0, 1, 1, 1, 1, 1}, // Removed 8th Index, 6
-    {1, 1, 1, 0, 0, 0, 0}, // Removed 8th Index, 7
-    {1, 1, 1, 1, 1, 1, 1}, // Removed 8th Index, 8
-    {1, 1, 1, 1, 0, 1, 1}, // Removed 8th Index, 9
-    {0, 0, 0, 0, 0, 0, 1}, // Removed 8th Index, Dash
-    {1, 0, 0, 1, 1, 1, 1}, // Removed 8th Index, E
-    {1, 0, 1, 1, 1, 1, 1}, // Removed 8th Index, S
-    {0, 0, 0, 0, 0, 0, 0}  // Removed 8th Index, F
+const uint8_t SingleSegment_Values[17][7] = {
+    {1, 1, 1, 1, 1, 1, 0}, // 0
+    {0, 1, 1, 0, 0, 0, 0}, // 1
+    {1, 1, 0, 1, 1, 0, 1}, // 2
+    {1, 1, 1, 1, 0, 0, 1}, // 3
+    {0, 1, 1, 0, 0, 1, 1}, // 4
+    {1, 0, 1, 1, 0, 1, 1}, // 5
+    {1, 0, 1, 1, 1, 1, 1}, // 6
+    {1, 1, 1, 0, 0, 0, 0}, // 7
+    {1, 1, 1, 1, 1, 1, 1}, // 8
+    {1, 1, 1, 1, 0, 1, 1}, // 9
+    {0, 0, 0, 0, 0, 0, 1}, // Dash
+    {1, 1, 1, 0, 1, 1, 1}, // A
+    {1, 0, 0, 1, 1, 1, 1}, // E
+    {1, 0, 0, 0, 1, 1, 1}, // F
+    {0, 1, 1, 0, 0, 0, 0}, // I
+    {1, 0, 1, 1, 0, 1, 1}, // S
+    {1, 1, 0, 0, 1, 0, 1}  // ?
 };
 
 const uint8_t BatteryDisplay_Icon[6][8] = {
@@ -183,9 +193,10 @@ static void DisplayI2C_OnInstance()
     uint16_t MQ135_GasSensRead = MQ135_Sens.getCorrectedPPM(DHT22_TempRead, DHT22_HumidRead);
     // Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
 
-    SerialHost_Call(println, F("")); // For Debugging Purposes
     Switch_ModeUpdateCheck(SwitchLCD_ScreenMode[0], RW_SwitchLCD_ScreenMode_One);
     Switch_ModeUpdateCheck(SwitchLCD_ScreenMode[1], RW_SwitchLCD_ScreenMode_Two);
+
+    SerialHost_Call(println, F("")); // For Debugging Purposes
 
     if (SwitchLCD_ScreenMode[0] && !SwitchLCD_ScreenMode[1])
     {
@@ -196,6 +207,7 @@ static void DisplayI2C_OnInstance()
             case 0: // Ready the battery here in this case. I don't want to read it outside, don't ask why.
                 static uint8_t BatteryCurrentRead = Battery_CapCalc();
                 CustomCharBattery_Write(BatteryCurrentRead, LCD_StartPositionX, LCDScrollY_Index);
+
                 BatteryDisp_Format(BatteryCurrentRead, "Capacity");
                 CommsHeader_Status();
                 break;
@@ -210,7 +222,7 @@ static void DisplayI2C_OnInstance()
 
                 DataSens_DispUpdater(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 0, "MQ135");
 
-                (!MQ135_GasSensRead) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("Error"))) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), (MQ135_GasSensRead >= 999) ? LCD_I2C.print("999+") : (MQ135_GasSensRead <= 99) ? LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print(F("  ")) : LCD_I2C.print(MQ135_GasSensRead, DEC), LCD_I2C.print(F(" ")));
+                (!MQ135_GasSensRead) ? (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), LCD_I2C.print(F("Error"))) : (LCD_I2C.print(F("AQ")), LCD_I2C.write(126), /* LCD_I2C.print(MQ135_GasSensRead, DEC)*/ LCDWrite_AwareSpaceInt(MQ135_GasSensRead, 5));
 
                 (DataCounter_Update[LCDScrollY_Index]) ? (RW_MQ135_GasSensRead = MQ135_GasSensRead) : (0);
 
@@ -224,7 +236,7 @@ static void DisplayI2C_OnInstance()
 
                 (DataCounter_Update[LCDScrollY_Index]) ? (RW_DHT22_HumidRead = DHT22_HumidRead) : (0);
                 DataSens_DispUpdater(freeMemory(), SRAM_RecentFreeMem, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 1, "SRAM-USAGE");
-                (DataCounter_Update[LCDScrollY_Index + 1]) ? (SRAM_RecentFreeMem = freeMemory(), LCD_I2C.print(F("FM")), LCD_I2C.write(126), LCD_I2C.print(freeMemory()), LCD_I2C.print(F("B"))) : (0);
+                (DataCounter_Update[LCDScrollY_Index + 1]) ? (SRAM_RecentFreeMem = freeMemory(), LCD_I2C.print(F("FM")), LCD_I2C.write(126), LCD_I2C.print(freeMemory()), LCD_I2C.print(F("B"))) : (LCD_I2C.print(F("FM")), LCD_I2C.write(126), LCD_I2C.print(SRAM_RecentFreeMem, DEC), LCD_I2C.print(F("B")));
                 break;
 
             case 3:
@@ -235,26 +247,132 @@ static void DisplayI2C_OnInstance()
 
                 DataSens_DispUpdater(SerialComms_Host.available(), Serial_RecentByteCount, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 2, "Serial_ByteCount");
 
-                (DataCounter_Update[LCDScrollY_Index + 2]) ? (Serial_RecentByteCount = SerialComms_Host.available(), LCD_I2C.print(F("SB")), LCD_I2C.write(126), LCD_I2C.print(SerialComms_Host.available()), LCD_I2C.print(F("B"))) : (0);
+                (DataCounter_Update[LCDScrollY_Index + 2]) ? (Serial_RecentByteCount = SerialComms_Host.available(), LCD_I2C.print(F("SB")), LCD_I2C.write(126), LCD_I2C.print(SerialComms_Host.available()), LCD_I2C.print(F("B"))) : (LCD_I2C.print(F("SB")), LCD_I2C.write(126), LCD_I2C.print(Serial_RecentByteCount, DEC), LCD_I2C.print(F("B")));
                 break;
             }
         }
-        SegmentDisp_Update();
+        SegmentDisp_Update(false, '0');
     }
     else if (SwitchLCD_ScreenMode[0] && SwitchLCD_ScreenMode[1])
     {
-        LCD_I2C.setCursor(0, 0);
-        LCD_I2C.print("Mode 2 Switch");
+        SegmentDisp_Update(true, 'F');
+        static char WDeauMode_StringContainers[4][20] = {
+            {"Attacking"},
+            {"HW_EcLi284255H."},
+            {"Node32"},
+            {"WAIT"},
+        };
+
+        static uint8_t WDeauMode_IntegerContainers[3] = {15, 254, 164};
+
+        LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY);
+        LCD_I2C.print(F("WDeau "));
+        LCD_I2C.write(126);
+        LCD_I2C.print(F(" "));
+        LCD_I2C.print(WDeauMode_StringContainers[0]);
+
+        LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 1);
+        LCD_I2C.print(F("SSID"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(WDeauMode_StringContainers[1]);
+
+        LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 2);
+
+        LCD_I2C.print(F("Deauth"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(F("254.13"));
+        LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 3);
+        LCD_I2C.print(F("MAC"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(F("88D7F69C39F0"));
     }
     else if (!SwitchLCD_ScreenMode[0] && SwitchLCD_ScreenMode[1])
     {
-        LCD_I2C.setCursor(0, 0);
-        LCD_I2C.print("Mode 3 Switch");
+        static char NodeMCUST_StringContainers[3][20] = {
+            {"Dependent"},
+            {"HW_EcLi284255H."},
+            {"Node32"}};
+        //                                              3rd,  4th, Current, Max
+        static uint8_t NodeMCUST_IntegerContainers[4] = {254, 164, 10, 10};
+
+        SegmentDisp_Update(true, '-');
+        LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY);
+        LCD_I2C.print(F("NodeST"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(NodeMCUST_StringContainers[0]);
+
+        LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 1);
+        LCD_I2C.print(F("SSID"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(NodeMCUST_StringContainers[1]);
+        LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 2);
+
+        LCD_I2C.print(F("-CC"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(NodeMCUST_IntegerContainers[2]);
+        LCD_I2C.print(F("/"));
+        LCD_I2C.print(NodeMCUST_IntegerContainers[3]);
+
+        LCD_I2C.print(F("  "));
+        LCD_I2C.print(F("IP"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(NodeMCUST_IntegerContainers[1]);
+        LCD_I2C.print(F("."));
+        LCD_I2C.print(NodeMCUST_IntegerContainers[2]);
+
+        LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 3);
+        LCD_I2C.print(F("-SB"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(F("0B"));
+
+        LCD_I2C.print(F("     PW"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(NodeMCUST_StringContainers[2]);
     }
     else if (!SwitchLCD_ScreenMode[0] && !SwitchLCD_ScreenMode[1])
     {
-        LCD_I2C.setCursor(0, 0);
-        LCD_I2C.print("Mode 4 Switch");
+        bool isuserMode_Technical = true;
+        //char UserModeString[12] = {"osu! Client"}; // Create Another one and Define a mode.
+        char UserModeString[12] = {"Technical"}; // Create Another one and Define a mode.
+        LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY);
+        LCD_I2C.print(F("WinMode"));
+        LCD_I2C.write(126);
+        LCD_I2C.print(UserModeString);
+        if (isuserMode_Technical)
+        {
+            SegmentDisp_Update(true, '-');
+            LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 1);
+            LCD_I2C.print(F("Mp"));
+            LCD_I2C.write(126);
+            LCD_I2C.print(F("ClariS,Hitorigoto"));
+            LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 2);
+            LCD_I2C.print(F("121.21pp "));
+            LCD_I2C.write(126);
+            LCD_I2C.print(F(" 860/860pp"));
+            LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 3);
+            LCD_I2C.print(F("GaugeSpd"));
+            LCD_I2C.write(126);
+            LCD_I2C.print(F("-----------"));
+        }
+        else
+        {
+            SegmentDisp_Update(true, '-');
+            LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 1);
+            LCD_I2C.print(F("-BT"));
+            LCD_I2C.write(126);
+            LCD_I2C.print(F("5432KB"));
+            LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 2);
+            LCD_I2C.print(F("LLS"));
+            LCD_I2C.write(126);
+            LCD_I2C.print(F("LCKD | 12:00AM"));
+            LCD_I2C.setCursor(LCD_StartPositionX, LCD_StartPositionY + 3);
+            //LCD_I2C.print(F("Stats"));
+            //LCD_I2C.write(126);
+            //LCD_I2C.print(F("Good"));
+            LCD_I2C.print(F("AC"));
+            LCD_I2C.write(126);
+            LCD_I2C.print(F("12/20"));
+        }
     }
 }
 
@@ -274,7 +392,11 @@ static uint32_t SketchTime_IntervalHit(uint32_t Intervals_Millis)
     }
 }
 
-/*LCD Custom Function for Clearing Unwanted Characters*/
+/*LCD Custom Function for Clearing Unwanted Characters has 2 functions for each well known data types. One for Integer and String. The idea about this was basically from the title already. The logic behind this one is tricky thats because
+when we gonna overwrite a character, we have to read it's source length - spaces. And the result one will be the # for each space that needs to be generate to overwrite unwanted characters. I seperate those two due to the fact that we have difference of reading the arguments passed. 
+
+
+*/
 
 static int LCDWrite_AwareSpaceInt(uint16_t PassedValue, uint8_t SpaceSize)
 {
@@ -449,43 +571,80 @@ static char *BatteryDisp_Format(uint16_t BatteryLoad, const char *ModeDisplay)
 
 /*Seven Digit - Digital Segment Display Function */
 
-static void SegmentDisp_Update()
+// This function show also be trying to read for custom characters. We are going to do this soon.
+static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterParams)
 {
     static uint16_t LastSave_TotalSumOnArr = 0;
     static uint8_t LastSave_DecSwitch, Current_DecSwitch = 1;
 
     uint16_t Current_TotalSumOnArr = 0; // Reports Total Sum of DataCounter_Update
 
-    // Just in case, I wasn't kind of woke enough from knowing what this switch-case do. This one access 8th element of the array from Decimal Point.
-    // Reads Data from DataCounter_Update
-    SerialHost_Call(print, F("[Digit Segment Array] > |"));
-    for (size_t ArrayAccess = 0; ArrayAccess < 6; ArrayAccess++)
+    if (!isLoadedCustomChar)
     {
-        Current_TotalSumOnArr += DataCounter_Update[ArrayAccess];
-        SerialHost_Call(print, DataCounter_Update[ArrayAccess]);
-    }
-    SerialHost_Call(println, F("|"));
+        // Just in case, I wasn't kind of woke enough from knowing what this switch-case do. This one access 8th element of the array from Decimal Point.
+        // Reads Data from DataCounter_Update
+        SerialHost_Call(print, F("[Digit Segment Array] > |"));
+        for (size_t ArrayAccess = 0; ArrayAccess < 6; ArrayAccess++)
+        {
+            Current_TotalSumOnArr += DataCounter_Update[ArrayAccess];
+            SerialHost_Call(print, DataCounter_Update[ArrayAccess]);
+        }
+        SerialHost_Call(println, F("|"));
 
-    if (Current_TotalSumOnArr != LastSave_TotalSumOnArr)
+        if (Current_TotalSumOnArr != LastSave_TotalSumOnArr)
+        {
+            SerialHost_Call(print, F("[SINGLE SEGMENT] Total Sum Value Updated > "));
+            SerialHost_Call(println, Current_TotalSumOnArr);
+            for (size_t DigitalSegment_WriteIterator = 0; DigitalSegment_WriteIterator <= Shifter_595N.getDataWidth() - 2; DigitalSegment_WriteIterator++)
+            {
+                Shifter_595N.set(DigitalSegment_WriteIterator, SingleSegment_Values[Current_TotalSumOnArr][DigitalSegment_WriteIterator]);
+            }
+            Shifter_595N.write();
+            LastSave_TotalSumOnArr = Current_TotalSumOnArr;
+        }
+        else
+        {
+            SerialHost_Call(print, F("[SINGLE SEGMENT] Total Sum Value Not Updated > "));
+            SerialHost_Call(println, Current_TotalSumOnArr);
+        }
+    }
+    else
     {
-        SerialHost_Call(print, F("[SINGLE SEGMENT] Total Sum Value Updated > "));
-        SerialHost_Call(println, Current_TotalSumOnArr);
+        switch (CustomCharacterParams)
+        {
+        case '-':
+            Current_TotalSumOnArr = 10;
+            break;
+        case 'A':
+            Current_TotalSumOnArr = 11;
+            break;
+        case 'E':
+            Current_TotalSumOnArr = 12;
+            break;
+        case 'F':
+            Current_TotalSumOnArr = 13;
+            break;
+        case 'I':
+            Current_TotalSumOnArr = 14;
+            break;
+        case 'S':
+            Current_TotalSumOnArr = 15;
+            break;
+        case '?':
+            Current_TotalSumOnArr = 16;
+            break;
+        default:
+            Current_TotalSumOnArr = 10;
+            break;
+        }
         for (size_t DigitalSegment_WriteIterator = 0; DigitalSegment_WriteIterator <= Shifter_595N.getDataWidth() - 2; DigitalSegment_WriteIterator++)
         {
             Shifter_595N.set(DigitalSegment_WriteIterator, SingleSegment_Values[Current_TotalSumOnArr][DigitalSegment_WriteIterator]);
         }
         Shifter_595N.write();
-        LastSave_TotalSumOnArr = Current_TotalSumOnArr;
     }
-    else
-    {
-        SerialHost_Call(print, F("[SINGLE SEGMENT] Total Sum Value Not Updated > "));
-        SerialHost_Call(println, Current_TotalSumOnArr);
-    }
-
     if (SketchTime_IntervalHit(1000))
     {
-
         if (Current_DecSwitch != LastSave_DecSwitch)
         {
             Shifter_595N.set(Shifter_595N.getDataWidth() - 1, Current_DecSwitch);
@@ -510,7 +669,7 @@ static void SegmentDisp_Update()
 // Device Communications Status Display - Max of 14 Words
 static void CommsHeader_Status()
 {
-    LCD_I2C.print(F("Debugging Mode"));
+    LCD_I2C.print(F("06/12 - 11:27PM"));
 }
 
 static void SerialHost_SendComms(char *AT_CommandGiven)
@@ -521,4 +680,16 @@ static void SerialHost_SendComms(char *AT_CommandGiven)
 static uint8_t SerialReceiver_DataCompile()
 {
     ;
+}
+
+//RTC Module Dedicated Functions
+//static void RTC_GetCurrentTime
+
+static void RTC_PauseFunction(bool TruthValue)
+{
+    RTCModule.halt(TruthValue);
+}
+static void RTC_WriteProtection(bool TruthValue)
+{
+    RTCModule.writeProtect(TruthValue);
 }
