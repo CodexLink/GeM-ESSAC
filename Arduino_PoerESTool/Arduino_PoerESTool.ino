@@ -8,6 +8,9 @@ Created On: Unknown, Somewhere on Fall 2019
 Flashable To : Any Flashable Device, Recommended To - Arduino
 License: GPL-3.0
 */
+
+#include <stdio.h>
+
 #include <DHT.h>
 #include <LiquidCrystal_I2C.h>
 #include <ShiftOut.h>
@@ -18,9 +21,9 @@ License: GPL-3.0
 #include <MemoryFree.h>
 #include <DS1302.h>
 
-#define RTCResetPin 2
-#define RTCDataPin 3
-#define RTCClockPin 4
+#define RTCResetPin 10
+#define RTCDataPin 11
+#define RTCClockPin 12
 
 #define DHT22_PIN 22
 
@@ -52,7 +55,11 @@ License: GPL-3.0
 #define SerialHost_Call(x, y) Serial.x(y)
 #define SerialListen_Call(x, y) Serial1.x(y)
 
-#define DEBUG_ENABLED 1
+// Serial / LCD I2C Concatenation Display Formmater, Requires a Global Variable of Container
+#define RTC_MAX_BUFFER_SIZE 50
+#define String_BeautifyRTC(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
+
+#define DEBUG_ENABLED 0
 
 #if DEBUG_ENABLED == 1
 #if x == println || print
@@ -94,6 +101,8 @@ MQ135 MQ135_Sens = MQ135(MQ135_GasSens);
 // Shifter Out Initializer
 ShiftOut<1> Shifter_595N;
 
+// Display Formatter Container. MAX_SIZE'd for Ease.
+char Formatter_Container[RTC_MAX_BUFFER_SIZE] = {0};
 // Char Custom Displays in Multidimensional Array
 const uint8_t SingleSegment_Values[17][7] = {
     {1, 1, 1, 1, 1, 1, 0}, // 0
@@ -149,6 +158,14 @@ void setup()
     Shifter_595N.begin(HC595_dataPin, HC595_clockPin, HC595_latchPin);
     DHT22_Sens.begin();
     LCD_I2C.init();
+    RTC_PauseFunction(false);
+    RTC_WriteProtection(false);
+    RTC_PrototypeInit();
+    //Time SetCurrentDateTime(2019, 6, 13, 10, 21, 0, Time::kThursday);
+
+    // Set the time and date on the chip.
+    //RTCModule.time(SetCurrentDateTime);
+
     SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP for the Switches of LCD Modes..."));
     pinMode(SwitchMode_One, INPUT_PULLUP);
     pinMode(SwitchMode_Two, INPUT_PULLUP);
@@ -209,7 +226,8 @@ static void DisplayI2C_OnInstance()
                 CustomCharBattery_Write(BatteryCurrentRead, LCD_StartPositionX, LCDScrollY_Index);
 
                 BatteryDisp_Format(BatteryCurrentRead, "Capacity");
-                CommsHeader_Status();
+                RTC_Display_GetChipCurrentTime();
+                //CommsHeader_Status();
                 break;
 
             case 1:
@@ -518,7 +536,7 @@ static void CustomCharBattery_Write(short CurrentRead_BatteryLevel, uint16_t LCD
 
 static uint8_t Battery_CapCalc()
 {
-    static uint8_t Static_BatterLevelStress = 69;
+    static uint8_t Static_BatterLevelStress = 100;
 
     return Static_BatterLevelStress;
 }
@@ -665,13 +683,7 @@ static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterPara
 }
 
 // Device Communication Section - Set of Functions that needs report of Serial.
-
 // Device Communications Status Display - Max of 14 Words
-static void CommsHeader_Status()
-{
-    LCD_I2C.print(F("06/12 - 11:27PM"));
-}
-
 static void SerialHost_SendComms(char *AT_CommandGiven)
 {
     ;
@@ -685,6 +697,11 @@ static uint8_t SerialReceiver_DataCompile()
 //RTC Module Dedicated Functions
 //static void RTC_GetCurrentTime
 
+static void RTC_InitializeObject()
+{
+    //Time RTC_Object =
+}
+
 static void RTC_PauseFunction(bool TruthValue)
 {
     RTCModule.halt(TruthValue);
@@ -692,4 +709,40 @@ static void RTC_PauseFunction(bool TruthValue)
 static void RTC_WriteProtection(bool TruthValue)
 {
     RTCModule.writeProtect(TruthValue);
+}
+
+static void RTC_PrototypeInit()
+{
+    Time CheckTime = RTCModule.time();
+    if (CheckTime.yr < 2000)
+    {
+        Time RTC_DataContainer(2019, 6, 14, 00, 21, 00, Time::kThursday);
+        RTCModule.time(RTC_DataContainer);
+    }
+}
+
+static void RTC_ManualCorrection()
+{
+}
+
+static void RTC_CorrectionDifference()
+{
+    /*
+if 
+else
+ */
+}
+static void RTC_Replace_GetCorrectTimeQuery()
+{
+    // Add Variables for this arguments per each.
+    //Time RTC_Object(2019, 6, 12, 10, 32, 0, Time::kWednesday);
+}
+
+static void RTC_Display_GetChipCurrentTime()
+{
+    //if (SketchTime_IntervalHit(1000))
+    //{
+    Time RTC_DataContainer = RTCModule.time();
+    String_BeautifyRTC(LCD_I2C, print, "%02d/%02d %02d:%02d:%02d", RTC_DataContainer.mon, RTC_DataContainer.date, RTC_DataContainer.hr, RTC_DataContainer.min, RTC_DataContainer.sec);
+    //}
 }
