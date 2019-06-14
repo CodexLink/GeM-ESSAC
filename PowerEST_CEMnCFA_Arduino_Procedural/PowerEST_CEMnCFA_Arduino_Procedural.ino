@@ -1,12 +1,15 @@
 /* 
-Current Name: PortESTTool-PerEMNFAD "Portable Essential Tool - Personal Environment Monitoring and Fidelity 802.11 Attacking Device" Prototype
+File Name: PowerEST_CEMnCFA_Arduino_Procedural
+Programming Coding Style: Procedural Programming
 
-Old Name: DD-TriSenS "Digital Device - Tri-Sensor" Prototype
+Formal Project Name: Power Essential Tool -  Close Environment Monitoring and Common Fidelity 802.11 Attacking Device (PowerEST - CEMnCFA [802.11])
+Intended and Flashable To : Arduino MEGA Only, We will see how much SRAM will be wasted at the end of this project to ensure validity of using this in Arduino UNO
 
 Author Name : Janrey "CodexLink" Licas
 Created On: Unknown, Somewhere on Fall 2019
-Flashable To : Any Flashable Device, Recommended To - Arduino
 License: GPL-3.0
+
+NOTE: Current Stage (Procedural Program) will be the first step towards completing this project.
 */
 
 #include <stdio.h>
@@ -174,11 +177,11 @@ void setup()
     LCD_I2C.setCursor(0, 0);
     LCD_I2C.print(F(" Hello and Welcome! "));
     LCD_I2C.setCursor(0, 1);
-    LCD_I2C.print(F("PortESTL - PerEMNFAD"));
+    LCD_I2C.print(F(" PowerEST - CEMnCFA "));
     LCD_I2C.setCursor(0, 2);
     LCD_I2C.print(F("    By CodexLink    "));
     LCD_I2C.setCursor(0, 3);
-    LCD_I2C.print(F("Ver. Commit 05312019"));
+    LCD_I2C.print(F("Ver. Commit 06142019"));
     delay(2000);
     LCD_I2C.noBacklight();
     LCD_I2C.clear();
@@ -536,7 +539,7 @@ static void CustomCharBattery_Write(short CurrentRead_BatteryLevel, uint16_t LCD
 
 static uint8_t Battery_CapCalc()
 {
-    static uint8_t Static_BatterLevelStress = 100;
+    static uint8_t Static_BatterLevelStress = 95;
 
     return Static_BatterLevelStress;
 }
@@ -714,9 +717,9 @@ static void RTC_WriteProtection(bool TruthValue)
 static void RTC_PrototypeInit()
 {
     Time CheckTime = RTCModule.time();
-    if (CheckTime.yr < 2000)
+    if (CheckTime.mon == 00)
     {
-        Time RTC_DataContainer(2019, 6, 14, 00, 21, 00, Time::kThursday);
+        Time RTC_DataContainer(2019, 6, 14, 12, 00, 30, Time::kThursday);
         RTCModule.time(RTC_DataContainer);
     }
 }

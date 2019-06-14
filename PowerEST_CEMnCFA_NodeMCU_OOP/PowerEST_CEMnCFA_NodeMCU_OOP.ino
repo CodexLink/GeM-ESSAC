@@ -1,18 +1,19 @@
+/*
+File Name: PowerEST_CEMnCFA_NodeMCU_OOP
+Programming Coding Style: Object Oriented Programming
 
-/* 
-Current Name: PortESTTool-PerEMNFAD "Portable Essential Tool - Personal Environment Monitoring and Fidelity 802.11 Attacking Device" Prototype
-
-Old Name: DD-TriSenS "Digital Device - Tri-Sensor" Prototype
+Formal Project Name: Power Essential Tool -  Close Environment Monitoring and Common Fidelity 802.11 Attacking Device (PowerEST - CEMnCFA [802.11])
+Intended and Flashable To : NodeMCU Only
 
 Author Name : Janrey "CodexLink" Licas
 Created On: Unknown, Somewhere on Fall 2019
-Flashable To : Any Flashable Device, Recommended To -ESPS8266 or NodeMCU
 License: GPL-3.0
+
+NOTE: Current Stage (Procedural Program) will be the first step towards completing this project.
 */
 #include <ESP8266WiFi.h>
 #include <SoftReset.h>
 
-// From Arduino_PoerESTool.ino
 
 // Serial Identifiers and Other Definitives
 #define SerialComms_Host Serial
