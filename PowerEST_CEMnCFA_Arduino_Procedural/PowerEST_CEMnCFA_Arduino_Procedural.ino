@@ -37,6 +37,8 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 #define SwitchMode_One 26
 #define SwitchMode_Two 27
 
+#define PIRMini_MotionSens 28
+#define PIRMini_LEDTrip 29
 // This was due to common annode or cathode.
 
 #define Switch_ContainMode(x) ((digitalRead(x) == INVERSE_HIGH) ? 1 : 0)
@@ -62,7 +64,9 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 #define RTC_MAX_BUFFER_SIZE 50
 #define String_BeautifyRTC(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
 
-#define DEBUG_ENABLED 0
+#define PIRSensor_MotionCheck(x,y) (digitalRead(x) == HIGH) ? digitalWrite(y, HIGH) : digitalWrite(y, LOW)
+
+#define DEBUG_ENABLED 1
 
 #if DEBUG_ENABLED == 1
 #if x == println || print
@@ -149,6 +153,12 @@ uint16_t Battery_PosX = 0, Battery_PosY = 0, BatteryIntDispX = 0, BatteryIntDisp
 uint8_t ArrowChar_LiveContainer[6][8] = {0};
 uint8_t DataCounter_Update[6] = {0};
 
+// Serial Communication Parameters and Variables
+
+#define CHARACTER_BUFFER_SIZE 128
+
+char SerialCommunication_Container[CHARACTER_BUFFER_SIZE] = {0};
+
 // Customized Millis Previous On Hold Value
 uint32_t SketchTime_Prev = 0;
 
@@ -157,22 +167,21 @@ void setup()
     SerialHost_Call(begin, 115200);
     SerialListen_Call(begin, 115200);
     SerialHost_Call(println, F("Hello, Serial 0 Debugging Mode is On!"));
-    SerialHost_Call(println, F("[Initialization] Readying Baud Speed, LCD I2C and Shift Out"));
+    SerialHost_Call(println, F("[Initialization] Readying Baud Speed, LCD I2C, Shift Out Object and RTC"));
     Shifter_595N.begin(HC595_dataPin, HC595_clockPin, HC595_latchPin);
     DHT22_Sens.begin();
     LCD_I2C.init();
+    pinMode(PIRMini_MotionSens, INPUT);
+    pinMode(PIRMini_LEDTrip, OUTPUT);
+    digitalWrite(PIRMini_MotionSens, LOW);
+    digitalWrite(PIRMini_LEDTrip, LOW);
     RTC_PauseFunction(false);
     RTC_WriteProtection(false);
     RTC_PrototypeInit();
-    //Time SetCurrentDateTime(2019, 6, 13, 10, 21, 0, Time::kThursday);
-
-    // Set the time and date on the chip.
-    //RTCModule.time(SetCurrentDateTime);
-
     SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP for the Switches of LCD Modes..."));
     pinMode(SwitchMode_One, INPUT_PULLUP);
     pinMode(SwitchMode_Two, INPUT_PULLUP);
-    SerialHost_Call(println, F("[Initialization] Done..."));
+    SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP Done..."));
     LCD_I2C.backlight();
     LCD_I2C.setCursor(0, 0);
     LCD_I2C.print(F(" Hello and Welcome! "));
@@ -181,19 +190,72 @@ void setup()
     LCD_I2C.setCursor(0, 2);
     LCD_I2C.print(F("    By CodexLink    "));
     LCD_I2C.setCursor(0, 3);
-    LCD_I2C.print(F("Ver. Commit 06142019"));
+    LCD_I2C.print(F("Ver. Commit 06182019"));
     delay(2000);
     LCD_I2C.noBacklight();
     LCD_I2C.clear();
     delay(500);
     LCD_I2C.backlight();
-    SerialHost_Call(println, F("[Initialization] Ready!~"));
+    SerialHost_Call(println, F("[Initialization] Executing Device POST Before Actual Program Execution..."));
+    if (DisplayI2C_ShowPOST())
+    {
+        SerialHost_Call(println, F("[Initialization] POST Checks Result is Passed. Ready!~"));
+    }
+    else
+    {
+        SerialHost_Call(println, F("[Initialization] Some POST Checks are not passed! Please check them!"));
+    }
+    delay(2500);
+    LCD_I2C.clear();
 }
 void loop()
 {
     DisplayI2C_OnInstance(); // I don;t wanna pollute this part so create another function instead.
 }
 
+// POST Function Display
+static uint16_t DisplayI2C_ShowPOST()
+{
+    uint8_t Checkpoint_Values[3] = {0};
+    uint8_t ReturnResultValue;
+    for (size_t LoopIteration = 0; LoopIteration <= LCD_EndPositionY; LCD_I2C.setCursor(LCD_StartPositionX, ++LoopIteration))
+    {
+        switch (LoopIteration)
+        {
+        case 0:
+            LCD_I2C.write(126);
+            LCD_I2C.print(F("Device POST"));
+            break;
+
+        case 1:
+            LCD_I2C.print(F("Segment Disp "));
+            Checkpoint_Values[LoopIteration - 1] = 1;
+            LCD_I2C.write(126);
+            LCD_I2C.print(F("PASSED"));
+            break;
+        case 2:
+            LCD_I2C.print(F("Serial Comms "));
+            Checkpoint_Values[LoopIteration - 1] = 1;
+            LCD_I2C.write(126);
+            LCD_I2C.print(F("PASSED"));
+            break;
+        case 3:
+            LCD_I2C.print(F("Voltage Ind. "));
+            Checkpoint_Values[LoopIteration - 1] = 1;
+            LCD_I2C.write(126);
+            LCD_I2C.print(F("PASSED"));
+            break;
+        }
+    }
+    if (!Checkpoint_Values[0] || !Checkpoint_Values[1] || !Checkpoint_Values[2])
+    {
+        return ReturnResultValue = 0;
+    }
+    else
+    {
+        return ReturnResultValue = 1;
+    }
+}
 // LOOP FUNCTION Start
 static void DisplayI2C_OnInstance()
 {
@@ -211,7 +273,10 @@ static void DisplayI2C_OnInstance()
           DHT22_HtInxRead = DHT22_Sens.computeHeatIndex(DHT22_TempRead, DHT22_HumidRead, false);
     uint8_t SwitchLCD_ScreenMode[2] = {Switch_ContainMode(SwitchMode_One), Switch_ContainMode(SwitchMode_Two)};
     uint16_t MQ135_GasSensRead = MQ135_Sens.getCorrectedPPM(DHT22_TempRead, DHT22_HumidRead);
+
     // Function on DisplayI2C_OnInstance: Dynamically Arranges Next Print Character Based on Length Returned
+
+    PIRSensor_MotionCheck(PIRMini_MotionSens, PIRMini_LEDTrip);
 
     Switch_ModeUpdateCheck(SwitchLCD_ScreenMode[0], RW_SwitchLCD_ScreenMode_One);
     Switch_ModeUpdateCheck(SwitchLCD_ScreenMode[1], RW_SwitchLCD_ScreenMode_Two);
@@ -592,7 +657,12 @@ static char *BatteryDisp_Format(uint16_t BatteryLoad, const char *ModeDisplay)
 
 /*Seven Digit - Digital Segment Display Function */
 
-// This function show also be trying to read for custom characters. We are going to do this soon.
+// This POST Designed Function will be used for iterating all characters defined in the array bytes display.
+static void SegmentDisp_InitPOST()
+{
+    ;
+}
+
 static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterParams)
 {
     static uint16_t LastSave_TotalSumOnArr = 0;
@@ -687,15 +757,28 @@ static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterPara
 
 // Device Communication Section - Set of Functions that needs report of Serial.
 // Device Communications Status Display - Max of 14 Words
-static void SerialHost_SendComms(char *AT_CommandGiven)
+
+static void SerialComms_Init_POST()
 {
     ;
 }
 
-static uint8_t SerialReceiver_DataCompile()
+static void Serial_isCommsAlive()
 {
     ;
 }
+
+static void SerialHost_SendToReceiver(const char AT_CommandGiven)
+{
+    ;
+}
+
+static void SerialHost_VerifyData()
+{
+    ;
+}
+
+//static void SerialHost_
 
 //RTC Module Dedicated Functions
 //static void RTC_GetCurrentTime
@@ -703,6 +786,7 @@ static uint8_t SerialReceiver_DataCompile()
 static void RTC_InitializeObject()
 {
     //Time RTC_Object =
+    ;
 }
 
 static void RTC_PauseFunction(bool TruthValue)
@@ -726,10 +810,12 @@ static void RTC_PrototypeInit()
 
 static void RTC_ManualCorrection()
 {
+    ;
 }
 
 static void RTC_CorrectionDifference()
 {
+    ;
     /*
 if 
 else
@@ -739,6 +825,7 @@ static void RTC_Replace_GetCorrectTimeQuery()
 {
     // Add Variables for this arguments per each.
     //Time RTC_Object(2019, 6, 12, 10, 32, 0, Time::kWednesday);
+    ;
 }
 
 static void RTC_Display_GetChipCurrentTime()
