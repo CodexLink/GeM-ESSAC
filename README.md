@@ -1,9 +1,31 @@
-[![Build Status](https://travis-ci.com/CodexLink/PowerEST_CEMnCFA.svg?branch=master)](https://travis-ci.com/CodexLink/PowerEST_CEMnCFA)
+<h3 align="center">PowerEST_CEMnCFA</h3>
+<p align="center">
+  <a href="https://travis-ci.com/CodexLink/PowerEST_CEMnCFA">
+    <img src="https://travis-ci.com/CodexLink/PowerEST_CEMnCFA.svg?branch=master" alt="Build Status">
+  </a>
+  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
+    <img src="https://img.shields.io/github/issues/CodexLink/PowerEST_CEMnCFA.svg" alt="Current Opened Issues">
+  </a>
+  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
+    <img src="https://img.shields.io/github/license/CodexLink/PowerEST_CEMnCFA.svg" alt="Repository License">
+  </a>
+</p>
+
 
 # Welcome!
 Hello!, this project demonstrates how I knew and build everything into one piece with step by step or even shows you how it's done.
 
+## Table of Contents
+- [Quickstart](#quickstart)
+- [Documentation](#documentation)
+- [Supported Browsers](#supported-browsers)
+- [Changelog](#changelog)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [Copyright and license](#copyright-and-license)
+
 ## Introduction
+
 
 # Requirements
 Just in case what it feels to be a beginner and tries building something he doesn't know. Here are the requirements and materials needed to build this project.
