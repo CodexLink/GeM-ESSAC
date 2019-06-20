@@ -1,28 +1,27 @@
 <h3 align="center">PowerEST_CEMnCFA</h3>
 <p align="center">
-  <div>
+  <a href="https://travis-ci.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/travis/CodexLink/PowerEST_CEMnCFA" alt="Build Status">
-  </div>
-  <div>
+  </a>
+  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/github/status/CodexLink/PowerEST_CEMnCFA" alt="Repository Status">
-  </div>
-  <div>
+  </a>
+  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/github/open-issues/CodexLink/PowerEST_CEMnCFA" alt="Current Opened Issues">
-  </div>
-  <div>
+  </a>
+  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/github/closed-issues/CodexLink/PowerEST_CEMnCFA" alt="Closed Issues">
-  </div>
-  <div>
+  </a>
+  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/github/last-commit/CodexLink/PowerEST_CEMnCFA" alt="Repository Last Commit">
-  </div>
-  <div>
+  </a>
+  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/github/assets-dl/CodexLink/PowerEST_CEMnCFA" alt="Repository Downloads">
-  </div>
-  <div>
+  </a>
+  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/github/license/CodexLink/PowerEST_CEMnCFA" alt="Repository License">
-  </div>
+  </a>
 </p>
-
 
 # Welcome!
 Hello!, this project demonstrates how I knew and build everything into one piece with step by step or even shows you how it's done.
