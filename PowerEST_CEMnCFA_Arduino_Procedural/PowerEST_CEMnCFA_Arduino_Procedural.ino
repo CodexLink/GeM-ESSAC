@@ -210,7 +210,7 @@ void setup()
 }
 void loop()
 {
-    DisplayI2C_OnInstance(); // I don;t wanna pollute this part so create another function instead.
+    DisplayI2C_OnInstance(); // I don't wanna pollute this part so create another function instead.
 }
 
 // POST Function Display

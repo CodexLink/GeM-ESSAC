@@ -1,26 +1,26 @@
 <h3 align="center">PowerEST_CEMnCFA</h3>
 <p align="center">
-  <a href="https://travis-ci.com/CodexLink/PowerEST_CEMnCFA">
+  <div>
     <img src="https://badgen.net/travis/CodexLink/PowerEST_CEMnCFA" alt="Build Status">
-  </a>
-  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
+  </div>
+  <div>
     <img src="https://badgen.net/github/status/CodexLink/PowerEST_CEMnCFA" alt="Repository Status">
-  </a>
-  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
+  </div>
+  <div>
     <img src="https://badgen.net/github/open-issues/CodexLink/PowerEST_CEMnCFA" alt="Current Opened Issues">
-  </a>
-  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
+  </div>
+  <div>
     <img src="https://badgen.net/github/closed-issues/CodexLink/PowerEST_CEMnCFA" alt="Closed Issues">
-  </a>
-  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
+  </div>
+  <div>
     <img src="https://badgen.net/github/last-commit/CodexLink/PowerEST_CEMnCFA" alt="Repository Last Commit">
-  </a>
-  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
+  </div>
+  <div>
     <img src="https://badgen.net/github/assets-dl/CodexLink/PowerEST_CEMnCFA" alt="Repository Downloads">
-  </a>
-  <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
+  </div>
+  <div>
     <img src="https://badgen.net/github/license/CodexLink/PowerEST_CEMnCFA" alt="Repository License">
-  </a>
+  </div>
 </p>
 
 
