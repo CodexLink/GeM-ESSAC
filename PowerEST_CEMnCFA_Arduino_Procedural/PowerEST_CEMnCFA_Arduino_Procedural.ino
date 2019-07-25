@@ -39,9 +39,8 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 
 #define PIRMini_MotionSens 28
 #define PIRMini_LEDTrip 29
-// This was due to common annode or cathode.
 
-#define Switch_ContainMode(x) ((digitalRead(x) == INVERSE_HIGH) ? 1 : 0)
+#define Switch_ContainMode(x) ((digitalRead(x) == INVERSE_HIGH) ? 1 : 0) // This was due to common annode or cathode.
 #define Switch_ModeUpdateCheck(x, y) (y != x) ? (LCD_I2C.clear(), y = x) : (0)
 #define ModeTransitionStart(x) (LCD_I2C.setCursor(0, 0), LCD_I2C.print(x))
 
@@ -62,6 +61,7 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 
 // Serial / LCD I2C Concatenation Display Formmater, Requires a Global Variable of Container
 #define RTC_MAX_BUFFER_SIZE 50
+
 #define String_BeautifyRTC(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
 
 #define PIRSensor_MotionCheck(x,y) (digitalRead(x) == HIGH) ? digitalWrite(y, HIGH) : digitalWrite(y, LOW)
@@ -87,6 +87,11 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 //#define Node_Stats_Enable 0xCD1200
 //#define Node_Stats_Disable 0xCD0000
 
+// Magic Numbers to Value Literal Significants
+#define ZERO_INT 0 // For Variable Initialization
+#define NULL_SET 0 // For Array Set Intialization
+#define ARR_INDEX_OFFSET 1 // For - ARR_INDEX_OFFSET Statements
+#define SEG_INDEX_DP_EXEMPT 2 // Decimal Point @ Segment Display is Not Included...
 // Customized Millis Timer Definition Return Values
 #define CST_CurrentResult 1
 #define CST_PreviousResult 2
@@ -98,6 +103,10 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 #define LCD_StartPositionY 0
 #define LCD_EndPositionX 19
 #define LCD_EndPositionY 3
+
+// Device Baud Rates
+#define HOST_BAUDRATE 115200
+#define LISTEN_BAUDRATE 115200
 
 // Sensor Initializers
 DHT DHT22_Sens(DHT22_PIN, DHT22);
@@ -142,30 +151,30 @@ const uint8_t BatteryDisplay_Icon[6][8] = {
 
 const uint8_t ArrowChar_UpdateDisp[3][8] = {
     {B00100, B00100, B00100, B00100, B00100, B11111, B01110, B00100}, // Downward Arrow - 0
-    {B00100, B01110, B11111, B00100, B00100, B00100, B00100, B00100}, //Upward Arrow - 1
+    {B00100, B01110, B11111, B00100, B00100, B00100, B00100, B00100}, //Upward Arrow - ARR_INDEX_OFFSET
     {B00000, B00000, B00000, B11111, B11111, B00000, B00000, B00000}  // No Update - default
 };
 
 // Battery Char Positional Holders
-uint16_t Battery_PosX = 0, Battery_PosY = 0, BatteryIntDispX = 0, BatteryIntDispY = 0;
+uint16_t Battery_PosX = ZERO_INT, Battery_PosY = ZERO_INT, BatteryIntDispX = ZERO_INT, BatteryIntDispY = ZERO_INT;
 
 // 7 Digit Segment and Sensor Computation Comparison Data Variable Handlers
-uint8_t ArrowChar_LiveContainer[6][8] = {0};
-uint8_t DataCounter_Update[6] = {0};
+uint8_t ArrowChar_LiveContainer[6][8] = {NULL_SET};
+uint8_t DataCounter_Update[6] = {NULL_SET};
 
 // Serial Communication Parameters and Variables
 
 #define CHARACTER_BUFFER_SIZE 128
 
-char SerialCommunication_Container[CHARACTER_BUFFER_SIZE] = {0};
+char SerialCommunication_Container[CHARACTER_BUFFER_SIZE] = {NULL_SET};
 
 // Customized Millis Previous On Hold Value
-uint32_t SketchTime_Prev = 0;
+uint32_t SketchTime_Prev = ZERO_INT;
 
 void setup()
 {
-    SerialHost_Call(begin, 115200);
-    SerialListen_Call(begin, 115200);
+    SerialHost_Call(begin, HOST_BAUDRATE);
+    SerialListen_Call(begin, LISTEN_BAUDRATE);
     SerialHost_Call(println, F("Hello, Serial 0 Debugging Mode is On!"));
     SerialHost_Call(println, F("[Initialization] Readying Baud Speed, LCD I2C, Shift Out Object and RTC"));
     Shifter_595N.begin(HC595_dataPin, HC595_clockPin, HC595_latchPin);
@@ -216,9 +225,9 @@ void loop()
 // POST Function Display
 static uint16_t DisplayI2C_ShowPOST()
 {
-    uint8_t Checkpoint_Values[3] = {0};
+    uint8_t Checkpoint_Values[3] = {NULL_SET};
     uint8_t ReturnResultValue;
-    for (size_t LoopIteration = 0; LoopIteration <= LCD_EndPositionY; LCD_I2C.setCursor(LCD_StartPositionX, ++LoopIteration))
+    for (size_t LoopIteration = ZERO_INT; LoopIteration <= LCD_EndPositionY; LCD_I2C.setCursor(LCD_StartPositionX, ++LoopIteration))
     {
         switch (LoopIteration)
         {
@@ -229,19 +238,19 @@ static uint16_t DisplayI2C_ShowPOST()
 
         case 1:
             LCD_I2C.print(F("Segment Disp "));
-            Checkpoint_Values[LoopIteration - 1] = 1;
+            Checkpoint_Values[LoopIteration - ARR_INDEX_OFFSET] = 1;
             LCD_I2C.write(126);
             LCD_I2C.print(F("PASSED"));
             break;
         case 2:
             LCD_I2C.print(F("Serial Comms "));
-            Checkpoint_Values[LoopIteration - 1] = 1;
+            Checkpoint_Values[LoopIteration - ARR_INDEX_OFFSET] = 1;
             LCD_I2C.write(126);
             LCD_I2C.print(F("PASSED"));
             break;
         case 3:
             LCD_I2C.print(F("Voltage Ind. "));
-            Checkpoint_Values[LoopIteration - 1] = 1;
+            Checkpoint_Values[LoopIteration - ARR_INDEX_OFFSET] = 1;
             LCD_I2C.write(126);
             LCD_I2C.print(F("PASSED"));
             break;
@@ -249,7 +258,7 @@ static uint16_t DisplayI2C_ShowPOST()
     }
     if (!Checkpoint_Values[0] || !Checkpoint_Values[1] || !Checkpoint_Values[2])
     {
-        return ReturnResultValue = 0;
+        return ReturnResultValue = ZERO_INT;
     }
     else
     {
@@ -285,7 +294,7 @@ static void DisplayI2C_OnInstance()
 
     if (SwitchLCD_ScreenMode[0] && !SwitchLCD_ScreenMode[1])
     {
-        for (size_t LCDScrollY_Index = LCD_StartPositionY, LCD_SetScrollX = 0; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
+        for (size_t LCDScrollY_Index = LCD_StartPositionY, LCD_SetScrollX = ZERO_INT; LCDScrollY_Index <= LCD_EndPositionY; LCDScrollY_Index++)
         {
             switch (LCDScrollY_Index)
             {
@@ -304,7 +313,7 @@ static void DisplayI2C_OnInstance()
 
                 (isnan(DHT22_TempRead)) ? (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(F("Error "))) : (LCD_I2C.print(F("TE")), LCD_I2C.write(126), LCD_I2C.print(DHT22_TempRead, 1), LCD_I2C.print(F("C")));
 
-                (DataCounter_Update[LCDScrollY_Index - 1]) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
+                (DataCounter_Update[LCDScrollY_Index - ARR_INDEX_OFFSET]) ? (RW_DHT22_TempRead = DHT22_TempRead) : (0);
 
                 DataSens_DispUpdater(MQ135_GasSensRead, RW_MQ135_GasSensRead, LCD_StartPositionX + 11, LCDScrollY_Index, '+', 0, "MQ135");
 
@@ -489,7 +498,7 @@ static int LCDWrite_AwareSpaceInt(uint16_t PassedValue, uint8_t SpaceSize)
     // https://stackoverflow.com/questions/3068397/finding-the-length-of-an-integer-in-c
     uint32_t intlen = floor(log10(abs(PassedValue))) + 1; // I understand this, except I forgot how calculation of log10 does. Closer calculation concept I know is byte to base 10 (decimal)
     LCD_I2C.print(PassedValue);
-    for (size_t SpaceManipulate = 0; SpaceManipulate < SpaceSize - intlen; SpaceManipulate++)
+    for (size_t SpaceManipulate = ZERO_INT; SpaceManipulate < SpaceSize - intlen; SpaceManipulate++)
     {
         LCD_I2C.print(F(" "));
     }
@@ -498,7 +507,7 @@ static int LCDWrite_AwareSpaceInt(uint16_t PassedValue, uint8_t SpaceSize)
 static void LCDWrite_AwareSpaceStr(const char *PassedString, uint8_t SpaceSize)
 {
     LCD_I2C.print(PassedString);
-    for (uint8_t SpaceManipulate = 0; SpaceManipulate < SpaceSize - strlen(PassedString); SpaceManipulate++)
+    for (uint8_t SpaceManipulate = ZERO_INT; SpaceManipulate < SpaceSize - strlen(PassedString); SpaceManipulate++)
     {
         LCD_I2C.print(F(" "));
     }
@@ -524,7 +533,7 @@ static short DataSens_DispUpdater(float BasePinSensRead, float SaveState_RecentR
     if (BasePinSensRead < SaveState_RecentRead)
     {
         SerialHost_Call(println, F(" ) Returns Less Than, (0 @ ArrowChar_Container, 1 on DataCounter_Update)"));
-        Compare_ArrowReturnIndex = 0;
+        Compare_ArrowReturnIndex = ZERO_INT;
         Compare_DataCounterUpdate = 1;
         LCD_writeCharIndex = 1;
     }
@@ -539,7 +548,7 @@ static short DataSens_DispUpdater(float BasePinSensRead, float SaveState_RecentR
     {
         SerialHost_Call(println, F(" ) Returns Equal, (2 @ ArrowChar_Container, 0 on DataCounter_Update)"));
         Compare_ArrowReturnIndex = 2;
-        Compare_DataCounterUpdate = 0;
+        Compare_DataCounterUpdate = ZERO_INT;
         LCD_writeCharIndex = 3;
     }
 
@@ -613,25 +622,25 @@ static uint8_t Battery_CapCalc()
 static char *BatteryDisp_Format(uint16_t BatteryLoad, const char *ModeDisplay)
 {
     const char DisplayFormat[2] = {'V', '%'};
-    static float BatteryBaseValue = 0;
+    static float BatteryBaseValue = ZERO_INT;
 
     static uint8_t LastSave_FormatIndex;
 
     static char ModeDisplay_SaveState[10] = "NULL";
     // Calculation is here
 
-    if (strcmp(ModeDisplay, ModeDisplay_SaveState) != 0)
+    if (strcmp(ModeDisplay, ModeDisplay_SaveState) != ZERO_INT)
     {
-        if (strcmp(ModeDisplay, "Voltage") == 0)
+        if (strcmp(ModeDisplay, "Voltage") == ZERO_INT)
         {
             SerialHost_Call(println, F("[Battery Calculation Mode] - Set to Voltage Display."));
-            LastSave_FormatIndex = 0;
+            LastSave_FormatIndex = ZERO_INT;
             LCD_I2C.print(BatteryLoad);
             LCD_I2C.print(DisplayFormat[LastSave_FormatIndex]);
             LCD_I2C.print(F(" "));
             strncpy(ModeDisplay_SaveState, "Voltage", sizeof("Voltage"));
         }
-        else if (strcmp(ModeDisplay, "Capacity") == 0)
+        else if (strcmp(ModeDisplay, "Capacity") == ZERO_INT)
         {
             SerialHost_Call(println, F("[Battery Calculation Mode] - Set to Battery Percentage Display."));
             LastSave_FormatIndex = 1;
@@ -665,17 +674,17 @@ static void SegmentDisp_InitPOST()
 
 static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterParams)
 {
-    static uint16_t LastSave_TotalSumOnArr = 0;
+    static uint16_t LastSave_TotalSumOnArr = ZERO_INT;
     static uint8_t LastSave_DecSwitch, Current_DecSwitch = 1;
 
-    uint16_t Current_TotalSumOnArr = 0; // Reports Total Sum of DataCounter_Update
+    uint16_t Current_TotalSumOnArr = ZERO_INT; // Reports Total Sum of DataCounter_Update
 
     if (!isLoadedCustomChar)
     {
         // Just in case, I wasn't kind of woke enough from knowing what this switch-case do. This one access 8th element of the array from Decimal Point.
         // Reads Data from DataCounter_Update
         SerialHost_Call(print, F("[Digit Segment Array] > |"));
-        for (size_t ArrayAccess = 0; ArrayAccess < 6; ArrayAccess++)
+        for (size_t ArrayAccess = ZERO_INT; ArrayAccess < 6; ArrayAccess++)
         {
             Current_TotalSumOnArr += DataCounter_Update[ArrayAccess];
             SerialHost_Call(print, DataCounter_Update[ArrayAccess]);
@@ -686,7 +695,7 @@ static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterPara
         {
             SerialHost_Call(print, F("[SINGLE SEGMENT] Total Sum Value Updated > "));
             SerialHost_Call(println, Current_TotalSumOnArr);
-            for (size_t DigitalSegment_WriteIterator = 0; DigitalSegment_WriteIterator <= Shifter_595N.getDataWidth() - 2; DigitalSegment_WriteIterator++)
+            for (size_t DigitalSegment_WriteIterator = ZERO_INT; DigitalSegment_WriteIterator <= Shifter_595N.getDataWidth() - SEG_INDEX_DP_EXEMPT; DigitalSegment_WriteIterator++)
             {
                 Shifter_595N.set(DigitalSegment_WriteIterator, SingleSegment_Values[Current_TotalSumOnArr][DigitalSegment_WriteIterator]);
             }
@@ -728,7 +737,7 @@ static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterPara
             Current_TotalSumOnArr = 10;
             break;
         }
-        for (size_t DigitalSegment_WriteIterator = 0; DigitalSegment_WriteIterator <= Shifter_595N.getDataWidth() - 2; DigitalSegment_WriteIterator++)
+        for (size_t DigitalSegment_WriteIterator = ZERO_INT; DigitalSegment_WriteIterator <= Shifter_595N.getDataWidth() - SEG_INDEX_DP_EXEMPT; DigitalSegment_WriteIterator++)
         {
             Shifter_595N.set(DigitalSegment_WriteIterator, SingleSegment_Values[Current_TotalSumOnArr][DigitalSegment_WriteIterator]);
         }
@@ -738,7 +747,7 @@ static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterPara
     {
         if (Current_DecSwitch != LastSave_DecSwitch)
         {
-            Shifter_595N.set(Shifter_595N.getDataWidth() - 1, Current_DecSwitch);
+            Shifter_595N.set(Shifter_595N.getDataWidth() - ARR_INDEX_OFFSET, Current_DecSwitch);
             Shifter_595N.write();
             switch (Current_DecSwitch)
             {
@@ -748,7 +757,7 @@ static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterPara
                 break;
             case 1:
                 LastSave_DecSwitch = Current_DecSwitch;
-                Current_DecSwitch = 0;
+                Current_DecSwitch = ZERO_INT;
                 break;
             }
         }
@@ -801,7 +810,7 @@ static void RTC_WriteProtection(bool TruthValue)
 static void RTC_PrototypeInit()
 {
     Time CheckTime = RTCModule.time();
-    if (CheckTime.mon == 00)
+    if (CheckTime.mon == ZERO_INT0)
     {
         Time RTC_DataContainer(2019, 6, 14, 12, 00, 30, Time::kThursday);
         RTCModule.time(RTC_DataContainer);
