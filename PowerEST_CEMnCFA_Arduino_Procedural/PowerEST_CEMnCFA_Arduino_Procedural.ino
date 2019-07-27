@@ -11,9 +11,8 @@ License: GPL-3.0
 
 NOTE: Current Stage (Procedural Program) will be the first step towards completing this project.
 */
-
+// ALl Libraries Needed
 #include <stdio.h>
-
 #include <DHT.h>
 #include <LiquidCrystal_I2C.h>
 #include <ShiftOut.h>
@@ -23,75 +22,35 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 #include <MQ135.h>
 #include <MemoryFree.h>
 #include <DS1302.h>
-
+// All Pins, Defined in Order |> Ascending, DIgital Pins to Analog Pins
+//#define AVR_TX_Equiv 3
 #define RTCResetPin 10
 #define RTCDataPin 11
 #define RTCClockPin 12
-
 #define DHT22_PIN 22
-
 #define HC595_dataPin 23
 #define HC595_latchPin 24
 #define HC595_clockPin 25
-
 #define SwitchMode_One 26
 #define SwitchMode_Two 27
-
 #define PIRMini_MotionSens 28
 #define PIRMini_LEDTrip 29
-
-#define Switch_ContainMode(x) ((digitalRead(x) == INVERSE_HIGH) ? 1 : 0) // This was due to common annode or cathode.
-#define Switch_ModeUpdateCheck(x, y) (y != x) ? (LCD_I2C.clear(), y = x) : (0)
-#define ModeTransitionStart(x) (LCD_I2C.setCursor(0, 0), LCD_I2C.print(x))
-
-#define INVERSE_LOW HIGH
-#define INVERSE_HIGH LOW
-
+//#define AVR_RX_Equiv 40
 #define MFRC22_RST_PIN 49
 #define MFRC22_SS_PIN 53
-
 #define MQ135_GasSens A0
 
-// Serial Identifiers and Other Definitives
-#define SerialComms_Host Serial
-#define SerialComms_Listener Serial1
-
-#define SerialHost_Call(x, y) Serial.x(y)
-#define SerialListen_Call(x, y) Serial1.x(y)
-
-// Serial / LCD I2C Concatenation Display Formmater, Requires a Global Variable of Container
-#define RTC_MAX_BUFFER_SIZE 50
-
-#define String_BeautifyRTC(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
-
-#define PIRSensor_MotionCheck(x,y) (digitalRead(x) == HIGH) ? digitalWrite(y, HIGH) : digitalWrite(y, LOW)
-
-#define DEBUG_ENABLED 1
-
-#if DEBUG_ENABLED == 1
-#if x == println || print
-#define SerialHost_Call(x, y) Serial.x(y)
-#define SerialListen_Call(x, y) Serial1.x(y)
-#endif
-#else
-#define SerialHost_Call(x, y)
-#define SerialListen_Call(x, y)
-#endif
-
-// Software Serial Last Save State of Pins Used
-//#define AVR_RX_Equiv 40
-//#define AVR_TX_Equiv 3
-//SoftwareSerial Serial1(AVR_RX_Equiv, AVR_TX_Equiv);
-
-// NodeMCU Errors (To Be Continued)
+// Defined Magic Numbers to Static Significant Literal (StSiL).
+#define ZERO_INT 0             // For Variable Initialization
+#define NULL_SET 0             // For Array Set Intialization
+#define VAL_INDEX_OFFSET 1     // For - Normal INDEX_OFFSET Statements
+#define ARR_INDEX_OFFSET 1     // For - ARR_INDEX_OFFSET Statements
+#define SEG_INDEX_DP_EXEMPT 2  // Decimal Point @ Segment Display is Not Included...
+#define RTC_MAX_BUFFER_SIZE 50 // Serial / LCD I2C Concatenation Display Formmater, Requires a Global Variable of Container.
+#define CHARACTER_BUFFER_SIZE 128
 //#define Node_Stats_Enable 0xCD1200
-//#define Node_Stats_Disable 0xCD0000
+//#define Node_Stats_Disable 0xCD0000 // We could create enums for error handling return value...
 
-// Magic Numbers to Value Literal Significants
-#define ZERO_INT 0 // For Variable Initialization
-#define NULL_SET 0 // For Array Set Intialization
-#define ARR_INDEX_OFFSET 1 // For - ARR_INDEX_OFFSET Statements
-#define SEG_INDEX_DP_EXEMPT 2 // Decimal Point @ Segment Display is Not Included...
 // Customized Millis Timer Definition Return Values
 #define CST_CurrentResult 1
 #define CST_PreviousResult 2
@@ -99,21 +58,53 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 #define CST_UnknownDefaultVal 0420
 
 // Default LCD Postional Definitions
+#define LCD_ADDR 0x27
+#define LCD_MAX_W 20
+#define LCD_MAX_H 4
 #define LCD_StartPositionX 0
 #define LCD_StartPositionY 0
-#define LCD_EndPositionX 19
-#define LCD_EndPositionY 3
+#define LCD_EndPositionX LCD_MAX_W - VAL_INDEX_OFFSET
+#define LCD_EndPositionY LCD_MAX_H - VAL_INDEX_OFFSET
 
 // Device Baud Rates
 #define HOST_BAUDRATE 115200
 #define LISTEN_BAUDRATE 115200
 
+// Define Macro Functions for Minimal Function Write on Actual Code Area.
+#define Switch_ContainMode(x) ((digitalRead(x) == INVERSE_HIGH) ? 1 : 0) // This was due to common annode or cathode.
+#define Switch_ModeUpdateCheck(ScreenMode_Int, CurrentMode_Int) (CurrentMode_Int != ScreenMode_Int) ? (LCD_I2C.clear(), CurrentMode_Int = ScreenMode_Int) : (0)
+#define ModeTransitionStart(x) (LCD_I2C.setCursor(0, 0), LCD_I2C.print(x))
+#define PIRSensor_MotionCheck(PIR_Pin, LED_Pin) (digitalRead(PIR_Pin) == HIGH) ? digitalWrite(LED_Pin, HIGH) : digitalWrite(LED_Pin, LOW)
+#define StrOtpt_RTCBeautify(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
+
+// Reversed Bias Parameters
+#define INVERSE_LOW HIGH
+#define INVERSE_HIGH LOW
+
+// Serial Identifiers and Minified Macro Definition Call To Display (Formatted).
+#define SerialComms_Host Serial
+#define SerialComms_Listener Serial1
+#define SerialHost_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
+#define SerialListen_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
+
+#define DEBUG_ENABLED 1
+
+#if DEBUG_ENABLED == 1
+#if Cmd_Func == println || print
+#define SerialHost_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
+#define SerialListen_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
+#endif
+#else
+#define SerialHost_Call(Cmd_Func, Params)
+#define SerialListen_Call(Cmd_Func, Params)
+#endif
+
 // Sensor Initializers
+//SoftwareSerial Serial1(AVR_RX_Equiv, AVR_TX_Equiv);
 DHT DHT22_Sens(DHT22_PIN, DHT22);
-LiquidCrystal_I2C LCD_I2C(0x27, 20, 4);
+LiquidCrystal_I2C LCD_I2C(LCD_ADDR, LCD_MAX_W, LCD_MAX_H);
 DS1302 RTCModule(RTCResetPin, RTCDataPin, RTCClockPin);
 MQ135 MQ135_Sens = MQ135(MQ135_GasSens);
-
 // Shifter Out Initializer
 ShiftOut<1> Shifter_595N;
 
@@ -161,35 +152,24 @@ uint16_t Battery_PosX = ZERO_INT, Battery_PosY = ZERO_INT, BatteryIntDispX = ZER
 // 7 Digit Segment and Sensor Computation Comparison Data Variable Handlers
 uint8_t ArrowChar_LiveContainer[6][8] = {NULL_SET};
 uint8_t DataCounter_Update[6] = {NULL_SET};
-
-// Serial Communication Parameters and Variables
-
-#define CHARACTER_BUFFER_SIZE 128
-
-char SerialCommunication_Container[CHARACTER_BUFFER_SIZE] = {NULL_SET};
+String SerialCommunication_Container;
 
 // Customized Millis Previous On Hold Value
 uint32_t SketchTime_Prev = ZERO_INT;
 
 void setup()
 {
-    SerialHost_Call(begin, HOST_BAUDRATE);
-    SerialListen_Call(begin, LISTEN_BAUDRATE);
+    SerialHost_Call(begin, HOST_BAUDRATE), SerialListen_Call(begin, LISTEN_BAUDRATE);
     SerialHost_Call(println, F("Hello, Serial 0 Debugging Mode is On!"));
     SerialHost_Call(println, F("[Initialization] Readying Baud Speed, LCD I2C, Shift Out Object and RTC"));
     Shifter_595N.begin(HC595_dataPin, HC595_clockPin, HC595_latchPin);
     DHT22_Sens.begin();
     LCD_I2C.init();
-    pinMode(PIRMini_MotionSens, INPUT);
-    pinMode(PIRMini_LEDTrip, OUTPUT);
-    digitalWrite(PIRMini_MotionSens, LOW);
-    digitalWrite(PIRMini_LEDTrip, LOW);
-    RTC_PauseFunction(false);
-    RTC_WriteProtection(false);
-    RTC_PrototypeInit();
+    pinMode(PIRMini_MotionSens, INPUT), pinMode(PIRMini_LEDTrip, OUTPUT);
+    digitalWrite(PIRMini_MotionSens, LOW), digitalWrite(PIRMini_LEDTrip, LOW);
+    RTC_PauseFunction(false), RTC_WriteProtection(false), RTC_PrototypeInit();
     SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP for the Switches of LCD Modes..."));
-    pinMode(SwitchMode_One, INPUT_PULLUP);
-    pinMode(SwitchMode_Two, INPUT_PULLUP);
+    pinMode(SwitchMode_One, INPUT_PULLUP), pinMode(SwitchMode_Two, INPUT_PULLUP);
     SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP Done..."));
     LCD_I2C.backlight();
     LCD_I2C.setCursor(0, 0);
@@ -201,8 +181,7 @@ void setup()
     LCD_I2C.setCursor(0, 3);
     LCD_I2C.print(F("Ver. Commit 06182019"));
     delay(2000);
-    LCD_I2C.noBacklight();
-    LCD_I2C.clear();
+    LCD_I2C.noBacklight(), LCD_I2C.clear();
     delay(500);
     LCD_I2C.backlight();
     SerialHost_Call(println, F("[Initialization] Executing Device POST Before Actual Program Execution..."));
@@ -219,7 +198,7 @@ void setup()
 }
 void loop()
 {
-    DisplayI2C_OnInstance(); // I don't wanna pollute this part so create another function instead.
+    DisplayI2C_OnInstance();
 }
 
 // POST Function Display
@@ -273,7 +252,7 @@ static void DisplayI2C_OnInstance()
         RW_DHT22_TempRead,
         RW_DHT22_HtInxRead;
     static uint8_t RW_SwitchLCD_ScreenMode_One, RW_SwitchLCD_ScreenMode_Two;
-    static uint8_t Serial_RecentByteCount = 1;
+    static uint8_t Serial_RecentByteCount = VAL_INDEX_OFFSET;
     static uint16_t RW_MQ135_GasSensRead;
     static uint16_t SRAM_RecentFreeMem;
     // Insert Command Here for Reading Functions....
@@ -496,7 +475,7 @@ when we gonna overwrite a character, we have to read it's source length - spaces
 static int LCDWrite_AwareSpaceInt(uint16_t PassedValue, uint8_t SpaceSize)
 {
     // https://stackoverflow.com/questions/3068397/finding-the-length-of-an-integer-in-c
-    uint32_t intlen = floor(log10(abs(PassedValue))) + 1; // I understand this, except I forgot how calculation of log10 does. Closer calculation concept I know is byte to base 10 (decimal)
+    uint32_t intlen = floor(log10(abs(PassedValue))) + VAL_INDEX_OFFSET; // I understand this, except I forgot how calculation of log10 does. Closer calculation concept I know is byte to base 10 (decimal)
     LCD_I2C.print(PassedValue);
     for (size_t SpaceManipulate = ZERO_INT; SpaceManipulate < SpaceSize - intlen; SpaceManipulate++)
     {
@@ -810,7 +789,7 @@ static void RTC_WriteProtection(bool TruthValue)
 static void RTC_PrototypeInit()
 {
     Time CheckTime = RTCModule.time();
-    if (CheckTime.mon == ZERO_INT0)
+    if (CheckTime.mon == ZERO_INT)
     {
         Time RTC_DataContainer(2019, 6, 14, 12, 00, 30, Time::kThursday);
         RTCModule.time(RTC_DataContainer);
@@ -842,6 +821,6 @@ static void RTC_Display_GetChipCurrentTime()
     //if (SketchTime_IntervalHit(1000))
     //{
     Time RTC_DataContainer = RTCModule.time();
-    String_BeautifyRTC(LCD_I2C, print, "%02d/%02d %02d:%02d:%02d", RTC_DataContainer.mon, RTC_DataContainer.date, RTC_DataContainer.hr, RTC_DataContainer.min, RTC_DataContainer.sec);
+    StrOtpt_RTCBeautify(LCD_I2C, print, "%02d/%02d %02d:%02d:%02d", RTC_DataContainer.mon, RTC_DataContainer.date, RTC_DataContainer.hr, RTC_DataContainer.min, RTC_DataContainer.sec);
     //}
 }
