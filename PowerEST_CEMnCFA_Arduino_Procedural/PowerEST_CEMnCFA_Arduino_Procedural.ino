@@ -84,19 +84,20 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 // Serial Identifiers and Minified Macro Definition Call To Display (Formatted).
 #define SerialComms_Host Serial
 #define SerialComms_Listener Serial1
-#define SerialHost_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
-#define SerialListen_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
+#define SerialH_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
+#define SerialL_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
+#define LCDI2C_Call(LCDFunc, Params) LCD_I2C.LCDFunc(Params)
 
 #define DEBUG_ENABLED 1
 
 #if DEBUG_ENABLED == 1
 #if Cmd_Func == println || print
-#define SerialHost_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
-#define SerialListen_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
+#define SerialH_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
+#define SerialL_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
 #endif
 #else
-#define SerialHost_Call(Cmd_Func, Params)
-#define SerialListen_Call(Cmd_Func, Params)
+#define SerialH_Call(Cmd_Func, Params)
+#define SerialL_Call(Cmd_Func, Params)
 #endif
 
 // Sensor Initializers
@@ -159,18 +160,18 @@ uint32_t SketchTime_Prev = ZERO_INT;
 
 void setup()
 {
-    SerialHost_Call(begin, HOST_BAUDRATE), SerialListen_Call(begin, LISTEN_BAUDRATE);
-    SerialHost_Call(println, F("Hello, Serial 0 Debugging Mode is On!"));
-    SerialHost_Call(println, F("[Initialization] Readying Baud Speed, LCD I2C, Shift Out Object and RTC"));
+    SerialH_Call(begin, HOST_BAUDRATE), SerialL_Call(begin, LISTEN_BAUDRATE);
+    SerialH_Call(println, F("Hello, Serial 0 Debugging Mode is On!"));
+    SerialH_Call(println, F("[Initialization] Readying Baud Speed, LCD I2C, Shift Out Object and RTC"));
     Shifter_595N.begin(HC595_dataPin, HC595_clockPin, HC595_latchPin);
     DHT22_Sens.begin();
     LCD_I2C.init();
     pinMode(PIRMini_MotionSens, INPUT), pinMode(PIRMini_LEDTrip, OUTPUT);
     digitalWrite(PIRMini_MotionSens, LOW), digitalWrite(PIRMini_LEDTrip, LOW);
     RTC_PauseFunction(false), RTC_WriteProtection(false), RTC_PrototypeInit();
-    SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP for the Switches of LCD Modes..."));
+    SerialH_Call(println, F("[Initialization] Setting Two Pins with PULLUP for the Switches of LCD Modes..."));
     pinMode(SwitchMode_One, INPUT_PULLUP), pinMode(SwitchMode_Two, INPUT_PULLUP);
-    SerialHost_Call(println, F("[Initialization] Setting Two Pins with PULLUP Done..."));
+    SerialH_Call(println, F("[Initialization] Setting Two Pins with PULLUP Done..."));
     LCD_I2C.backlight();
     LCD_I2C.setCursor(0, 0);
     LCD_I2C.print(F(" Hello and Welcome! "));
@@ -184,14 +185,14 @@ void setup()
     LCD_I2C.noBacklight(), LCD_I2C.clear();
     delay(500);
     LCD_I2C.backlight();
-    SerialHost_Call(println, F("[Initialization] Executing Device POST Before Actual Program Execution..."));
+    SerialH_Call(println, F("[Initialization] Executing Device POST Before Actual Program Execution..."));
     if (DisplayI2C_ShowPOST())
     {
-        SerialHost_Call(println, F("[Initialization] POST Checks Result is Passed. Ready!~"));
+        SerialH_Call(println, F("[Initialization] POST Checks Result is Passed. Ready!~"));
     }
     else
     {
-        SerialHost_Call(println, F("[Initialization] Some POST Checks are not passed! Please check them!"));
+        SerialH_Call(println, F("[Initialization] Some POST Checks are not passed! Please check them!"));
     }
     delay(2500);
     LCD_I2C.clear();
@@ -269,7 +270,7 @@ static void DisplayI2C_OnInstance()
     Switch_ModeUpdateCheck(SwitchLCD_ScreenMode[0], RW_SwitchLCD_ScreenMode_One);
     Switch_ModeUpdateCheck(SwitchLCD_ScreenMode[1], RW_SwitchLCD_ScreenMode_Two);
 
-    SerialHost_Call(println, F("")); // For Debugging Purposes
+    SerialH_Call(println, F("")); // For Debugging Purposes
 
     if (SwitchLCD_ScreenMode[0] && !SwitchLCD_ScreenMode[1])
     {
@@ -502,42 +503,42 @@ static short DataSens_DispUpdater(float BasePinSensRead, float SaveState_RecentR
 {
     uint8_t Compare_ArrowReturnIndex, Compare_DataCounterUpdate, LCD_writeCharIndex;
 
-    SerialHost_Call(print, F("[SENS READ, "));
-    SerialHost_Call(print, Value_Indentifier);
-    SerialHost_Call(print, F("] - ( BaseReadVal > "));
-    SerialHost_Call(print, BasePinSensRead);
-    SerialHost_Call(print, F(", LastReadVal > "));
-    SerialHost_Call(print, SaveState_RecentRead);
+    SerialH_Call(print, F("[SENS READ, "));
+    SerialH_Call(print, Value_Indentifier);
+    SerialH_Call(print, F("] - ( BaseReadVal > "));
+    SerialH_Call(print, BasePinSensRead);
+    SerialH_Call(print, F(", LastReadVal > "));
+    SerialH_Call(print, SaveState_RecentRead);
 
     if (BasePinSensRead < SaveState_RecentRead)
     {
-        SerialHost_Call(println, F(" ) Returns Less Than, (0 @ ArrowChar_Container, 1 on DataCounter_Update)"));
+        SerialH_Call(println, F(" ) Returns Less Than, (0 @ ArrowChar_Container, 1 on DataCounter_Update)"));
         Compare_ArrowReturnIndex = ZERO_INT;
         Compare_DataCounterUpdate = 1;
         LCD_writeCharIndex = 1;
     }
     else if (BasePinSensRead > SaveState_RecentRead)
     {
-        SerialHost_Call(println, F(" ) Returns Greater Than, (1 @ ArrowChar_Container, 1 on DataCounter_Update)"));
+        SerialH_Call(println, F(" ) Returns Greater Than, (1 @ ArrowChar_Container, 1 on DataCounter_Update)"));
         Compare_ArrowReturnIndex = 1;
         Compare_DataCounterUpdate = 1;
         LCD_writeCharIndex = 2;
     }
     else
     {
-        SerialHost_Call(println, F(" ) Returns Equal, (2 @ ArrowChar_Container, 0 on DataCounter_Update)"));
+        SerialH_Call(println, F(" ) Returns Equal, (2 @ ArrowChar_Container, 0 on DataCounter_Update)"));
         Compare_ArrowReturnIndex = 2;
         Compare_DataCounterUpdate = ZERO_INT;
         LCD_writeCharIndex = 3;
     }
 
-    SerialHost_Call(print, "Value Identifier -> ");
-    SerialHost_Call(print, Value_Indentifier);
-    SerialHost_Call(print, " has been placed on Pos (");
-    SerialHost_Call(print, LCD_PosX);
-    SerialHost_Call(print, ", ");
-    SerialHost_Call(println, Sens_LCD_CaseIndex);
-    SerialHost_Call(print, ")");
+    SerialH_Call(print, "Value Identifier -> ");
+    SerialH_Call(print, Value_Indentifier);
+    SerialH_Call(print, " has been placed on Pos (");
+    SerialH_Call(print, LCD_PosX);
+    SerialH_Call(print, ", ");
+    SerialH_Call(println, Sens_LCD_CaseIndex);
+    SerialH_Call(print, ")");
 
     LCD_I2C.createChar(LCD_writeCharIndex, ArrowChar_UpdateDisp[Compare_ArrowReturnIndex]);
     LCD_I2C.setCursor(LCD_PosX, Sens_LCD_CaseIndex);
@@ -612,7 +613,7 @@ static char *BatteryDisp_Format(uint16_t BatteryLoad, const char *ModeDisplay)
     {
         if (strcmp(ModeDisplay, "Voltage") == ZERO_INT)
         {
-            SerialHost_Call(println, F("[Battery Calculation Mode] - Set to Voltage Display."));
+            SerialH_Call(println, F("[Battery Calculation Mode] - Set to Voltage Display."));
             LastSave_FormatIndex = ZERO_INT;
             LCD_I2C.print(BatteryLoad);
             LCD_I2C.print(DisplayFormat[LastSave_FormatIndex]);
@@ -621,7 +622,7 @@ static char *BatteryDisp_Format(uint16_t BatteryLoad, const char *ModeDisplay)
         }
         else if (strcmp(ModeDisplay, "Capacity") == ZERO_INT)
         {
-            SerialHost_Call(println, F("[Battery Calculation Mode] - Set to Battery Percentage Display."));
+            SerialH_Call(println, F("[Battery Calculation Mode] - Set to Battery Percentage Display."));
             LastSave_FormatIndex = 1;
             LCD_I2C.print(BatteryLoad);
             LCD_I2C.print(DisplayFormat[LastSave_FormatIndex]);
@@ -632,7 +633,7 @@ static char *BatteryDisp_Format(uint16_t BatteryLoad, const char *ModeDisplay)
         else
         {
             // Might Display Percent Instead, which is Default
-            SerialHost_Call(println, F("[Battery Calculation Mode] - Unknown Value. Please check the parameters set on sketch."));
+            SerialH_Call(println, F("[Battery Calculation Mode] - Unknown Value. Please check the parameters set on sketch."));
         }
     }
     else
@@ -662,18 +663,18 @@ static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterPara
     {
         // Just in case, I wasn't kind of woke enough from knowing what this switch-case do. This one access 8th element of the array from Decimal Point.
         // Reads Data from DataCounter_Update
-        SerialHost_Call(print, F("[Digit Segment Array] > |"));
+        SerialH_Call(print, F("[Digit Segment Array] > |"));
         for (size_t ArrayAccess = ZERO_INT; ArrayAccess < 6; ArrayAccess++)
         {
             Current_TotalSumOnArr += DataCounter_Update[ArrayAccess];
-            SerialHost_Call(print, DataCounter_Update[ArrayAccess]);
+            SerialH_Call(print, DataCounter_Update[ArrayAccess]);
         }
-        SerialHost_Call(println, F("|"));
+        SerialH_Call(println, F("|"));
 
         if (Current_TotalSumOnArr != LastSave_TotalSumOnArr)
         {
-            SerialHost_Call(print, F("[SINGLE SEGMENT] Total Sum Value Updated > "));
-            SerialHost_Call(println, Current_TotalSumOnArr);
+            SerialH_Call(print, F("[SINGLE SEGMENT] Total Sum Value Updated > "));
+            SerialH_Call(println, Current_TotalSumOnArr);
             for (size_t DigitalSegment_WriteIterator = ZERO_INT; DigitalSegment_WriteIterator <= Shifter_595N.getDataWidth() - SEG_INDEX_DP_EXEMPT; DigitalSegment_WriteIterator++)
             {
                 Shifter_595N.set(DigitalSegment_WriteIterator, SingleSegment_Values[Current_TotalSumOnArr][DigitalSegment_WriteIterator]);
@@ -683,8 +684,8 @@ static void SegmentDisp_Update(bool isLoadedCustomChar, char CustomCharacterPara
         }
         else
         {
-            SerialHost_Call(print, F("[SINGLE SEGMENT] Total Sum Value Not Updated > "));
-            SerialHost_Call(println, Current_TotalSumOnArr);
+            SerialH_Call(print, F("[SINGLE SEGMENT] Total Sum Value Not Updated > "));
+            SerialH_Call(println, Current_TotalSumOnArr);
         }
     }
     else
