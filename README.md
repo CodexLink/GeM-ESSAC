@@ -3,6 +3,12 @@
   <a href="https://travis-ci.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/travis/CodexLink/PowerEST_CEMnCFA" alt="Build Status">
   </a>
+<a href="https://www.codefactor.io/repository/github/codexlink/powerest_cemncfa">
+  <img src="https://www.codefactor.io/repository/github/codexlink/powerest_cemncfa/badge" alt="CodeFactor" />
+</a>
+<a href="https://www.codacy.com/app/CodexLink/PowerEST_CEMnCFA?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CodexLink/PowerEST_CEMnCFA&amp;utm_campaign=Badge_Grade">
+  <img src="https://api.codacy.com/project/badge/Grade/d8efe2b67dac445d918e277601e801b8"/>
+</a>
   <a href="https://github.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/github/status/CodexLink/PowerEST_CEMnCFA" alt="Repository Status">
   </a>
