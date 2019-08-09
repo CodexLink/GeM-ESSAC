@@ -1,5 +1,5 @@
-<h1 align="center">MESC_PersonalBenefits</h1>
-<h5 align="center">Multi-Essential Sensing Components For Personal Benefits, Specialized in Arduino</h5>
+<h1 align="center">IoTMesC_Perfits</h1>
+<h5 align="center">IoT Multi-Essential Sensing Components For Personal Benefits, Specialized in Arduino</h5>
 <p align="center">
   <a href="https://travis-ci.com/CodexLink/PowerEST_CEMnCFA">
     <img src="https://badgen.net/travis/CodexLink/PowerEST_CEMnCFA" alt="Build Status">
