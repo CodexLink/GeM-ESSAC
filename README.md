@@ -1,32 +1,32 @@
-<h1 align="center">IoTMesC_Perfits</h1>
+<h1 align="center">IoTMesC_PersonalBenefits</h1>
 <h5 align="center">IoT Multi-Essential Sensing Components For Personal Benefits, Specialized in Arduino</h5>
 <p align="center">
-  <a href="https://travis-ci.com/CodexLink/PowerEST_CEMnCFA">
-    <img src="https://badgen.net/travis/CodexLink/PowerEST_CEMnCFA" alt="Build Status">
+  <a href="https://travis-ci.com/CodexLink/IoTMesC_PersonalBenefits">
+    <img src="https://badgen.net/travis/CodexLink/IoTMesC_PersonalBenefits" alt="Build Status">
   </a>
-<a href="https://www.codefactor.io/repository/github/codexlink/IoTMesC_Perfits">
-  <img src="https://www.codefactor.io/repository/github/codexlink/IoTMesC_Perfits/badge" alt="CodeFactor" />
+<a href="https://www.codefactor.io/repository/github/codexlink/IoTMesC_PersonalBenefits">
+  <img src="https://www.codefactor.io/repository/github/codexlink/IoTMesC_PersonalBenefits/badge" alt="CodeFactor" />
 </a>
-<a href="https://www.codacy.com/app/CodexLink/IoTMesC_Perfits?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CodexLink/IoTMesC_Perfits&amp;utm_campaign=Badge_Grade">
+<a href="https://www.codacy.com/app/CodexLink/IoTMesC_PersonalBenefits?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CodexLink/IoTMesC_PersonalBenefits&amp;utm_campaign=Badge_Grade">
   <img src="https://api.codacy.com/project/badge/Grade/d8efe2b67dac445d918e277601e801b8"/>
   </a>
-  <a href="https://github.com/CodexLink/IoTMesC_Perfits">
-    <img src="https://badgen.net/github/status/CodexLink/IoTMesC_Perfits" alt="Repository Status">
+  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
+    <img src="https://badgen.net/github/status/CodexLink/IoTMesC_PersonalBenefits" alt="Repository Status">
   </a>
-  <a href="https://github.com/CodexLink/IoTMesC_Perfits">
-    <img src="https://badgen.net/github/open-issues/CodexLink/IoTMesC_Perfits" alt="Current Opened Issues">
+  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
+    <img src="https://badgen.net/github/open-issues/CodexLink/IoTMesC_PersonalBenefits" alt="Current Opened Issues">
   </a>
-  <a href="https://github.com/CodexLink/IoTMesC_Perfits">
-    <img src="https://badgen.net/github/closed-issues/CodexLink/IoTMesC_Perfits" alt="Closed Issues">
+  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
+    <img src="https://badgen.net/github/closed-issues/CodexLink/IoTMesC_PersonalBenefits" alt="Closed Issues">
   </a>
-  <a href="https://github.com/CodexLink/IoTMesC_Perfits">
-    <img src="https://badgen.net/github/last-commit/CodexLink/IoTMesC_Perfits" alt="Repository Last Commit">
+  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
+    <img src="https://badgen.net/github/last-commit/CodexLink/IoTMesC_PersonalBenefits" alt="Repository Last Commit">
   </a>
-  <a href="https://github.com/CodexLink/IoTMesC_Perfits">
-    <img src="https://badgen.net/github/assets-dl/CodexLink/IoTMesC_Perfits" alt="Repository Downloads">
+  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
+    <img src="https://badgen.net/github/assets-dl/CodexLink/IoTMesC_PersonalBenefits" alt="Repository Downloads">
   </a>
-  <a href="https://github.com/CodexLink/IoTMesC_Perfits">
-    <img src="https://badgen.net/github/license/CodexLink/IoTMesC_Perfits" alt="Repository License">
+  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
+    <img src="https://badgen.net/github/license/CodexLink/IoTMesC_PersonalBenefits" alt="Repository License">
   </a>
 </p>
 
@@ -112,7 +112,7 @@ Unknown for now...
 
 ## License
 
-This project is licensed under the GNU v3 License - see the [LICENSE.md](https://github.com/CodexLink/Project_5MES_C/blob/master/README.md) file for details
+This project is licensed under the GNU v3 License - see the [LICENSE.md](https://github.com/CodexLink/IoTMesC_PersonalBenefits/blob/master/README.md) file for details
 
 
 
