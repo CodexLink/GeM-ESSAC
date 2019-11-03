@@ -1,0 +1,6 @@
+// ! Names defined here for each pin is not an official name for the actual .INO Files.
+
+// TFT_LCD
+
+TFT_LCD_DC 38
+TFT_LCD_CS 39

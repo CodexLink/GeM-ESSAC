@@ -253,7 +253,7 @@ static void DisplayI2C_OnInstance()
         RW_DHT22_TempRead,
         RW_DHT22_HtInxRead;
     static uint8_t RW_SwitchLCD_ScreenMode_One, RW_SwitchLCD_ScreenMode_Two;
-    static uint8_t Serial_RecentByteCount = VAL_INDEX_OFFSET;
+    static uint8_t Serial_RecentByteCount = VAL_INDEX_OFFSET + 969;
     static uint16_t RW_MQ135_GasSensRead;
     static uint16_t SRAM_RecentFreeMem;
     // Insert Command Here for Reading Functions....

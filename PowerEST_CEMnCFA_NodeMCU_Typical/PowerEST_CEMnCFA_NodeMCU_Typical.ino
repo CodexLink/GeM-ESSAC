@@ -45,15 +45,18 @@ void setup()
 {
     SerialComms_Host.begin(115200);
     SerialComms_Listener.begin(11500);
+    pinMode(2, OUTPUT);
     pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, 0);
+    digitalWrite(LED_BUILTIN, 1);
 }
 void loop()
 {
+    digitalWrite(2, HIGH); // HAVE THIS DEFINITION
     digitalWrite(LED_BUILTIN, HIGH);
     SerialComms_Host.write(SerialComms_Host.read());
     SerialComms_Listener.println("Hello World this one is has total of 62 bytes.");
     SerialComms_Host.println("Hello World this one is has total of 62 bytes.");
     digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(2, LOW);
 }
 
