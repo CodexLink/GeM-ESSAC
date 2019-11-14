@@ -1,4 +1,4 @@
-/* 
+/*
 File Name: PowerEST_CEMnCFA_Arduino_OOP
 Programming Coding Style: Object Oriented Programming
 
@@ -12,8 +12,10 @@ License: GPL-3.0
 NOTE: OOP Style of this project will be starting on / held on Maintaining Stage of the project.
 */
 
-#include <stdio.h>
+#include "IoTMesC_Core/IoTMesC_Core.h"
 
+
+#include <stdio.h>
 //#include <DHT.h>
 //#include <LiquidCrystal_I2C.h>
 #include <ShiftOut.h>
@@ -160,5 +162,5 @@ void loop()
 // LOOP FUNCTION Start
 DisplayI2C_OnInstance()
 {
-    
+
 }
