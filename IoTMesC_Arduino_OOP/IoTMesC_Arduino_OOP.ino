@@ -14,13 +14,12 @@ NOTE: OOP Style of this project will be starting on / held on Maintaining Stage 
 
 #include <stdio.h>
 
-#include <DHT.h>
-#include <LiquidCrystal_I2C.h>
+//#include <DHT.h>
+//#include <LiquidCrystal_I2C.h>
 #include <ShiftOut.h>
 #include <MFRC522.h>
 #include <EEPROM.h>
 #include <SPI.h>
-#include <MQ135.h>
 #include <MemoryFree.h>
 #include <DS1302.h>
 
@@ -49,7 +48,6 @@ NOTE: OOP Style of this project will be starting on / held on Maintaining Stage 
 #define MFRC22_RST_PIN 49
 #define MFRC22_SS_PIN 53
 
-#define MQ135_GasSens A0
 
 // Serial Identifiers and Other Definitives
 #define SerialComms_Host Serial
@@ -96,10 +94,8 @@ NOTE: OOP Style of this project will be starting on / held on Maintaining Stage 
 #define LCD_EndPositionY 3
 
 // Sensor Initializers
-DHT DHT22_Sens(DHT22_PIN, DHT22);
-LiquidCrystal_I2C LCD_I2C(0x27, 20, 4);
+//LiquidCrystal_I2C LCD_I2C(0x27, 20, 4);
 DS1302 RTCModule(RTCResetPin, RTCDataPin, RTCClockPin);
-MQ135 MQ135_Sens = MQ135(MQ135_GasSens);
 
 // Shifter Out Initializer
 ShiftOut<1> Shifter_595N;
