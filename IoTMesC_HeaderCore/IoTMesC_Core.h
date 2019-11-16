@@ -73,13 +73,14 @@
     *           1. LCD Sensor
     *           2. TEMP Sensor
     *           3. GAS Sensor
+    *           4. Software Serial
     *           4. Controllers and Stuff and Anything That Doesn't Need Any Fallback Library.
     *
-    *       -> Possible Usage
-    *           1.
-    *           2.
-    *           3.
-    *           4.
+    *       -> Definition Options To Declare at Arduino Sketch
+    *           1. LCD_FALLBACK_I2C
+    *           2. TEMP_FALLBACK_SENS
+    *           3. GAS_FALLBACK_SENS
+    *           4. SERIAL_DEV_UNO
     *
     ! NOTE
         * Not definiting fall back definitions will automatically process the arduino sketch.
@@ -89,28 +90,52 @@
     #define LIBRARY_INIT_GUARD
 
         #ifdef LCD_FALLBACK_I2C
-            #include <LiquidCrystal_I2C.h>
+            #include <../IoTMesC_LibraryCores/AlternativeCore/LiquidCrystal_I2C.h>
         #else
             // ! Include Future Library Of Those...
             // * #include
         #endif
 
         #ifdef TEMP_FALLBACK_SENS
-            #include <DHT.h>
+            #include <../IoTMesC_LibraryCores/AlternativeCore/DHT.h>
         #else
             // ! Include Future Library Of Those...
             // * #include
         #endif
 
         #ifdef GAS_FALLBACK_SENS
-            #include <MQ135.h>
+            #include <../IoTMesC_LibraryCores/AlternativeCore/MQ135.h>
         #else
             // ! Include Future Library Of Those...
             // * #include
         #endif
 
-#elif
+        #ifdef SERIAL_DEV_UNO
+            #include <../IoTMesC_LibraryCores/AlternativeCore/SoftwareSerial.h>
+        #endif
 
+        #ifdef SEGMENT_CUST_DECODER_ENABLE
+            #include <../IoTMesC_LibraryCores/AlternativeCore/ShiftOut.h>
+        #else
+            // ! We might implement something out of this.
+            //#include <...h>
+        #endif
+        #ifdef MULTIPLEXER_ENABLE
+            #include <../IoTMesC_LibraryCores/AlternativeCore/ShiftIn.h>
+        #endif
+
+        #ifdef MFRC_REQUIRE_EXTENDED_ENABLE
+            #include <../IoTMesC_LibraryCores/AlternativeCore/MFRC522Extended.h>
+        #else
+            #include <../IoTMesC_LibraryCores/AlternativeCore/MFRC522.h>
+        #endif
+
+        // ! 4. Libraries with No Fallback Required When Current Library is Down / Not-Working.
+        #include <DS1302.h>
+        #include <MemoryFree.h>
+        #include <Wire.h>
+        #include <SPI.h>
+        #include <EEPROM.h>
 #endif
 
 namespace AVR_DEV_DECL
