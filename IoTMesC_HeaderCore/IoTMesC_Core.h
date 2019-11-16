@@ -90,52 +90,51 @@
     #define LIBRARY_INIT_GUARD
 
         #ifdef LCD_FALLBACK_I2C
-            #include <../IoTMesC_LibraryCores/AlternativeCore/LiquidCrystal_I2C.h>
+            #include "AlternativeCore/LiquidCrystal_I2C.h"
         #else
-            // ! Include Future Library Of Those...
-            // * #include
+            #include "PrimaryCore/TFT_ILI9163C.h"
         #endif
 
         #ifdef TEMP_FALLBACK_SENS
-            #include <../IoTMesC_LibraryCores/AlternativeCore/DHT.h>
+            #include "AlternativeCore/DHT.h"
         #else
-            // ! Include Future Library Of Those...
-            // * #include
+            #include "PrimaryCore/Adafruit_SHT31.h"
         #endif
 
         #ifdef GAS_FALLBACK_SENS
-            #include <../IoTMesC_LibraryCores/AlternativeCore/MQ135.h>
+            #include "AlternativeCore/MQ135.h"
         #else
-            // ! Include Future Library Of Those...
-            // * #include
+            #include "PrimaryCore/CSS811.h"
         #endif
 
         #ifdef SERIAL_DEV_UNO
-            #include <../IoTMesC_LibraryCores/AlternativeCore/SoftwareSerial.h>
+            #include <SoftwareSerial>
         #endif
 
         #ifdef SEGMENT_CUST_DECODER_ENABLE
-            #include <../IoTMesC_LibraryCores/AlternativeCore/ShiftOut.h>
-        #else
-            // ! We might implement something out of this.
-            //#include <...h>
+            #include "PrimaryCore/ShiftOut.h"
         #endif
+
         #ifdef MULTIPLEXER_ENABLE
-            #include <../IoTMesC_LibraryCores/AlternativeCore/ShiftIn.h>
+            #include "PrimaryCore/ShiftIn.h"
         #endif
 
         #ifdef MFRC_REQUIRE_EXTENDED_ENABLE
-            #include <../IoTMesC_LibraryCores/AlternativeCore/MFRC522Extended.h>
+            #include "AlternativeCore/MFRC522Extended.h"
         #else
-            #include <../IoTMesC_LibraryCores/AlternativeCore/MFRC522.h>
+            #include "PrimaryCore/MFRC522.h"
         #endif
 
         // ! 4. Libraries with No Fallback Required When Current Library is Down / Not-Working.
-        #include <DS1302.h>
-        #include <MemoryFree.h>
-        #include <Wire.h>
-        #include <SPI.h>
-        #include <EEPROM.h>
+        #include "PrimaryCore/MemoryFree.h"
+        #include "PrimaryCore/DS1302.h"
+        #include "PrimaryCore/SoftReset.h"
+
+        // * These Libraries Doesn't Require A Copy from a Repository.
+        // * That is because Arduino Files does include it already, so mostly likely you have it.
+        #include <Wire>
+        #include <SPI>
+        #include <EEPROM>
 #endif
 
 namespace AVR_DEV_DECL
