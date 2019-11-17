@@ -95,6 +95,15 @@
             #include "PrimaryCore/MFRC522.h"
         #endif
 
+        // Definition That Correlates tro SEVEN_SEG_CONSTRAINTS. But declared here anyway.
+        #ifdef COMMON_ANODE
+            #define LED_ON LOW
+            #define LED_OFF HIGH
+        #else
+            #define LED_ON HIGH
+            #define LED_OFF LOW
+        #endif
+
         // ! 4. Libraries with No Fallback Required When Current Library is Down / Not-Working.
         #include "PrimaryCore/MemoryFree.h"
         #include "PrimaryCore/DS1302.h"
@@ -289,13 +298,34 @@
             inline void init_DevSens() const;
             inline void init_DevSPI() const;
             inline void init_DevWire() const;
+            static void init_DevRTC()
 
-            uint32_t SketchTimeHit(UTIL_CONST_DECL::MILLIS_RETURN_VAL ParamCondition);
+            void init_DSD() const; // ENUM Candidate
+
+            uint32_t sketchTimeHit(UTIL_CONST_DECL::MILLIS_RETURN_VAL ParamCondition);
 
 
-            static void DIP_PINStats() const;
+            static void DIP_PINStats() noexcept;
 
-            void
+            // Device Updaters FN Members
+            void updateLCD() noexcept;
+            void updateDSD() noexcept;
+
+            // Serial Communication FN Members
+
+            void initSerial_POST() noexcept;
+            void serial_isCommsAlive() noexcept;
+            void serialHost_Send() noexcept;
+            void serialHost_Receive() noexcept;
+
+
+            // RTC FN Members
+            void rtc_PauseFN() const;
+            void rtc_SetWriteProtect(bool TruthValGiven) noexcept;
+            void rtc_QueryTimeSerial() noexcept(false);
+            void rtc_SerialReceiveTime() noexcept;
+            void rtc_CheckCorrectDiff() noexcept(false);
+            void rtc_DisplayTime() noexcept();
 
         private:
             uint8_t DataCounter_Update[SEVEN_SEG_CTRLLER_DEF::SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {UTIL_CONST_DECL::CONST_ANTI_MAGIC::NULL_SET_DATA};
