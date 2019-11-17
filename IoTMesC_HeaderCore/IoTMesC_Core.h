@@ -56,8 +56,8 @@
         #define IOT_DEVICE_CONTROLLER_AVR_DATASENS_GUARD
     #endif
 
-    #ifndef LIBRARY_IOT_AVR_GUARD
-        #define LIBRARY_IOT_AVR_GUARD
+    #ifndef IOT_AVR_GUARD
+        #define IOT_AVR_GUARD
         #ifdef LCD_FALLBACK_I2C
             #include "AlternativeCore/LiquidCrystal_I2C.h"
         #else
@@ -114,7 +114,10 @@
         #include <Wire>
         #include <SPI>
         #include <EEPROM>
-    #endif // * Definition End Point |> LIBRARY_IOT_AVR_GUARD
+
+        // Definition Macros
+        #define StrOtpt_RTCBeautify(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
+    #endif // * Definition End Point |> IOT_AVR_GUARD
 
 /*
     * namespace |> AVR_DEV_DECL ~= Arduino AVR Device Declarations
@@ -137,7 +140,7 @@
 */
 
 /*
-    * definition |> LIBRARY_IOT_AVR_GUARD ~= Library Initializer with #Define Guard
+    * definition |> IOT_AVR_GUARD ~= Library Initializer with #Define Guard
 
     *   -> Use for Alternation of Library Use.
     *       -> Library Hierarchy:
@@ -294,6 +297,13 @@
     {
 
         public:
+            // Add Constructors here.
+
+        private:
+            uint8_t DataCounter_Update[SEVEN_SEG_CTRLLER_DEF::SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {UTIL_CONST_DECL::CONST_ANTI_MAGIC::NULL_SET_DATA};
+            static uint32_t SketchTime_CurStats;
+            static uint8_t SerialByteCnt;
+            static uint16_t SRAM_FreeCnt;
             // * Device and Peripherals Initializers.
             inline void init_DevSens() const;
             inline void init_DevSPI() const;
@@ -311,15 +321,21 @@
             void updateLCD() noexcept;
             void updateDSD() noexcept;
 
-            // Serial Communication FN Members
+            // * SPI Tranmission FN Handlers
+
+
+
+            // * I2C Tranmission FN Handlers
+
+
+            // * Serial Communication FN Members
 
             void initSerial_POST() noexcept;
             void serial_isCommsAlive() noexcept;
             void serialHost_Send() noexcept;
             void serialHost_Receive() noexcept;
 
-
-            // RTC FN Members
+            // * RTC FN Members
             void rtc_PauseFN() const;
             void rtc_SetWriteProtect(bool TruthValGiven) noexcept;
             void rtc_QueryTimeSerial() noexcept(false);
@@ -327,23 +343,13 @@
             void rtc_CheckCorrectDiff() noexcept(false);
             void rtc_DisplayTime() noexcept();
 
-        private:
-            uint8_t DataCounter_Update[SEVEN_SEG_CTRLLER_DEF::SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {UTIL_CONST_DECL::CONST_ANTI_MAGIC::NULL_SET_DATA};
-            static uint32_t SketchTime_CurStats;
-            static uint8_t SerialByteCnt;
-            static uint16_t SRAM_FreeCnt;
+
 
 
         protected:
     };
 
 #endif // * Definition End Point |> IOT_DEVICE_CONTROLLER_AVR_DATASENS
-
-
-
-
-
-
 
 // * IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET — Device Definition Declarations
 
@@ -352,16 +358,22 @@
        #define IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET_GUARD
     #endif
 
-    #ifndef LIBRARY_IOT_ESP_GUARD
-        #define LIBRARY_IOT_ESP_GUARD
+    #ifndef IOT_ESP_GUARD
+        #define IOT_ESP_GUARD
 
+            #include <ESP8266WiFi.h>
+            #include <ESP8266WebServer.h>
+            #include <ESP8266mDNS.h>
+            #include <WiFiClient.h>
+            #include <SoftReset.h>
 
     #endif
+
     namespace IoTMesC_NMCU_DEV_DECL
     {
         class IoTMesC_NMCU_DRVR;
 
-        namespace MyNamespace
+        namespace ESP_PROPERTIES
         {
             enum MyEnum
             {
@@ -387,7 +399,7 @@
                 EMERGENCY_MODE = 7,
                 RESET_FLAG = 8
 
-            } SetFlagHandler;
+            };
 
         }
         namespace MyNamespace
@@ -403,14 +415,53 @@
         }
     }
 
-    class IoTMesC_NMCU_DRVR
+    class IoTMesC_NMCU_DEV_DECL::IoTMesC_NMCU_DRVR
     {
-    private:
-        /* data */
+
     public:
         IoTMesC_NMCU_DRVR(/* args */) {}
         ~IoTMesC_NMCU_DRVR() {}
+
+    private:
+        typedef struct UserCredentials;
+        typedef struct WiFiCredentials;
+        static uint8_t SET_HANDLE_FLAG;
+
+        uint8_t WIFI_DEFINED_COUNT;
+
+        // * Initializers
+        init_ESPDev(ESP_PROPERTIES::ModeFlags FlagGiven);
+        init_ESPWiFi();
+        // * setState FN Members
+
+
+        // * WiFi Functionalities
+        WiFi_setBroadcast() noexcept;
+        WiFi_Broadcast() noexcept;
+        WiFi_Enable() noexcept;
+        WiFi_Disable() noexcept;
+
+        // HTTP Request Handler
+
+
+
     };
+
+    // Struct Declarations
+    typedef struct UserCredentials
+    {
+        uint16_t UserID;
+        char *Username;
+        char *Password;
+    };
+
+
+    typedef struct WiFiCredentials
+    {
+        char* WiFi_SSID;
+        char* WiFi_Password;
+    };
+
 #endif
 
 /*
