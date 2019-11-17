@@ -1,5 +1,7 @@
 /*
-    Name: IoT MesC Library Core Header, Two-In-One
+    Name: IoT Multi-Essential Sensing Components | For Personal Benefits
+    Type: Library Core Header | Declarations Only
+
     Created by: Janrey "CodexLink" Licas
     Created on: 11/14/2019 - 21:23
 */
@@ -164,16 +166,16 @@
     namespace IoTMesC_AVR_DEV_DECL
     {
         class IotMesC_AVR_DRVR;
-        namespace SEVEN_SEG_CTRLLER_DEF : uint16_t
+        namespace SEVEN_SEG_CTRLLER_DEF : uint_fast16_t
         {
-            enum SEVEN_SEG_CONSTRAINTS : uint8_t
+            enum SEVEN_SEG_CONSTRAINTS : uint_fast8_t
             {
                 DATA_COUNTER_ITER = 6,
                 RESERVED_MAX_ITER = 7,
                 MAX_CURR_CANDIDATE_VAL = 17
             };
 
-            const uint8_t SevenSegment_Payload[SEVEN_SEG_CONSTRAINTS::MAX_CURR_CANDIDATE_VAL][SEVEN_SEG_CONSTRAINTS::RESERVED_MAX_ITER] = {
+            const uint_fast8_t SevenSegment_Payload[SEVEN_SEG_CONSTRAINTS::MAX_CURR_CANDIDATE_VAL][SEVEN_SEG_CONSTRAINTS::RESERVED_MAX_ITER] = {
                 {1, 1, 1, 1, 1, 1, 0}, // 0
                 {0, 1, 1, 0, 0, 0, 0}, // 1
                 {1, 1, 0, 1, 1, 0, 1}, // 2
@@ -192,55 +194,54 @@
                 {1, 0, 1, 1, 0, 1, 1}, // S
                 {1, 1, 0, 0, 1, 0, 1}  // ?
             };
-        } // * namespace SEVEN_SEG_CTRLLER_DEF:uint16_t
+        } // * namespace SEVEN_SEG_CTRLLER_DEF:uint_fast16_t
 
         // ! |> 3. Sensors and Devices | Pin Declarations
         namespace SENS_N_DEVS_PIN_DECL
         {
-            enum TFT_LCD_PIN_DEF : uint8_t
+            enum TFT_LCD_PIN_DEF : uint_fast8_t
             {
                 TFT_LCD_DC = 38,
                 TFT_LCD_CS = 39
             };
 
-            enum MFRC522_PIN_DEF : uint8_t
+            enum MFRC522_PIN_DEF : uint_fast8_t
             {
                 RFID_RST_PIN = 8,
                 RFID_SS_PIN = 53
             };
 
-            enum RTC1302_PIN_DEF : uint8_t
+            enum RTC1302_PIN_DEF : uint_fast8_t
             {
                 RESPin = 10,
                 SDAPin = 11,
                 SCLPin = 12
             };
 
-            enum PIR_MINI_PIN_DEF : uint8_t
+            enum PIR_MINI_PIN_DEF : uint_fast8_t
             {
                 MAIN_PIN = NULL,
                 LED_TRIP_PIN = NULL
             };
 
-            enum MQ135_PIN_DEF : uint8_t
+            enum MQ135_PIN_DEF : uint_fast8_t
             {
                 MAIN_PIN = NULL
             };
 
             namespace DIP_SWITCH_CONFIG_DEF
             {
-                enum DIP_SWITCH_PIN_DEF : uint8_t
+                enum DIP_SWITCH_PIN_DEF : uint_fast8_t
                 {
                     SWITCH_PIN_ONE = NULL,
                     SWITCH_PIN_TWO = NULL,
                     SWITCH_PIN_THREE = NULL,
                     SWITCH_PIN_FOUR = NULL
                 };
-                enum SWITCH_DEFINED_MODE : uint8_t
+                enum SWITCH_DEFINED_MODE : uint_fast8_t
                 {
                     MCU_RESIST_INPUT = INPUT_PULLUP,
-                    SWITCH_INPUT = INPUT,
-                    SWITCH_OUTPUT = OUTPUT
+                    SWITCH_INPUT = INPUT
                 };
             } // * namespace DIP_SWITCH_CONFIG_DEF
 
@@ -253,7 +254,7 @@
         */
         namespace UTIL_CONST_DECL
         {
-            enum CONST_ANTI_MAGIC : uint8_t
+            enum CONST_ANTI_MAGIC : uint_fast8_t
             {
                 ZERO_REAL_INT = 0,
                 NULL_SET_DATA = 0,
@@ -262,7 +263,7 @@
                 SEG_INDEX_DP_EXEMPT_OFFSET = 2,
                 CHAR_SERIAL_BUFFER_SIZE = 128
             };
-            enum MILLIS_RETURN_VAL : uint8_t
+            enum MILLIS_RETURN_VAL : uint_fast8_t
             {
                 CST_RET_UNKNOWN_VAL,
                 CST_RET_CURR_RESULT,
@@ -271,7 +272,7 @@
             };
 
             // ! Potential Backup when TFTLCD Fails. Please Elaborate more...
-            enum LCD_I2C_CONSTRAINT : uint8_t
+            enum LCD_I2C_CONSTRAINT : uint_fast8_t
             {
                 LCD_I2C_ADDR = 0x67,
                 LCD_I2C_MAX_W = 20,
@@ -282,7 +283,7 @@
                 LCD_I2C_POS_END_y = LCD_I2C_POS_START_Y - CONST_ANTI_MAGIC::VAL_INDEX_OFFSET
             };
 
-            enum AVR_SERIAL_DECL : uint16_t
+            enum AVR_SERIAL_DECL : uint_fast16_t
             {
                 DEFAULT_PRTRCL_BAUDRATE = 0x2580, // 9600
                 HOST_BAUDRATE = 0x01c200,         // 115200
@@ -297,13 +298,23 @@
     {
 
         public:
+        // * Constructor
+        IoTMesC_AVR_DEV_DECL(void)
+        {
+
+        }
+        // * Destructor
+        ~IoTMesC_AVR_DEV_DECL(void)
+        {
+
+        }
             // Add Constructors here.
 
         private:
-            uint8_t DataCounter_Update[SEVEN_SEG_CTRLLER_DEF::SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {UTIL_CONST_DECL::CONST_ANTI_MAGIC::NULL_SET_DATA};
-            static uint32_t SketchTime_CurStats;
-            static uint8_t SerialByteCnt;
-            static uint16_t SRAM_FreeCnt;
+            uint_fast8_t DataCounter_Update[SEVEN_SEG_CTRLLER_DEF::SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {UTIL_CONST_DECL::CONST_ANTI_MAGIC::NULL_SET_DATA};
+            static uint_fast32_t SketchTime_CurStats;
+            static uint_fast8_t SerialByteCnt;
+            static uint_fast16_t SRAM_FreeCnt;
             // * Device and Peripherals Initializers.
             inline void init_DevSens() const;
             inline void init_DevSPI() const;
@@ -312,20 +323,25 @@
 
             void init_DSD() const; // ENUM Candidate
 
-            uint32_t sketchTimeHit(UTIL_CONST_DECL::MILLIS_RETURN_VAL ParamCondition);
+            uint_fast32_t sketchTimeHit(UTIL_CONST_DECL::MILLIS_RETURN_VAL ParamCondition);
 
 
             static void DIP_PINStats() noexcept;
 
             // Device Updaters FN Members
             void updateLCD() noexcept;
-            void updateDSD() noexcept;
 
-            // * SPI Tranmission FN Handlers
+            // * Seven Segment Division
+            void initDSD(/*Potential Beginning Sequence After Initialization Or Let Go*/) noexcept;
+            void testDSD(/*ENUM or Choices Here.*/) noexcept;
+            void updateDSD(/**/) noexcept;
+
+            // * SPI Tranmission FN Handlers - MFRC522 and TFT_ILI9163C FN Member Declarations
 
 
-
-            // * I2C Tranmission FN Handlers
+            // * I2C Tranmission FN Handlers – CCS811 and SHT3X FN Member Declarations
+            void return_CCS811_I2C(/* Possible ENUM */) noexcept;
+            void return_SHT3X_I2C(/* Possible ENUM */) noexcept;
 
 
             // * Serial Communication FN Members
@@ -334,19 +350,18 @@
             void serial_isCommsAlive() noexcept;
             void serialHost_Send() noexcept;
             void serialHost_Receive() noexcept;
+            void serialHost_ReEstablish() noexcept;
+            void serialHost_Reset() noexcept; // ! POTENTIAL Removal.
+
 
             // * RTC FN Members
-            void rtc_PauseFN() const;
-            void rtc_SetWriteProtect(bool TruthValGiven) noexcept;
+            inline void rtc_PauseFN() const;
+            inline void rtc_SetWriteProtect(bool TruthValGiven) noexcept;
             void rtc_QueryTimeSerial() noexcept(false);
             void rtc_SerialReceiveTime() noexcept;
             void rtc_CheckCorrectDiff() noexcept(false);
-            void rtc_DisplayTime() noexcept();
+            inline void rtc_DisplayTime() noexcept();
 
-
-
-
-        protected:
     };
 
 #endif // * Definition End Point |> IOT_DEVICE_CONTROLLER_AVR_DATASENS
@@ -419,15 +434,17 @@
     {
 
     public:
-        IoTMesC_NMCU_DRVR(/* args */) {}
-        ~IoTMesC_NMCU_DRVR() {}
+        // Constructor
+        IoTMesC_NMCU_DRVR(void) {}
+        // Destructor
+        ~IoTMesC_NMCU_DRVR(void) {}
 
     private:
         typedef struct UserCredentials;
         typedef struct WiFiCredentials;
-        static uint8_t SET_HANDLE_FLAG;
+        static uint_fast8_t SET_HANDLE_FLAG;
 
-        uint8_t WIFI_DEFINED_COUNT;
+        uint_fast8_t WIFI_DEFINED_COUNT;
 
         // * Initializers
         init_ESPDev(ESP_PROPERTIES::ModeFlags FlagGiven);
@@ -443,14 +460,14 @@
 
         // HTTP Request Handler
 
-
+        // Site Handler
 
     };
 
     // Struct Declarations
     typedef struct UserCredentials
     {
-        uint16_t UserID;
+        uint_fast16_t UserID;
         char *Username;
         char *Password;
     };
@@ -465,7 +482,9 @@
 #endif
 
 /*
-    Name: IoT MesC Library Core Header, Two-In-One
+    Name: IoT Multi-Essential Sensing Components | For Personal Benefits
+    Type: Library Core Header | Declarations Only
+
     Created by: Janrey "CodexLink" Licas
     Created on: 11/14/2019 - 21:23
 */
