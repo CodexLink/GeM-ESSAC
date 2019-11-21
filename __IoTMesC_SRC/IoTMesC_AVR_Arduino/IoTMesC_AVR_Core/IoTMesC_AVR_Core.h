@@ -17,9 +17,12 @@
     ! NOTE
         * The name of the device was converted to Hexadecimal because of the desire of something formal. TLDR; Personal Preference
 */
-#define IOT_DEVICE_CONTROLLER_AVR_DATASENS 0x4e6f64654d4355
-#define IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET 0x41726475696e6f20415652
-#define DEBUG_ENABLED
+
+// Choices
+
+//#define IOT_DEVICE_CONTROLLER_AVR_DATASENS 0x4e6f64654d4355
+//#define IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET 0x41726475696e6f20415652
+//#define DEBUG_ENABLED
 
 /*
     ! >|- definition |> Universal Serial Filter -<|
@@ -27,10 +30,11 @@
 #ifdef DEBUG_ENABLED
     #if Cmd_Func == println || print
         #define SerialH_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
-        #define SerialL_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
+        #define SerialR_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
     #else
         #define SerialH_Call(Cmd_Func, Params)
-        #define SerialL_Call(Cmd_Func, Params)
+        #define SerialR_Call(Cmd_Func, Params)
+    #endif
 #endif
 /*
     ! >|- Macro Protection Layer 1 -|<
@@ -54,6 +58,7 @@
 // ! Macro Layer 2 Definitions for IOT_DEVICE_CONTROLLER_AVR_DATASENS
 // * IOT_DEVICE_CONTROLLER_AVR_DATASENS — Device Definition Declarations
 #if defined(IOT_DEVICE_CONTROLLER_AVR_DATASENS)
+    #include "Arduino.h"
     #ifndef IOT_DEVICE_CONTROLLER_AVR_DATASENS_GUARD
         #define IOT_DEVICE_CONTROLLER_AVR_DATASENS_GUARD
     #endif
@@ -63,7 +68,7 @@
         #ifdef LCD_FALLBACK_I2C
             #include "AlternativeCore/LiquidCrystal_I2C.h"
         #else
-            #include <Adafruit_GFX>
+            #include <Adafruit_GFX.h>
             #include "PrimaryCore/TFT_ILI9163C.h"
         #endif
 
@@ -97,7 +102,7 @@
             #include "PrimaryCore/MFRC522.h"
         #endif
 
-        // Definition That Correlates tro SEVEN_SEG_CONSTRAINTS. But declared here anyway.
+        // Definition That Correlates to SEVEN_SEG_CONSTRAINTS. But declared here anyway.
         #ifdef COMMON_ANODE
             #define LED_ON LOW
             #define LED_OFF HIGH
@@ -119,6 +124,7 @@
 
         // Definition Macros
         #define StrOtpt_RTCBeautify(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
+
     #endif // * Definition End Point |> IOT_AVR_GUARD
 
 /*
@@ -166,7 +172,7 @@
     namespace IoTMesC_AVR_DEV_DECL
     {
         class IotMesC_AVR_DRVR;
-        namespace SEVEN_SEG_CTRLLER_DEF : uint_fast16_t
+        namespace SEVEN_SEG_CTRLLER_DEF
         {
             enum SEVEN_SEG_CONSTRAINTS : uint_fast8_t
             {
@@ -260,6 +266,7 @@
                 NULL_SET_DATA = 0,
                 VAL_INDEX_OFFSET = 1,
                 ARR_INDEX_OFFSET = 1,
+                ENDLESS = 1,
                 SEG_INDEX_DP_EXEMPT_OFFSET = 2,
                 CHAR_SERIAL_BUFFER_SIZE = 128
             };
@@ -296,7 +303,6 @@
     // * Class Declarations
     class IoTMesC_AVR_DEV_DECL::IotMesC_AVR_DRVR
     {
-
         public:
         // * Constructor
         IoTMesC_AVR_DEV_DECL(void)
@@ -316,10 +322,12 @@
             static uint_fast8_t SerialByteCnt;
             static uint_fast16_t SRAM_FreeCnt;
             // * Device and Peripherals Initializers.
+
+            void begin() const;
             inline void init_DevSens() const;
-            inline void init_DevSPI() const;
-            inline void init_DevWire() const;
-            static void init_DevRTC()
+            inline void init_DevSPI() const; // ! Potential Deprecation
+            inline void init_DevWire() const; // ! Potential Deprecation, HIGH CHANCE
+            static void init_DevRTC() const;
 
             void init_DSD() const; // ENUM Candidate
 
@@ -447,16 +455,17 @@
         uint_fast8_t WIFI_DEFINED_COUNT;
 
         // * Initializers
-        init_ESPDev(ESP_PROPERTIES::ModeFlags FlagGiven);
-        init_ESPWiFi();
+        void begin() const;
+        void init_ESPDev(ESP_PROPERTIES::ModeFlags FlagGiven);
+        void init_ESPWiFi();
         // * setState FN Members
 
 
         // * WiFi Functionalities
-        WiFi_setBroadcast() noexcept;
-        WiFi_Broadcast() noexcept;
-        WiFi_Enable() noexcept;
-        WiFi_Disable() noexcept;
+        void WiFi_setBroadcast() noexcept;
+        void WiFi_Broadcast() noexcept;
+        void WiFi_Enable() noexcept;
+        void WiFi_Disable() noexcept;
 
         // HTTP Request Handler
 
