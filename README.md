@@ -1,44 +1,37 @@
-<h1 align="center">IoTMesC_PersonalBenefits</h1>
-<h5 align="center">IoT Multi-Essential Sensing Components For Personal Benefits, Specialized in Arduino</h5>
+<h1 align="center">IoTMesC</h1>
+<h4 align="center">IoT Multi-Essential Sensing Components For Personal Benefits, Built on Arduino with ESP8266</h4>
 <p align="center">
-  <a href="https://travis-ci.com/CodexLink/IoTMesC_PersonalBenefits">
-    <img src="https://badgen.net/travis/CodexLink/IoTMesC_PersonalBenefits" alt="Build Status">
+<a href="https://www.codefactor.io/repository/github/codexlink/iotmesc"><img src="https://www.codefactor.io/repository/github/codexlink/iotmesc/badge" alt="CodeFactor" /></a>
+
+<a href="https://www.codacy.com/app/CodexLink/IoTMesC?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CodexLink/IoTMesC&amp;utm_campaign=Badge_Grade">
+  <img src="https://badgen.net/codacy/grade/d8efe2b67dac445d918e277601e801b8"/>
   </a>
-<a href="https://www.codefactor.io/repository/github/codexlink/IoTMesC_PersonalBenefits">
-  <img src="https://www.codefactor.io/repository/github/codexlink/IoTMesC_PersonalBenefits/badge" alt="CodeFactor" />
-</a>
-<a href="https://www.codacy.com/app/CodexLink/IoTMesC_PersonalBenefits?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CodexLink/IoTMesC_PersonalBenefits&amp;utm_campaign=Badge_Grade">
-  <img src="https://api.codacy.com/project/badge/Grade/d8efe2b67dac445d918e277601e801b8"/>
+  <a href="https://github.com/CodexLink/IoTMesC">
+    <img src="https://badgen.net/github/status/CodexLink/IoTMesC" alt="Repository Status">
   </a>
-  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
-    <img src="https://badgen.net/github/status/CodexLink/IoTMesC_PersonalBenefits" alt="Repository Status">
+  <a href="https://github.com/CodexLink/IoTMesC">
+    <img src="https://badgen.net/github/closed-issues/CodexLink/IoTMesC" alt="Closed Issues">
   </a>
-  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
-    <img src="https://badgen.net/github/open-issues/CodexLink/IoTMesC_PersonalBenefits" alt="Current Opened Issues">
+  <a href="https://github.com/CodexLink/IoTMesC">
+    <img src="https://badgen.net/github/last-commit/CodexLink/IoTMesC" alt="Repository Last Commit">
   </a>
-  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
-    <img src="https://badgen.net/github/closed-issues/CodexLink/IoTMesC_PersonalBenefits" alt="Closed Issues">
-  </a>
-  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
-    <img src="https://badgen.net/github/last-commit/CodexLink/IoTMesC_PersonalBenefits" alt="Repository Last Commit">
-  </a>
-  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
-    <img src="https://badgen.net/github/assets-dl/CodexLink/IoTMesC_PersonalBenefits" alt="Repository Downloads">
-  </a>
-  <a href="https://github.com/CodexLink/IoTMesC_PersonalBenefits">
-    <img src="https://badgen.net/github/license/CodexLink/IoTMesC_PersonalBenefits" alt="Repository License">
+  <a href="https://github.com/CodexLink/IoTMesC">
+    <img src="https://badgen.net/github/license/CodexLink/IoTMesC" alt="Repository License">
   </a>
 </p>
 
 # Welcome!
-Hello! This is an Arduino Personal Project for Personal Benefits #1 (APP_PB_#1). This project shows my current skills in C++ programming. And this also shows progression on how can I build a system with the use of electrical board circuits and computing Voltage, Current and Resistance per Each. Take this repository as a progression from Nothing-To-BitExperienced. 
+Hello! This is my first Arduino Personal Project for Personal Benefits #1 (APP_PB_#1). This project is currently under slow progression status. Meaning I'm basically in a state of being busy wherein I don't have most of my time dedicated to this project. Even though it takes me about a year to do something about it.
+
+
+# TLDR; What does this project do? / What so special about it?
+It does report only sensor data and there's nothing special about it, seriously. But there will be an implementation where I have to use RFID to unlock my laptop and control its some functionality such as locking, unlocking (obviously), mode setting and other such. I just want to create a simple prototype that can be hardened by the use of connecting it to the web. By the means of reporting data from the internet. This way I could get concept of returning data from app to hardware or vice-versa. I just want to get the main glipse of reporting and returning data from any platform by the use of this one as my base concept.
 
 ## Table of Contents
 
-> This README will be seperated in accordance with formality and content quality. Those two are: Non-Formal and Formal
+This README will be seperated in accordance with formality and content quality. Those two are: Non-Formal and Formal
 Non-formal was done to answer peoples thought or my thoughts with the use informal words. Some sections in non-formal is basically not fitted to the formal section.
 
-- [Formal Content Section](#formal-content-section)
   * [Introduction](#introduction)
   * [Requirements](#requirements)
   * [Stages of Building](#stages-of-building)
@@ -60,38 +53,42 @@ Non-formal was done to answer peoples thought or my thoughts with the use inform
 [Non-Formal Content Section](#nonformal-content)
  Unknown Yet.
 
-# Formal Content Section
 ## Introduction
 
+
 ## Requirements
+
 Just in case what it feels to be a beginner and tries building something he doesn't know. Here are the requirements and materials needed to build this project.
+
+### MATERIALS / Parts
 ```
-MATERIALS / Parts
-
-TOOLS
-
-Optional 
-
-[Important] Technical Required Skills
-
+```
+### TOOLS For Software
+```
 ```
 
-## Stages of Building
-### Circuit
-### Arduino Code
-### PCB Design
+### Skills
+```
+```
+
+### Some Options
+```
+```
 
 ## Deployment
 
-## Travis CI Integration
-### Introduction to Automatic Integration
-### How does it work?
-### How to do it?
+### For Arduino
+
+### For NodeMCU
+
+
+## CI Integration
+### How does it work in your sketch?
 
 
 ## Contributing
 
-There is no contribution outside for a moment. I'm planning to work on this part.
+There are no plans for contributions yet.
 
 ## Versioning
 
@@ -100,27 +97,26 @@ Currently, I use don't use any APIs regarding software versioning. But instead, 
 When Build is done: at 4:51 PM at 08/21/2018
 Result Versioning is: 108212018
 ```
+But for sometime, I might use semantic software versioning system where I have to follow some guidelines instead the one that I have here. I may produce an issue of what kind of versioning system that I have to use in the future. Reference Issue is: #...
 
 ## Authors
 
-Here is the current list of authors who are taking part in the project.
+Here are the current list of authors who are taking part in the project.
 
-* **Janrey Tuazon Licas** - *Initial Work / Project Lead* - [CodexLink](https://github.com/CodexLink)
+* **Janrey Licas** - *Initial Work / Project Lead* - [CodexLink](https://github.com/CodexLink)
 
 ## Acknowledgments
 Unknown for now...
 
 ## License
 
-This project is licensed under the GNU v3 License - see the [LICENSE.md](https://github.com/CodexLink/IoTMesC_PersonalBenefits/blob/master/README.md) file for details
+This project is licensed under the GNU v3 License - see the [LICENSE.md](https://github.com/CodexLink/IoTMesC/blob/master/README.md) file for details
 
 
 
 ## Credits
 - Online Markdown TOC hosted by [Ecotrust-Canada](https://github.com/Ecotrust-Canada/markdown-toc) at [this site](https://ecotrust-canada.github.io/markdown-toc/) and created by [https://github.com/jonschlinkert/markdown-toc](jonschlinkert/markdown-toc)
 
-# Non-Formal Content Section
 
 
-
-A Personal Project by Janrey Licas,<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+A Personal Project by Janrey Licas
