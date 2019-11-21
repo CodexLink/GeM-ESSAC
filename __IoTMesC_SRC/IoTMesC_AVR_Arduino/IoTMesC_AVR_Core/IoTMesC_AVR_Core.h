@@ -1,6 +1,6 @@
 /*
     Name: IoT Multi-Essential Sensing Components | For Personal Benefits
-    Type: Library Core Header | Declarations Only
+    Type: Library Core Header | Declarations Only For Arduimo (AVR)
 
     Created by: Janrey "CodexLink" Licas
     Created on: 11/14/2019 - 21:23
@@ -21,7 +21,6 @@
 // Choices
 
 //#define IOT_DEVICE_CONTROLLER_AVR_DATASENS 0x4e6f64654d4355
-//#define IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET 0x41726475696e6f20415652
 //#define DEBUG_ENABLED
 
 /*
@@ -36,26 +35,12 @@
         #define SerialR_Call(Cmd_Func, Params)
     #endif
 #endif
-/*
-    ! >|- Macro Protection Layer 1 -|<
-
-    * |> Checks device definitions logic. It can detect both defined, or not defined.
-    * It occurs errors on one of the following:
-    *   |> Both Device Definitions are defined.
-    *   |> Both Device Definitions are not defined.
-
-    ! NOTE
-        * Any other such illegal device definitions will not be considered, unless you define it here.
-*/
 
 // ! Device Definition Phase 1
 #if !defined(IOT_DEVICE_CONTROLLER_AVR_DATASENS) && !defined(IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET)
     #error "IoTMesC Core Initialization Halted. No other such candidate device definition could be equal to current set device definition."
-#elif defined(IOT_DEVICE_CONTROLLER_AVR_DATASENS) && defined(IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET)
-    #error "IoTMesC Core Initialization Halted. Both candidate devices are defined. Please define only one!"
 #endif
 
-// ! Macro Layer 2 Definitions for IOT_DEVICE_CONTROLLER_AVR_DATASENS
 // * IOT_DEVICE_CONTROLLER_AVR_DATASENS — Device Definition Declarations
 #if defined(IOT_DEVICE_CONTROLLER_AVR_DATASENS)
     #include "Arduino.h"
@@ -111,13 +96,12 @@
             #define LED_OFF LOW
         #endif
 
-        // ! 4. Libraries with No Fallback Required When Current Library is Down / Not-Working.
+        // ! Libraries declared here has No Fallback Required When Current Library is Down / Not-Working.
         #include "PrimaryCore/MemoryFree.h"
         #include "PrimaryCore/DS1302.h"
         #include "PrimaryCore/SoftReset.h"
 
-        // * These Libraries Doesn't Require A Copy from a Repository.
-        // * That is because Arduino Files does include it already, so mostly likely you have it.
+        // * These Libraries Doesn't Require A Copy from a Repositories.
         #include <Wire>
         #include <SPI>
         #include <EEPROM>
@@ -374,125 +358,9 @@
 
 #endif // * Definition End Point |> IOT_DEVICE_CONTROLLER_AVR_DATASENS
 
-// * IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET — Device Definition Declarations
-
-#if defined(IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET)
-    #ifndef IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET_GUARD
-       #define IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET_GUARD
-    #endif
-
-    #ifndef IOT_ESP_GUARD
-        #define IOT_ESP_GUARD
-
-            #include <ESP8266WiFi.h>
-            #include <ESP8266WebServer.h>
-            #include <ESP8266mDNS.h>
-            #include <WiFiClient.h>
-            #include <SoftReset.h>
-
-    #endif
-
-    namespace IoTMesC_NMCU_DEV_DECL
-    {
-        class IoTMesC_NMCU_DRVR;
-
-        namespace ESP_PROPERTIES
-        {
-            enum MyEnum
-            {
-
-            };
-
-            enum MyEnum
-            {
-
-            };
-
-            enum ModeFlags
-            {
-                DISABLED_FLAG = -2,
-                ERROR_FLAG = -1,
-                SUCCESS_FLAG = 0,
-                IDLE_MODE = 1,
-                DEBUG_MODE = 2,
-                RECONATTMPT_MODE = 3,
-                RETRY_MODE = 4,
-                DEPENDENT_MODE = 5,
-                LOW_VOLT_MODE = 6,
-                EMERGENCY_MODE = 7,
-                RESET_FLAG = 8
-
-            };
-
-        }
-        namespace MyNamespace
-        {
-            enum MyEnum
-            {
-
-            };
-            enum MyEnum
-            {
-
-            };
-        }
-    }
-
-    class IoTMesC_NMCU_DEV_DECL::IoTMesC_NMCU_DRVR
-    {
-
-    public:
-        // Constructor
-        IoTMesC_NMCU_DRVR(void) {}
-        // Destructor
-        ~IoTMesC_NMCU_DRVR(void) {}
-
-    private:
-        typedef struct UserCredentials;
-        typedef struct WiFiCredentials;
-        static uint_fast8_t SET_HANDLE_FLAG;
-
-        uint_fast8_t WIFI_DEFINED_COUNT;
-
-        // * Initializers
-        void begin() const;
-        void init_ESPDev(ESP_PROPERTIES::ModeFlags FlagGiven);
-        void init_ESPWiFi();
-        // * setState FN Members
-
-
-        // * WiFi Functionalities
-        void WiFi_setBroadcast() noexcept;
-        void WiFi_Broadcast() noexcept;
-        void WiFi_Enable() noexcept;
-        void WiFi_Disable() noexcept;
-
-        // HTTP Request Handler
-
-        // Site Handler
-
-    };
-
-    // Struct Declarations
-    typedef struct UserCredentials
-    {
-        uint_fast16_t UserID;
-        char *Username;
-        char *Password;
-    };
-
-
-    typedef struct WiFiCredentials
-    {
-        char* WiFi_SSID;
-        char* WiFi_Password;
-    };
-
-#endif
-
 /*
     Name: IoT Multi-Essential Sensing Components | For Personal Benefits
-    Type: Library Core Header | Declarations Only
+    Type: Library Core Header | Declarations Only For Arduimo (AVR)
 
     Created by: Janrey "CodexLink" Licas
     Created on: 11/14/2019 - 21:23
