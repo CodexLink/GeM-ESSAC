@@ -3,6 +3,7 @@
 # This also reports errors on every associated libraries and stuff.
 
 name: IoTMesC Sketch Build Worker
+
 description: Builds both Arduino and NodeMCU Sketches and Libraries for Every commit and pull request we do. Without actually trying to do it manually.
 author: Janrey Licas | CodexLink
 date_created: 11-22-2019
@@ -20,13 +21,6 @@ on:
     - '**.h'
 
 jobs:
-  env:
-    slow_requireTime: 180
-    fast_requireTime: 60
-    boardAdditionals: http://arduino.esp8266.com/stable/package_esp8266com_index.json
-    # avrSketch: ./
-    # espSketch: ./
-
   # First Worker
   MCUSetupWorker:
     strategy:
@@ -43,9 +37,14 @@ jobs:
   RepoWorkerSetup:
     name: IoTMesC | Repository Initialization
     runs-on: windows-latest
-    timeout-minutes: $fast_requireTime
+    timeout-minutes: 60
     needs: RepoWorkerSetup
     steps:
+      env:
+        boardAdditionals: http://arduino.esp8266.com/stable/package_esp8266com_index.json
+        # avrSketch: ./
+        # espSketch: ./
+
       - name: Stage 1 | Repo Checkout
         uses: actions/checkout@v1
 
@@ -65,14 +64,21 @@ jobs:
           arduino-cli core install ${{ matrix.mcu_name_candidate }}
 
   AVRBuilder:
-    name: Step 3.1 | Arduino Sketch Build Worker | Sketch Verification
+    name: Step 3.1 | Arduino Sketch Build Worker
     runs-on: windows-latest
+    timeout-minutes: 60
     needs: RepoWorkerSetup
-    if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
-    run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$avrSketch
+    steps:
+      - name: Arduino Sketch Build Worker | Sketch Verification
+      if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
+      run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$avrSketch
 
   ESPBuilder:
     name: Step 3.2 | NodeMCU Sketch Build Worker | Sketch Verification
     runs-on: windows-latest
+    timeout-minutes: 60
     needs: AVRBuilder
-    run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$espSketch
+    steps:
+      - name: NodeMCU Sketch Build Worker | Sketch Verification
+      if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
+      run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$espSketch
