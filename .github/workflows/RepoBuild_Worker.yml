@@ -57,7 +57,7 @@ jobs:
       env:
         boardAdditionals: http://arduino.esp8266.com/stable/package_esp8266com_index.json
       run : |
-        arduino-cli core update-index --additional-urls ${boardAdditionals}
+        arduino-cli core update-index --additional-urls ${{boardAdditionals}}
         arduino-cli core install ${{ matrix.mcu_platform_candidate }}
 
   AVRBuildWorker:
