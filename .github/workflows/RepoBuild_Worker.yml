@@ -35,12 +35,13 @@ jobs:
       matrix:
         mcu_platform: ["arduino:avr", "esp8266:esp8266"]
         mcu_fqn_candidate: ["arduino:avr:uno", "arduino:avr:mega:cpu=atmega2560", "esp8266:esp8266:nodemcu", "esp8266:esp8266:nodemcuv2"]
+
         exclude:
         - mcu_platform: "arduino:avr"
-          mcu_fqn_candidate: ["esp8266:esp8266:nodemcu", "esp8266:esp8266:nodemcuv2"]
+          mcu_fqn_candidate: "arduino:avr:uno", "arduino:avr:mega:cpu=atmega2560"
 
         - mcu_platform: "esp8266:esp8266"
-          mcu_fqn_candidate: ["arduino:avr:uno", "arduino:avr:mega:cpu=atmega2560"]
+          mcu_fqn_candidate: "esp8266:esp8266:nodemcu", "esp8266:esp8266:nodemcuv2"
 
     steps:
     - name: Stage 1 | Repo Checkout
