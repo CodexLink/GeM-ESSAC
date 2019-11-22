@@ -66,7 +66,7 @@ jobs:
   AVRBuilder:
     name: Step 3.1 | Arduino Sketch Build Worker | Sketch Verification
     needs: RepoWorkerSetup
-    if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
+    if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
     run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$avrSketch
 
   ESPBuilder:
