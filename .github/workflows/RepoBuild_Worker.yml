@@ -1,11 +1,8 @@
 # Sketch Build Worker YAML
 # Used for Building NodeMCU and Arduino Sketches
-# This also reports errors on every associated libraries and stuff.
-
-
-description: Builds both Arduino and NodeMCU Sketches and Libraries for Every commit and pull request we do. Without actually trying to do it manually.
-author: Janrey Licas | CodexLink
-date_created: 11-22-2019
+#description: Builds both Arduino and NodeMCU Sketches and Libraries for Every commit and pull request we do. Without actually trying to do it manually.
+#author: Janrey Licas | CodexLink
+#date_created: 11-22-2019
 
 name: IoTMesC Sketch Build Worker
 
@@ -15,12 +12,16 @@ on:
     - '**.cpp'
     - '**.ino'
     - '**.h'
+    - '**.yml'
+    - '**.yaml'
 
   pull_request:
     paths:
     - '**.cpp'
     - '**.ino'
     - '**.h'
+    - '**.yml'
+    - '**.yaml'
 
 jobs:
   BuildWorker:
