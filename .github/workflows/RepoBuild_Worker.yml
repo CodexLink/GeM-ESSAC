@@ -43,23 +43,23 @@ jobs:
       boardAdditionals: http://arduino.esp8266.com/stable/package_esp8266com_index.json
 
     steps:
-      - name: Stage 1 | Repo Checkout
-        uses: actions/checkout@v1
+    - name: Stage 1 | Repo Checkout
+      uses: actions/checkout@v1
 
-      - name: Stage 2.0 | CLI Setup
-        uses: arduino/setup-arduino-cli@m1.0.0
+    - name: Stage 2.0 | CLI Setup
+      uses: arduino/setup-arduino-cli@m1.0.0
 
-      - name: Stage 2.1 | CLI Setup for Arduino Device
-        if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install ${{ matrix.mcu_name_candidate }}
+    - name: Stage 2.1 | CLI Setup for Arduino Device
+      if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
+      run: |
+        arduino-cli core update-index
+        arduino-cli core install ${{ matrix.mcu_name_candidate }}
 
-      - name: Stage 2.2 | CLI Setup for ESP8266 Devices
-        if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
-        run : |
-          arduino-cli core update-index --additional-urls $boardAdditionals
-          arduino-cli core install ${{ matrix.mcu_name_candidate }}
+    - name: Stage 2.2 | CLI Setup for ESP8266 Devices
+      if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
+      run : |
+        arduino-cli core update-index --additional-urls $boardAdditionals
+        arduino-cli core install ${{ matrix.mcu_name_candidate }}
 
   AVRBuilder:
     name: Step 3.1 | Arduino Sketch Build Worker
@@ -70,7 +70,7 @@ jobs:
       avrSketch: ./
 
     steps:
-      - name: Arduino Sketch Build Worker | Sketch Verification
+    - name: Arduino Sketch Build Worker | Sketch Verification
       if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
       run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$avrSketch
 
@@ -83,6 +83,6 @@ jobs:
       espSketch: ./
 
     steps:
-      - name: NodeMCU Sketch Build Worker | Sketch Verification
+    - name: NodeMCU Sketch Build Worker | Sketch Verification
       if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
       run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$espSketch
