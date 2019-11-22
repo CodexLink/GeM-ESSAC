@@ -41,7 +41,7 @@ jobs:
         - mcu_platform_candidate: "esp8266:esp8266"
           mcu_candidate_fqbn: "esp8266:esp8266:nodemcuv2"
           mcu_platform_sketch: "."
-          boardAdditionals: "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
+          boardAdditionals: "https://arduino.esp8266.com/stable/package_esp8266com_index.json"
 
     steps:
     - name: Stage 1 | Repo Checkout
@@ -59,7 +59,7 @@ jobs:
     - name: Stage 2.2 | CLI Setup for ESP8266 (NodeMCU) Device
       if: matrix.mcu_candidate_fqbn == 'esp8266:esp8266:nodemcuv2'
       run : |
-        arduino-cli core update-index --additional-urls ${{matrix.boardAdditionals}}
+        arduino-cli core update-index --additional-urls ${{ matrix.boardAdditionals }}
         arduino-cli core install ${{ matrix.mcu_platform_candidate }}
 
   AVRBuildWorker:
