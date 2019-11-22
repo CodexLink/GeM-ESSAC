@@ -1,10 +1,11 @@
 # Sketch Build Worker YAML
 # Used for Building NodeMCU and Arduino Sketches
-#description: Builds both Arduino and NodeMCU Sketches and Libraries for Every commit and pull request we do. Without actually trying to do it manually.
-#author: Janrey Licas | CodexLink
-#date_created: 11-22-2019
 
 name: IoTMesC Sketch Build Worker
+
+description: Builds both Arduino and NodeMCU Sketches and Libraries for Every commit and pull request we do. Without actually trying to do it manually.
+author: Janrey Licas | CodexLink
+date_created: 11-22-2019
 
 on:
   push:
@@ -34,15 +35,13 @@ jobs:
     strategy:
       matrix:
         mcu_platform: ["arduino:avr", "esp8266:esp8266"]
-        mcu_fqn_candidate: ["arduino:avr:uno", "arduino:avr:mega:cpu=atmega2560", "esp8266:esp8266:nodemcu", "esp8266:esp8266:nodemcuv2"]
+        mcu_fqn_candidate: ["arduino:avr:mega:cpu=atmega2560", "esp8266:esp8266:nodemcuv2"]
 
         exclude:
         - mcu_platform: "arduino:avr"
-          mcu_fqn_candidate: "arduino:avr:uno"
           mcu_fqn_candidate: "arduino:avr:mega:cpu=atmega2560"
 
         - mcu_platform: "esp8266:esp8266"
-          mcu_fqn_candidate: "esp8266:esp8266:nodemcu"
           mcu_fqn_candidate:  "esp8266:esp8266:nodemcuv2"
 
     steps:
