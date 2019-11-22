@@ -1,23 +1,30 @@
 <h1 align="center">IoTMesC</h1>
 <h4 align="center">IoT Multi-Essential Sensing Components For Personal Benefits, Built on Arduino with ESP8266</h4>
 <p align="center">
-<a href="https://www.codefactor.io/repository/github/codexlink/iotmesc"><img src="https://www.codefactor.io/repository/github/codexlink/iotmesc/badge" alt="CodeFactor" /></a>
+
+<a href="https://github.com/CodexLink/IoTMesC">
+  <img src="https://github.com/CodexLink/IoTMesC/workflows/IoTMesC%20Sketch%20Build%20Worker/badge.svg">
+</a>
+
+<a href="https://www.codefactor.io/repository/github/codexlink/iotmesc">
+  <img src="https://www.codefactor.io/repository/github/codexlink/iotmesc/badge" alt="CodeFactor"/>
+</a>
 
 <a href="https://www.codacy.com/app/CodexLink/IoTMesC?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CodexLink/IoTMesC&amp;utm_campaign=Badge_Grade">
   <img src="https://badgen.net/codacy/grade/d8efe2b67dac445d918e277601e801b8"/>
-  </a>
-  <a href="https://github.com/CodexLink/IoTMesC">
-    <img src="https://badgen.net/github/status/CodexLink/IoTMesC" alt="Repository Status">
-  </a>
-  <a href="https://github.com/CodexLink/IoTMesC">
-    <img src="https://badgen.net/github/closed-issues/CodexLink/IoTMesC" alt="Closed Issues">
-  </a>
-  <a href="https://github.com/CodexLink/IoTMesC">
-    <img src="https://badgen.net/github/last-commit/CodexLink/IoTMesC" alt="Repository Last Commit">
-  </a>
-  <a href="https://github.com/CodexLink/IoTMesC">
-    <img src="https://badgen.net/github/license/CodexLink/IoTMesC" alt="Repository License">
-  </a>
+</a>
+<a href="https://github.com/CodexLink/IoTMesC">
+  <img src="https://badgen.net/github/status/CodexLink/IoTMesC" alt="RepositoryStatus">
+</a>
+<a href="https://github.com/CodexLink/IoTMesC">
+  <img src="https://badgen.net/github/closed-issues/CodexLink/IoTMesC"alt="Closed Issues">
+</a>
+<a href="https://github.com/CodexLink/IoTMesC">
+  <img src="https://badgen.net/github/last-commit/CodexLink/IoTMesC" alt="Repository Last Commit">
+</a>
+<a href="https://github.com/CodexLink/IoTMesC">
+  <img src="https://badgen.net/github/license/CodexLink/IoTMesC" alt="Repository License">
+</a>
 </p>
 
 # Welcome!
@@ -32,28 +39,8 @@ It does report only sensor data and there's nothing special about it, seriously.
 This README will be seperated in accordance with formality and content quality. Those two are: Non-Formal and Formal
 Non-formal was done to answer peoples thought or my thoughts with the use informal words. Some sections in non-formal is basically not fitted to the formal section.
 
-  * [Introduction](#introduction)
-  * [Requirements](#requirements)
-  * [Stages of Building](#stages-of-building)
-    + [Circuit](#circuit)
-    + [Arduino Code](#arduino-code)
-    + [PCB Design](#pcb-design)
-  * [Deployment](#deployment)
-  * [Travis CI Integration](#travis-ci-integration)
-    + [Introduction to Automatic Integration](#introduction-to-automatic-integration)
-    + [How does it work?](#how-does-it-work-)
-    + [How to do it?](#how-to-do-it-)
-  * [Contributing](#contributing)
-  * [Versioning](#versioning)
-  * [Authors](#authors)
-  * [Acknowledgments](#acknowledgments)
-  * [License](#license)
-  * [Credits](#credits)
 
-[Non-Formal Content Section](#nonformal-content)
- Unknown Yet.
-
-## Introduction
+## Formal Introduction
 
 
 ## Requirements
