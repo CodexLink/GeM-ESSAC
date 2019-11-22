@@ -66,7 +66,7 @@
         #ifdef GAS_FALLBACK_SENS
             #include "AlternativeCore/MQ135.h"
         #else
-            #include "PrimaryCore/CSS811.h"
+            #include "PrimaryCore/CCS811.h"
         #endif
 
         #ifdef SERIAL_DEV_UNO
@@ -102,9 +102,9 @@
         #include "PrimaryCore/SoftReset.h"
 
         // * These Libraries Doesn't Require A Copy from a Repositories.
-        #include <Wire>
-        #include <SPI>
-        #include <EEPROM>
+        #include <Wire.h>
+        #include <SPI.h>
+        #include <EEPROM.h>
 
         // Definition Macros
         #define StrOtpt_RTCBeautify(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
@@ -210,23 +210,23 @@
 
             enum PIR_MINI_PIN_DEF : uint_fast8_t
             {
-                MAIN_PIN = NULL,
-                LED_TRIP_PIN = NULL
+                MOTION_DATA_PIN = 0,
+                LED_TRIP_PIN = 0
             };
 
             enum MQ135_PIN_DEF : uint_fast8_t
             {
-                MAIN_PIN = NULL
+                GAS_DATA_PIN = 0
             };
 
             namespace DIP_SWITCH_CONFIG_DEF
             {
                 enum DIP_SWITCH_PIN_DEF : uint_fast8_t
                 {
-                    SWITCH_PIN_ONE = NULL,
-                    SWITCH_PIN_TWO = NULL,
-                    SWITCH_PIN_THREE = NULL,
-                    SWITCH_PIN_FOUR = NULL
+                    SWITCH_PIN_ONE = 0,
+                    SWITCH_PIN_TWO = 0,
+                    SWITCH_PIN_THREE = 0,
+                    SWITCH_PIN_FOUR = 0
                 };
                 enum SWITCH_DEFINED_MODE : uint_fast8_t
                 {
@@ -246,6 +246,7 @@
         {
             enum CONST_ANTI_MAGIC : uint_fast8_t
             {
+                NULL_DATA = 0,
                 ZERO_REAL_INT = 0,
                 NULL_SET_DATA = 0,
                 VAL_INDEX_OFFSET = 1,
@@ -263,7 +264,7 @@
             };
 
             // ! Potential Backup when TFTLCD Fails. Please Elaborate more...
-            enum LCD_I2C_CONSTRAINT : uint_fast8_t
+            enum LCD_I2C_CONSTRAINT : int_fast8_t
             {
                 LCD_I2C_ADDR = 0x67,
                 LCD_I2C_MAX_W = 20,
@@ -274,7 +275,7 @@
                 LCD_I2C_POS_END_y = LCD_I2C_POS_START_Y - CONST_ANTI_MAGIC::VAL_INDEX_OFFSET
             };
 
-            enum AVR_SERIAL_DECL : uint_fast16_t
+            enum AVR_SERIAL_DECL : uint_fast32_t
             {
                 DEFAULT_PRTRCL_BAUDRATE = 0x2580, // 9600
                 HOST_BAUDRATE = 0x01c200,         // 115200
@@ -289,16 +290,23 @@
     {
         public:
         // * Constructor
-        IoTMesC_AVR_DEV_DECL(void)
-        {
+        //IoTMesC_AVR_DEV_DECL()
+        //{
+        //}
+        //// * Destructor
+        //~IoTMesC_AVR_DEV_DECL()
+        //{
+        //}
+            void begin() const;
+            uint_fast32_t sketchTimeHit(UTIL_CONST_DECL::MILLIS_RETURN_VAL ParamCondition);
+            void testDSD(/*ENUM or Choices Here.*/) noexcept;
+            void DIP_PINStats() noexcept;
 
-        }
-        // * Destructor
-        ~IoTMesC_AVR_DEV_DECL(void)
-        {
+            void initSerial_POST() noexcept;
+            void serial_isCommsAlive() noexcept;
 
-        }
-            // Add Constructors here.
+            void rtc_CheckCorrectDiff() noexcept(false);
+            inline void rtc_DisplayTime() noexcept;
 
         private:
             uint_fast8_t DataCounter_Update[SEVEN_SEG_CTRLLER_DEF::SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {UTIL_CONST_DECL::CONST_ANTI_MAGIC::NULL_SET_DATA};
@@ -307,25 +315,18 @@
             static uint_fast16_t SRAM_FreeCnt;
             // * Device and Peripherals Initializers.
 
-            void begin() const;
             inline void init_DevSens() const;
             inline void init_DevSPI() const; // ! Potential Deprecation
             inline void init_DevWire() const; // ! Potential Deprecation, HIGH CHANCE
-            static void init_DevRTC() const;
 
+            void init_DevRTC() const;
             void init_DSD() const; // ENUM Candidate
-
-            uint_fast32_t sketchTimeHit(UTIL_CONST_DECL::MILLIS_RETURN_VAL ParamCondition);
-
-
-            static void DIP_PINStats() noexcept;
 
             // Device Updaters FN Members
             void updateLCD() noexcept;
 
             // * Seven Segment Division
             void initDSD(/*Potential Beginning Sequence After Initialization Or Let Go*/) noexcept;
-            void testDSD(/*ENUM or Choices Here.*/) noexcept;
             void updateDSD(/**/) noexcept;
 
             // * SPI Tranmission FN Handlers - MFRC522 and TFT_ILI9163C FN Member Declarations
@@ -337,9 +338,6 @@
 
 
             // * Serial Communication FN Members
-
-            void initSerial_POST() noexcept;
-            void serial_isCommsAlive() noexcept;
             void serialHost_Send() noexcept;
             void serialHost_Receive() noexcept;
             void serialHost_ReEstablish() noexcept;
@@ -351,8 +349,6 @@
             inline void rtc_SetWriteProtect(bool TruthValGiven) noexcept;
             void rtc_QueryTimeSerial() noexcept(false);
             void rtc_SerialReceiveTime() noexcept;
-            void rtc_CheckCorrectDiff() noexcept(false);
-            inline void rtc_DisplayTime() noexcept();
 
     };
 
