@@ -23,7 +23,13 @@ on:
     - '**.h'
 
 jobs:
-  MCUSetupWorker:
+  BuildWorker:
+    name: IoTMesC | Repository Initialization
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      boardAdditionals: http://arduino.esp8266.com/stable/package_esp8266com_index.json
+
     strategy:
       matrix:
         mcu_platform: [arduino:avr, esp8266:esp8266]
@@ -34,14 +40,6 @@ jobs:
 
         - mcu_platform: esp8266:esp8266
           mcu_fqn_candidate: [arduino:avr:uno, arduino:avr:mega:cpu=atmega2560]
-
-  RepoWorkerSetup:
-    name: IoTMesC | Repository Initialization
-    runs-on: windows-latest
-    timeout-minutes: 60
-    needs: RepoWorkerSetup
-    env:
-      boardAdditionals: http://arduino.esp8266.com/stable/package_esp8266com_index.json
 
     steps:
     - name: Stage 1 | Repo Checkout
@@ -62,11 +60,11 @@ jobs:
         arduino-cli core update-index --additional-urls $boardAdditionals
         arduino-cli core install ${{ matrix.mcu_name_candidate }}
 
-  AVRBuilder:
+  AVRBuildWorker:
     name: Step 3.1 | Arduino Sketch Build Worker
     runs-on: windows-latest
     timeout-minutes: 60
-    needs: RepoWorkerSetup
+    needs: BuildWorker
     env:
       avrSketch: ./
 
@@ -75,11 +73,11 @@ jobs:
       if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
       run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$avrSketch
 
-  ESPBuilder:
+  ESPBuildWorker:
     name: Step 3.2 | NodeMCU Sketch Build Worker | Sketch Verification
     runs-on: windows-latest
     timeout-minutes: 60
-    needs: AVRBuilder
+    needs: AVRBuildWorker
     env:
       espSketch: ./
 
