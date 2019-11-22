@@ -112,7 +112,7 @@ Done!
 #include "Print.h"
 #include <Adafruit_GFX.h>
 
-#include "_settings/TFT_ILI9163C_settings.h"
+#include "TFT_ILI9163C_Settings/TFT_ILI9163C_settings.h"
 
 #if !defined(_ADAFRUIT_GFX_VARIANT)
 	#ifdef __AVR__
