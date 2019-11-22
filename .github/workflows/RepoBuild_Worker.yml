@@ -51,14 +51,14 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Stage 2.1 | CLI Setup for Arduino Device
-        if: ${{ matrix.mcu_candidate }} == 'arduino:avr:mega:cpu=atmega2560' || ${{ matrix.mcu_candidate }} == 'arduino:avr:uno'
+        if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
         uses: arduino/setup-arduino-cli@m1.0.0
         run: |
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.mcu_name_candidate }}
 
       - name: Stage 2.2 | CLI Setup for ESP8266 Devices
-          if: ${{ matrix.mcu_candidate }} == 'arduino:avr:mega:cpu=atmega2560' || ${{ matrix.mcu_candidate }} == 'arduino:avr:uno'
+          if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
           uses: arduino/setup-arduino-cli@m1.0.0
           runs : |
             arduino-cli core update-index --additional-urls $boardAdditionals
@@ -67,7 +67,7 @@ jobs:
   AVRBuilder:
     name: Step 3.1 | Arduino Sketch Build Worker | Sketch Verification
     needs: RepoWorkerSetup
-    if: ${{ matrix.mcu_candidate }} == 'arduino:avr:mega:cpu=atmega2560' || ${{ matrix.mcu_candidate }} == 'arduino:avr:uno'
+    if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
     run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$avrSketch
 
   ESPBuilder:
