@@ -39,9 +39,12 @@ jobs:
         mcu_fqn_candidate: ["arduino:avr:mega:cpu=atmega2560", "esp8266:esp8266:nodemcuv2"]
 
         exclude:
+        if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
         - mcu_platform: "arduino:avr"
           mcu_fqn_candidate: "arduino:avr:mega:cpu=atmega2560"
 
+
+        if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560'
         - mcu_platform: "esp8266:esp8266"
           mcu_fqn_candidate:  "esp8266:esp8266:nodemcuv2"
 
@@ -50,16 +53,16 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Stage 2.0 | CLI Setup
-      uses: arduino/setup-arduino-cli@m1.0.0
+      uses: arduino/setup-arduino-cli@v1.0.0
 
     - name: Stage 2.1 | CLI Setup for Arduino Device
-      if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
+      if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560'
       run: |
         arduino-cli core update-index
         arduino-cli core install ${{ matrix.mcu_name_candidate }}
 
     - name: Stage 2.2 | CLI Setup for ESP8266 Devices
-      if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
+      if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
       run : |
         arduino-cli core update-index --additional-urls $boardAdditionals
         arduino-cli core install ${{ matrix.mcu_name_candidate }}
@@ -74,7 +77,7 @@ jobs:
 
     steps:
     - name: Arduino Sketch Build Worker | Sketch Verification
-      if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
+      if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560'
       run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$avrSketch
 
   ESPBuildWorker:
@@ -87,5 +90,5 @@ jobs:
 
     steps:
     - name: NodeMCU Sketch Build Worker | Sketch Verification
-      if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
+      if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
       run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$espSketch
