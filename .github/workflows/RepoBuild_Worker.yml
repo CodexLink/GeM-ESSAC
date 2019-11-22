@@ -1,0 +1,14 @@
+# Sketch Build Worker YAML
+# Used for Building NodeMCU and Arduino Sketches
+# This also reports errors on every associated libraries and stuff.
+
+name: Sketch Build Worker
+on: [push, pull_request]
+
+jobs:
+  AVR_Build:
+    name: Arduino Build
+    # Add OS to test by the uses of strategy.
+  ESP_Build:
+    name: NodeMCU Build
+    # Add OS to test by the uses of strategy.
