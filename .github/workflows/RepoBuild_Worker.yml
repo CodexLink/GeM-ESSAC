@@ -49,16 +49,17 @@ jobs:
       - name: Stage 1 | Repo Checkout
         uses: actions/checkout@v1
 
+      - name: Stage 2.0 | CLI Setup
+        uses: arduino/setup-arduino-cli@m1.0.0
+
       - name: Stage 2.1 | CLI Setup for Arduino Device
         if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
-        uses: arduino/setup-arduino-cli@m1.0.0
         run: |
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.mcu_name_candidate }}
 
       - name: Stage 2.2 | CLI Setup for ESP8266 Devices
         if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
-        uses: arduino/setup-arduino-cli@m1.0.0
         run : |
           arduino-cli core update-index --additional-urls $boardAdditionals
           arduino-cli core install ${{ matrix.mcu_name_candidate }}
