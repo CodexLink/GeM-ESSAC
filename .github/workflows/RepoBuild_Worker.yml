@@ -7,11 +7,17 @@ description: Builds both Arduino and NodeMCU Sketches and Libraries for Every co
 author: Janrey Licas | CodexLink
 date_created: 11-22-2019
 
-on: [push, pull_request]
-  paths:
-  - '**.cpp'
-  - '**.ino'
-  - '**.h'
+on:
+  push:
+    paths:
+    - '**.cpp'
+    - '**.ino'
+    - '**.h'
+  pull_request:
+    paths:
+    - '**.cpp'
+    - '**.ino'
+    - '**.h'
 
 jobs:
   runs-on: windows-latest
