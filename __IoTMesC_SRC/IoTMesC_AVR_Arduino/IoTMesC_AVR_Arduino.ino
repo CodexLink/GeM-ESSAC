@@ -15,6 +15,7 @@
 #include "IoTMesC_AVR_Core/IoTMesC_AVR_Core.h"
 
 // * Definitions Specifically Used for AVR | Arduino
+
 using namespace IoTMesC_AVR_DEV_DECL;
 IotMesC_AVR_DRVR IoTMesC_AVR;
 
