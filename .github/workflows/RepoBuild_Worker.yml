@@ -2,13 +2,69 @@
 # Used for Building NodeMCU and Arduino Sketches
 # This also reports errors on every associated libraries and stuff.
 
-name: Sketch Build Worker
+name: IoTMesC Sketch Build Worker
+description: Builds both Arduino and NodeMCU Sketches and Libraries for Every commit and pull request we do. Without actually trying to do it manually.
+author: Janrey Licas | CodexLink
+date_created: 11-22-2019
+
 on: [push, pull_request]
+  paths:
+  - '**.cpp'
+  - '**.ino'
+  - '**.h'
 
 jobs:
-  AVR_Build:
-    name: Arduino Build
-    # Add OS to test by the uses of strategy.
-  ESP_Build:
-    name: NodeMCU Build
-    # Add OS to test by the uses of strategy.
+  runs-on: windows-latest
+  env:
+    slow_requireTime: 180
+    fast_requireTime: 60
+    boardAdditionals: http://arduino.esp8266.com/stable/package_esp8266com_index.json
+    # avrSketch: ./
+    # espSketch: ./
+
+  # First Worker
+  MCUSetupWorker:
+    strategy:
+      matrix:
+
+        mcu_platform: [arduino:avr, esp8266:esp8266]
+        mcu_fqn_candidate: [arduino:avr:uno, arduino:avr:mega:cpu=atmega2560, esp8266:esp8266:nodemcu, esp8266:esp8266:nodemcuv2]
+        exclude:
+        - mcu_platform: arduino:avr
+          mcu_fqn_candidate: [esp8266:esp8266:nodemcu, esp8266:esp8266:nodemcuv2]
+
+        - mcu_platform: esp8266:esp8266
+          mcu_fqn_candidate: [arduino:avr:uno, arduino:avr:mega:cpu=atmega2560]
+
+  RepoWorkerSetup:
+    name: IoTMesC | Repository Initialization
+    timeout-minutes: $fast_requireTime
+    needs: RepoWorkerSetup
+    steps:
+      - name: Stage 1 | Repo Checkout
+        uses: actions/checkout@v1
+
+      - name: Stage 2.1 | CLI Setup for Arduino Device
+        if: ${{ matrix.mcu_candidate }} == 'arduino:avr:mega:cpu=atmega2560' || ${{ matrix.mcu_candidate }} == 'arduino:avr:uno'
+        uses: arduino/setup-arduino-cli@m1.0.0
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install ${{ matrix.mcu_name_candidate }}
+
+      - name: Stage 2.2 | CLI Setup for ESP8266 Devices
+          if: ${{ matrix.mcu_candidate }} == 'arduino:avr:mega:cpu=atmega2560' || ${{ matrix.mcu_candidate }} == 'arduino:avr:uno'
+          uses: arduino/setup-arduino-cli@m1.0.0
+          runs : |
+            arduino-cli core update-index --additional-urls $boardAdditionals
+            arduino-cli core install ${{ matrix.mcu_name_candidate }}
+
+  AVRBuilder:
+    name: Step 3.1 | Arduino Sketch Build Worker | Sketch Verification
+    needs: RepoWorkerSetup
+    if: ${{ matrix.mcu_candidate }} == 'arduino:avr:mega:cpu=atmega2560' || ${{ matrix.mcu_candidate }} == 'arduino:avr:uno'
+    run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$avrSketch
+
+  ESPBuilder:
+    name: Step 3.2 | NodeMCU Sketch Build Worker | Sketch Verification
+    needs: AVRBuilder
+    run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$espSketch
