@@ -41,7 +41,7 @@ jobs:
 
     steps:
     - name: Stage 1 | Repo Checkout
-      uses: actions/checkout@V1
+      uses: actions/checkout@master
 
     - name: Stage 2.0 | CLI Setup
       uses: arduino/setup-arduino-cli@v1.0.0
@@ -62,8 +62,8 @@ jobs:
 
   AVRBuildWorker:
     name: Step 3.1 | Arduino Sketch Build Worker
-    runs-on: windows-latest
     needs: BuildWorker
+    runs-on: windows-latest
 
     steps:
     - name: Arduino Sketch Build Worker | Sketch Verification
@@ -74,8 +74,8 @@ jobs:
 
   ESPBuildWorker:
     name: Step 3.2 | NodeMCU Sketch Build Worker | Sketch Verification
-    runs-on: windows-latest
     needs: [BuildWorker, AVRBuildWorker]
+    runs-on: windows-latest
 
     steps:
     - name: NodeMCU Sketch Build Worker | Sketch Verification
