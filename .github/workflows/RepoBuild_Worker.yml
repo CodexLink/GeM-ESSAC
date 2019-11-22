@@ -57,16 +57,16 @@ jobs:
           arduino-cli core install ${{ matrix.mcu_name_candidate }}
 
       - name: Stage 2.2 | CLI Setup for ESP8266 Devices
-          if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
-          uses: arduino/setup-arduino-cli@m1.0.0
-          run : |
-            arduino-cli core update-index --additional-urls $boardAdditionals
-            arduino-cli core install ${{ matrix.mcu_name_candidate }}
+        if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
+        uses: arduino/setup-arduino-cli@m1.0.0
+        run : |
+          arduino-cli core update-index --additional-urls $boardAdditionals
+          arduino-cli core install ${{ matrix.mcu_name_candidate }}
 
   AVRBuilder:
     name: Step 3.1 | Arduino Sketch Build Worker | Sketch Verification
     needs: RepoWorkerSetup
-    if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
+    if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
     run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./$avrSketch
 
   ESPBuilder:
