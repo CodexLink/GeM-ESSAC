@@ -41,7 +41,7 @@ jobs:
 
     steps:
     - name: Stage 1 | Repo Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@V1
 
     - name: Stage 2.0 | CLI Setup
       uses: arduino/setup-arduino-cli@v1.0.0
@@ -57,7 +57,7 @@ jobs:
       env:
         BOARD_ADDITIONALS: http://arduino.esp8266.com/stable/package_esp8266com_index.json
       run : |
-        arduino-cli core update-index --additional-urls $BOARD_ADDITIONALS
+        arduino-cli core update-index --additional-urls {{BOARD_ADDITIONALS}}
         arduino-cli core install ${{ matrix.mcu_platform_candidate }}
 
   AVRBuildWorker:
