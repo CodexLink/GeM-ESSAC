@@ -36,8 +36,12 @@ jobs:
         include:
         - mcu_platform_candidate: "arduino:avr"
           mcu_candidate_fqbn: "arduino:avr:mega:cpu=atmega2560"
+          mcu_platform_sketch: "."
+
         - mcu_platform_candidate: "esp8266:esp8266"
           mcu_candidate_fqbn: "esp8266:esp8266:nodemcuv2"
+          mcu_platform_sketch: "."
+          boardAdditionals: "http://arduino.esp8266.com/stable/package_esp8266com_index.json"
 
     steps:
     - name: Stage 1 | Repo Checkout
@@ -55,10 +59,8 @@ jobs:
     - name: Stage 2.2 | CLI Setup for ESP8266 (NodeMCU) Device
       if: matrix.mcu_candidate_fqbn == 'esp8266:esp8266:nodemcuv2'
       run : |
-        arduino-cli core update-index --additional-urls $BOARD_ADDITIONALS
+        arduino-cli core update-index --additional-urls ${{matrix.boardAdditionals}}
         arduino-cli core install ${{ matrix.mcu_platform_candidate }}
-        env:
-          BOARD_ADDITIONALS: ${{'http://arduino.esp8266.com/stable/package_esp8266com_index.json'}}
 
   AVRBuildWorker:
     name: Step 3.1 | Arduino Sketch Build Worker
@@ -68,9 +70,7 @@ jobs:
     steps:
     - name: Arduino Sketch Build Worker | Sketch Verification
       if: matrix.mcu_candidate_fqbn == 'arduino:avr:mega:cpu=atmega2560'
-      env:
-        AVR_SKETCH: ./
-      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ./$AVR_SKETCH
+      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ./${{matrix.mcu_platform_sketch}}
 
   ESPBuildWorker:
     name: Step 3.2 | NodeMCU Sketch Build Worker | Sketch Verification
@@ -80,6 +80,4 @@ jobs:
     steps:
     - name: NodeMCU Sketch Build Worker | Sketch Verification
       if: matrix.mcu_candidate_fqbn == 'esp8266:esp8266:nodemcuv2'
-      env:
-        ESP_SKETCH: ./
-      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ./$ESP_SKETCH
+      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ./${{matrix.mcu_platform_sketch}}
