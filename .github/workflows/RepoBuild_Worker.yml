@@ -14,6 +14,7 @@ on:
     - '**.cpp'
     - '**.ino'
     - '**.h'
+
   pull_request:
     paths:
     - '**.cpp'
@@ -21,7 +22,6 @@ on:
     - '**.h'
 
 jobs:
-  # First Worker
   MCUSetupWorker:
     strategy:
       matrix:
@@ -39,12 +39,10 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 60
     needs: RepoWorkerSetup
-    steps:
-      env:
-        boardAdditionals: http://arduino.esp8266.com/stable/package_esp8266com_index.json
-        # avrSketch: ./
-        # espSketch: ./
+    env:
+      boardAdditionals: http://arduino.esp8266.com/stable/package_esp8266com_index.json
 
+    steps:
       - name: Stage 1 | Repo Checkout
         uses: actions/checkout@v1
 
@@ -68,6 +66,9 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 60
     needs: RepoWorkerSetup
+    env:
+      avrSketch: ./
+
     steps:
       - name: Arduino Sketch Build Worker | Sketch Verification
       if: matrix.mcu_fqn_candidate == 'arduino:avr:mega:cpu=atmega2560' || matrix.mcu_fqn_candidate == 'arduino:avr:uno'
@@ -78,6 +79,9 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 60
     needs: AVRBuilder
+    env:
+      espSketch: ./
+
     steps:
       - name: NodeMCU Sketch Build Worker | Sketch Verification
       if: matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcu' || matrix.mcu_fqn_candidate == 'esp8266:esp8266:nodemcuv2'
