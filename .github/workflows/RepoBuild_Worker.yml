@@ -35,6 +35,7 @@ jobs:
 
     strategy:
       matrix:
+        mcu_platform: ["arduino:avr", "esp8266:esp8266"]
         include:
         - mcu_platform: "arduino:avr"
           mcu_fqn_candidate: "arduino:avr:mega:cpu=atmega2560"
