@@ -57,7 +57,7 @@ jobs:
     - name: Stage 2.2 | CLI Setup for ESP8266 Devices
       if: matrix.mcu_candidate_fqbn == 'esp8266:esp8266:nodemcuv2'
       run : |
-        arduino-cli core update-index --additional-urls ${{ boardAdditionals }}
+        arduino-cli core update-index --additional-urls ${ boardAdditionals }
         arduino-cli core install ${{ matrix.mcu_platform_candidate }}
 
   AVRBuildWorker:
