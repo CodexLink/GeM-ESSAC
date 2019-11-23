@@ -81,10 +81,10 @@ jobs:
           boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
 
     steps:
-    - name: A.Stage 1 | Repository Checkout
+    - name: B.Stage 1 | Repository Checkout
       uses: actions/checkout@master
 
-    - name: A.Stage 2 | Arduino-CLI Setup
+    - name: B.Stage 2 | Arduino-CLI Setup
       uses: arduino/setup-arduino-cli@v1.0.0
 
     - name: B.Stage 3 | ESP8266 Setup on Arduino-CLI
