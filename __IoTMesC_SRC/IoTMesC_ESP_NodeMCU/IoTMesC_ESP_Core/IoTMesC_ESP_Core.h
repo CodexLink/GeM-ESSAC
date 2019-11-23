@@ -49,16 +49,6 @@
 
         namespace ESP_PROPERTIES
         {
-            enum MyEnum
-            {
-
-            };
-
-            enum MyEnum
-            {
-
-            };
-
             enum ModeFlags
             {
                 DISABLED_FLAG = -2,
@@ -76,17 +66,15 @@
             };
 
         }
+        /*
         namespace MyNamespace
         {
             enum MyEnum
             {
 
             };
-            enum MyEnum
-            {
-
-            };
         }
+        */
     }
 
     class IoTMesC_NMCU_DEV_DECL::IoTMesC_NMCU_DRVR
