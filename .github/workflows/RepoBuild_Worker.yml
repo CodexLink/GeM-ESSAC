@@ -53,6 +53,7 @@ jobs:
 
     - name: A.Stage 3 | Arduino Setup on Arduino-CLI
       run: |
+        ls
         arduino-cli core update-index
         arduino-cli core install ${{ matrix.mcu_platform_candidate }}
 
