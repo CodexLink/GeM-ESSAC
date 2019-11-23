@@ -12,7 +12,7 @@ License: GPL-3.0
 NOTE: Current Stage (Procedural Program) will be the first step towards completing this project.
 */
 #include <ESP8266WiFi.h>
-#include <SoftReset.h>
+#include "CmpntCore/SoftReset.h"
 
 
 // Serial Identifiers and Other Definitives
