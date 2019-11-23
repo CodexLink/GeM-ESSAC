@@ -67,17 +67,34 @@ jobs:
     needs: BuildWorker
     runs-on: windows-latest
 
+    strategy:
+      matrix:
+        mcu_platform_candidate: ["arduino:avr"]
+        include:
+        - mcu_platform_candidate: "arduino:avr"
+          mcu_candidate_fqbn: "arduino:avr:mega:cpu=atmega2560"
+          mcu_platform_sketch: "IoTMesC_AVR_Arduino/IoTMesC_AVR_Arduino.ino"
+
+
     steps:
     - name: Arduino Sketch Build Worker | Sketch Verification
       if: matrix.mcu_candidate_fqbn == 'arduino:avr:mega:cpu=atmega2560'
-      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ./${{matrix.mcu_platform_sketch}}
+      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ../${{ matrix.mcu_platform_sketch }}
 
   ESPBuildWorker:
     name: Step 3.2 | NodeMCU Sketch Build Worker | Sketch Verification
     needs: [BuildWorker, AVRBuildWorker]
     runs-on: windows-latest
 
+    strategy:
+      matrix:
+        mcu_platform_candidate: ["esp8266:esp8266"]
+        include:
+        - mcu_platform_candidate: "esp8266:esp8266"
+          mcu_candidate_fqbn: "esp8266:esp8266:nodemcuv2"
+          mcu_platform_sketch: "IoTMesC_ESP_NodeMCU/IoTMesC_ESP_NodeMCU.ino"
+
     steps:
     - name: NodeMCU Sketch Build Worker | Sketch Verification
       if: matrix.mcu_candidate_fqbn == 'esp8266:esp8266:nodemcuv2'
-      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ./${{matrix.mcu_platform_sketch}}
+      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ../${{ matrix.mcu_platform_sketch }}
