@@ -1,9 +1,10 @@
 <h1 align="center">IoTMesC</h1>
-<h4 align="center">IoT Multi-Essential Sensing Components For Personal Benefits, Built on Arduino with ESP8266</h4>
+<h4 align="center">IoT Multi-Essential Sensing Components<br>
+For Personal Benefits and Embedded Systems Experience, Built on Arduino with ESP8266 (NodeMUCU)</h4>
 <p align="center">
 
-<a href="https://github.com/CodexLink/IoTMesC">
-  <img src="https://github.com/CodexLink/IoTMesC/workflows/IoTMesC%20Sketch%20Build%20Worker/badge.svg">
+<a href="https://github.com/CodexLink/IoTMesC/actions">
+  <img src="https://github.com/CodexLink/IoTMesC/workflows/Sketch%20Build%20Worker/badge.svg">
 </a>
 
 <a href="https://www.codefactor.io/repository/github/codexlink/iotmesc">
