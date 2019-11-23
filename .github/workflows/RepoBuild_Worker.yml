@@ -57,7 +57,7 @@ jobs:
         arduino-cli core install ${{ matrix.mcu_platform_candidate }}
 
     - name: A.Stage 4 | Sketch Verification
-      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} /${{ matrix.mcu_platform_sketch }}
+      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} $GITHUB_REPOSITORY/${{ matrix.mcu_platform_sketch }}
 
   ESPBuildWorker:
     name: NodeMCU Sketch Build Worker
@@ -92,4 +92,4 @@ jobs:
         arduino-cli core install ${{ matrix.mcu_platform_candidate }} --additional-urls ${{ matrix.boardAdditionals }}
 
     - name: B.Stage 4 | Sketch Verification
-      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }}  /${{ matrix.mcu_platform_sketch }}
+      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }}  $GITHUB_REPOSITORY/${{ matrix.mcu_platform_sketch }}
