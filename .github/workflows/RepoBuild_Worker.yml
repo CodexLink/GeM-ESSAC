@@ -53,11 +53,11 @@ jobs:
 
     - name: A.Stage 3 | Arduino Setup on Arduino-CLI
       run: |
-        .\arduino-cli core update-index
-        .\arduino-cli core install ${{ matrix.mcu_platform_candidate }}
+        arduino-cli core update-index
+        arduino-cli core install ${{ matrix.mcu_platform_candidate }}
 
     - name: A.Stage 4 | Sketch Verification
-      run: .\arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} /${{ matrix.mcu_platform_sketch }}
+      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} /${{ matrix.mcu_platform_sketch }}
 
   ESPBuildWorker:
     name: NodeMCU Sketch Build Worker
@@ -88,8 +88,8 @@ jobs:
 
     - name: B.Stage 3 | ESP8266 Setup on Arduino-CLI
       run : |
-        .\arduino-cli core update-index --additional-urls ${{ matrix.boardAdditionals }}
-        .\arduino-cli core install ${{ matrix.mcu_platform_candidate }} --additional-urls ${{ matrix.boardAdditionals }}
+        arduino-cli core update-index --additional-urls ${{ matrix.boardAdditionals }}
+        arduino-cli core install ${{ matrix.mcu_platform_candidate }} --additional-urls ${{ matrix.boardAdditionals }}
 
     - name: B.Stage 4 | Sketch Verification
-      run: .\arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }}  /${{ matrix.mcu_platform_sketch }}
+      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }}  /${{ matrix.mcu_platform_sketch }}
