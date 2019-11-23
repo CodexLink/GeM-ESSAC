@@ -36,9 +36,9 @@
     #ifndef IOT_ESP_GUARD
         #define IOT_ESP_GUARD
 
-            #include "ESP8266WiFi/ESP8266WiFi.h"
-            #include "ESP8266mDNS/ESP8266mDNS.h"
-            #include "ESP8266WebServer/ESP8266WebServer.h"
+            #include "CmpntCore/ESP8266WiFi/ESP8266WiFi.h"
+            #include "CmpntCore/ESP8266mDNS/ESP8266mDNS.h"
+            #include "CmpntCore/ESP8266WebServer/ESP8266WebServer.h"
             //#include <WiFiClient.h>
 
     #endif
