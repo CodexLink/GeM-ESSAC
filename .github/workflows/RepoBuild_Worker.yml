@@ -26,76 +26,72 @@ on:
     - '**.yaml'
 
 jobs:
-  BuildWorker:
-    name: IoTMesC | Repository Initialization
-    runs-on: windows-latest
-
-    strategy:
-      matrix:
-        mcu_platform_candidate: ["arduino:avr", "esp8266:esp8266"]
-        include:
-        - mcu_platform_candidate: "arduino:avr"
-          mcu_candidate_fqbn: "arduino:avr:mega:cpu=atmega2560"
-          mcu_platform_sketch: "."
-
-        - mcu_platform_candidate: "esp8266:esp8266"
-          mcu_candidate_fqbn: "esp8266:esp8266:nodemcuv2"
-          mcu_platform_sketch: "."
-          boardAdditionals: "https://arduino.esp8266.com/stable/package_esp8266com_index.json"
-
-    steps:
-    - name: Stage 1 | Repo Checkout
-      uses: actions/checkout@master
-
-    - name: Stage 2.0 | CLI Setup
-      uses: arduino/setup-arduino-cli@v1.0.0
-
-    - name: Stage 2.1 | CLI Setup for Arduino Device
-      if: matrix.mcu_candidate_fqbn == 'arduino:avr:mega:cpu=atmega2560'
-      run: |
-        arduino-cli core update-index
-        arduino-cli core install ${{ matrix.mcu_platform_candidate }}
-
-    - name: Stage 2.2 | CLI Setup for ESP8266 (NodeMCU) Device
-      if: matrix.mcu_candidate_fqbn == 'esp8266:esp8266:nodemcuv2'
-      run : |
-        arduino-cli core update-index --additional-urls ${{ matrix.boardAdditionals }}
-        arduino-cli core install ${{ matrix.mcu_platform_candidate }} --additional-urls ${{ matrix.boardAdditionals }}
 
   AVRBuildWorker:
-    name: Step 3.1 | Arduino Sketch Build Worker
-    needs: BuildWorker
+    name: Arduino Sketch Build Worker
     runs-on: windows-latest
 
     strategy:
       matrix:
-        mcu_platform_candidate: ["arduino:avr"]
+        mcu_candidate_fqbn: [arduino:avr:mega:cpu=atmega2560, arduino:avr:uno]
+
         include:
-        - mcu_platform_candidate: "arduino:avr"
-          mcu_candidate_fqbn: "arduino:avr:mega:cpu=atmega2560"
-          mcu_platform_sketch: "IoTMesC_AVR_Arduino/IoTMesC_AVR_Arduino.ino"
+        - mcu_candidate_fqbn: arduino:avr:mega:cpu=atmega2560
+          mcu_platform_candidate: arduino:avr
+          mcu_platform_sketch: IoTMesC_AVR_Arduino/IoTMesC_AVR_Arduino.ino
+
+        - mcu_candidate_fqbn: arduino:avr:mega:cpu=atmega2560
+          mcu_platform_candidate: arduino:avr
+          mcu_platform_sketch: IoTMesC_AVR_Arduino/IoTMesC_AVR_Arduino.ino
 
     steps:
-    - name: Arduino Sketch Build Worker | Sketch Verification
+    - name: A.Stage 1 | Repository Checkout
+      uses: actions/checkout@master
+
+    - name: A.Stage 2 | Arduino-CLI Setup
       uses: arduino/setup-arduino-cli@v1.0.0
-      if: matrix.mcu_candidate_fqbn == 'arduino:avr:mega:cpu=atmega2560'
-      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} /${{ matrix.mcu_platform_sketch }}
+
+    - name: A.Stage 3 | Arduino Setup on Arduino-CLI
+      run: |
+        .\arduino-cli core update-index
+        .\arduino-cli core install ${{ matrix.mcu_platform_candidate }}
+
+    - name: A.Stage 4 | Sketch Verification
+      run: .\arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} /${{ matrix.mcu_platform_sketch }}
 
   ESPBuildWorker:
-    name: Step 3.2 | NodeMCU Sketch Build Worker | Sketch Verification
-    needs: [BuildWorker, AVRBuildWorker]
+    name: NodeMCU Sketch Build Worker
+    needs: AVRBuildWorker
     runs-on: windows-latest
 
     strategy:
       matrix:
-        mcu_platform_candidate: ["esp8266:esp8266"]
+        - mcu_candidate_fqbn: [esp8266:esp8266:nodemcu, esp8266:esp8266:nodemcuv2]
+
         include:
-        - mcu_platform_candidate: "esp8266:esp8266"
-          mcu_candidate_fqbn: "esp8266:esp8266:nodemcuv2"
-          mcu_platform_sketch: "IoTMesC_ESP_NodeMCU/IoTMesC_ESP_NodeMCU.ino"
+        - mcu_candidate_fqbn: esp8266:esp8266:nodemcu
+          mcu_platform_candidate: esp8266:esp8266
+          mcu_platform_sketch: IoTMesC_ESP_NodeMCU/IoTMesC_ESP_NodeMCU.ino
+          boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+
+        - mcu_candidate_fqbn: esp8266:esp8266:nodemcuv2
+          mcu_platform_candidate: esp8266:esp8266
+          mcu_platform_sketch: IoTMesC_ESP_NodeMCU/IoTMesC_ESP_NodeMCU.ino
+          boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
 
     steps:
-    - name: NodeMCU Sketch Build Worker | Sketch Verification
+    - name: A.Stage 1 | Repository Checkout
+      uses: actions/checkout@master
+
+    - name: A.Stage 2 | Arduino-CLI Setup
+      uses: arduino/setup-arduino-cli@v1.0.0
+
+    - name: B.Stage 3 | ESP8266 Setup on Arduino-CLI
+      run : |
+        .\arduino-cli core update-index --additional-urls ${{ matrix.boardAdditionals }}
+        .\arduino-cli core install ${{ matrix.mcu_platform_candidate }} --additional-urls ${{ matrix.boardAdditionals }}
+
+    - name: B.Stage 4 | Sketch Verification
       uses: arduino/setup-arduino-cli@v1.0.0
       if: matrix.mcu_candidate_fqbn == 'esp8266:esp8266:nodemcuv2'
-      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }}  /${{ matrix.mcu_platform_sketch }}
+      run: .\arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }}  /${{ matrix.mcu_platform_sketch }}
