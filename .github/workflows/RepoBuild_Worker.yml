@@ -83,7 +83,6 @@ jobs:
 
   ESPBuildWorker:
     name: Step 3.2 | NodeMCU Sketch Build Worker | Sketch Verification
-    uses: arduino/setup-arduino-cli@v1.0.0
     needs: [BuildWorker, AVRBuildWorker]
     runs-on: windows-latest
 
@@ -97,5 +96,6 @@ jobs:
 
     steps:
     - name: NodeMCU Sketch Build Worker | Sketch Verification
+      uses: arduino/setup-arduino-cli@v1.0.0
       if: matrix.mcu_candidate_fqbn == 'esp8266:esp8266:nodemcuv2'
       run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }}  /${{ matrix.mcu_platform_sketch }}
