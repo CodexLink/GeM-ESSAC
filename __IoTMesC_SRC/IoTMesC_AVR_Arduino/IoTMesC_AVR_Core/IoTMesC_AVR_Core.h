@@ -53,7 +53,7 @@
         #ifdef LCD_FALLBACK_I2C
             #include "AlternativeCore/LiquidCrystal_I2C.h"
         #else
-            #include <Adafruit_GFX.h>
+            #include "PrimaryCore/Adafruit_GFX.h"
             #include "PrimaryCore/TFT_ILI9163C.h"
         #endif
 
