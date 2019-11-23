@@ -77,11 +77,13 @@ jobs:
 
     steps:
     - name: Arduino Sketch Build Worker | Sketch Verification
+      uses: arduino/setup-arduino-cli@v1.0.0
       if: matrix.mcu_candidate_fqbn == 'arduino:avr:mega:cpu=atmega2560'
       run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} /${{ matrix.mcu_platform_sketch }}
 
   ESPBuildWorker:
     name: Step 3.2 | NodeMCU Sketch Build Worker | Sketch Verification
+    uses: arduino/setup-arduino-cli@v1.0.0
     needs: [BuildWorker, AVRBuildWorker]
     runs-on: windows-latest
 
