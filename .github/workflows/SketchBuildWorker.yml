@@ -6,7 +6,7 @@
 # * for every commit and pull request we do. Without actually trying to do it manually.
 
 
-name: IoTMesC Sketch Build Worker
+name: Sketch Build Worker
 
 on:
   push:
