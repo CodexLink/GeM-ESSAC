@@ -110,7 +110,7 @@ Done!
 //defined(__MKL26Z64__)
 #include "Arduino.h"
 #include "Print.h"
-#include <Adafruit_GFX.h>
+#include "Adafruit_GFX.h"
 
 #include "TFT_ILI9163C_Settings/TFT_ILI9163C_settings.h"
 
