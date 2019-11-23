@@ -40,7 +40,7 @@ jobs:
           mcu_platform_candidate: arduino:avr
           mcu_platform_sketch: IoTMesC_AVR_Arduino/IoTMesC_AVR_Arduino.ino
 
-        - mcu_candidate_fqbn: arduino:avr:mega:cpu=atmega2560
+        - mcu_candidate_fqbn: arduino:avr:uno
           mcu_platform_candidate: arduino:avr
           mcu_platform_sketch: IoTMesC_AVR_Arduino/IoTMesC_AVR_Arduino.ino
 
