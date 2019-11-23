@@ -33,7 +33,7 @@ jobs:
 
     strategy:
       matrix:
-        mcu_candidate_fqbn: [arduino:avr:mega:cpu=atmega2560, arduino:avr:uno]
+        mcu_candidate_fqbn: ["arduino:avr:mega:cpu=atmega2560", "arduino:avr:uno"]
 
         include:
         - mcu_candidate_fqbn: arduino:avr:mega:cpu=atmega2560
@@ -66,7 +66,7 @@ jobs:
 
     strategy:
       matrix:
-        mcu_candidate_fqbn: [esp8266:esp8266:nodemcu, esp8266:esp8266:nodemcuv2]
+        mcu_candidate_fqbn: ["esp8266:esp8266:nodemcu", "esp8266:esp8266:nodemcuv2"]
 
         include:
         - mcu_candidate_fqbn: esp8266:esp8266:nodemcu
