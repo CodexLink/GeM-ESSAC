@@ -53,7 +53,6 @@ jobs:
 
     - name: A.Stage 3 | Arduino Setup on Arduino-CLI
       run: |
-        ls
         arduino-cli core update-index
         arduino-cli core install ${{ matrix.mcu_platform_candidate }}
 
@@ -89,7 +88,6 @@ jobs:
 
     - name: B.Stage 3 | ESP8266 Setup on Arduino-CLI
       run : |
-        arduino-cli core update-index
         arduino-cli core update-index --additional-urls ${{ matrix.boardAdditionals }}
         arduino-cli core install ${{ matrix.mcu_platform_candidate }} --additional-urls ${{ matrix.boardAdditionals }}
 
