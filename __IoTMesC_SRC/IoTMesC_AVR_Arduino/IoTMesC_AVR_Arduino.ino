@@ -12,32 +12,21 @@
 
 #define IOT_DEVICE_CONTROLLER_AVR_DATASENS 0x4e6f64654d4355
 #define DEBUG_ENABLED
+
 #include "IoTMesC_AVR_Core/IoTMesC_AVR_Core.h"
 
 // * Definitions Specifically Used for AVR | Arduino
 
-using namespace IoTMesC_AVR_DEV_DECL;
-IotMesC_AVR_DRVR IoTMesC_AVR;
+IotMesC_AVR_DRVR IoTMesC_AVR(115200);
 
 void setup()
 {
-  SerialH_Call(println, F("IoTMesC | Detected Arduino Arch."));
-  SerialH_Call(println, F("IoTMesC | Initializing Required Libraries..."));
-  //IoTMesC_AVR.init_DevSens();
-  SerialH_Call(println, F("IoTMesC | Done Library Initialization | Sensors."));
-  //IoTMesC_AVR.init_DevSPI();
-  SerialH_Call(println, F("IoTMesC | Done Library Initialization | SPI."));
-  //IoTMesC_AVR.init_DevWire();
-  SerialH_Call(println, F("IoTMesC | Done Library Initialization | Wire."));
-  //IoTMesC_AVR.init_DevRTC();
-  SerialH_Call(println, F("IoTMesC | Done Library Initialization | RTC."));
-  //IoTMesC_AVR.init_DSD();
-  SerialH_Call(println, F("IoTMesC | Done Library Initialization | Dual SD."));
-  SerialH_Call(println, F("IoTMesC | Done."));
+ ;
 }
+
 void loop()
 {
-  while (UTIL_CONST_DECL::CONST_ANTI_MAGIC::ENDLESS)
+  while (1)
   {
     SerialH_Call(println, F("Awaiting for Function Calls."));
     delay(1000);
