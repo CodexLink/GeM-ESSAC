@@ -7,42 +7,23 @@
 */
 
 #pragma once
-
-
-// !! >|- definition |> Universal Serial Filter -<|
-#ifdef DEBUG_ENABLED
-    #if Cmd_Func == println || print
-        #define SerialH_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
-        #define SerialR_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
-    #else
-        #define SerialH_Call(Cmd_Func, Params)
-        #define SerialR_Call(Cmd_Func, Params)
-    #endif
-#endif
-
-// Definition That Correlates to SEVEN_SEG_CONSTRAINTS. But declared here anyway.
-#ifdef COMMON_ANODE
-    #define LED_ON LOW
-    #define LED_OFF HIGH
-#else
-    #define LED_ON HIGH
-    #define LED_OFF LOW
-#endif
-
-// Definition Macros
-#define StrOtpt_RTCBeautify(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
-
-// * Device Definition Declarations
 #include "Arduino.h"
-
-// ! Libraries declared here has No Fallback Required When Current Library is Down / Not-Working.
+// ! Libraries |> No Alternatives Declaration
 #include "PrimaryCore/MemoryFree.h"
 #include "PrimaryCore/DS1302.h"
 #include "PrimaryCore/SoftReset.h"
-// * These Libraries Doesn't Require A Copy from a Repositories.
+
+// ! Libraries |> System Compiler Libraries Provided.
 #include <Wire.h>
 #include <SPI.h>
 #include <EEPROM.h>
+
+/*
+    ! Various Libraries |> Sensors and Device
+    @protocols |> I2C and SPI
+    @includes |> Primary and Secondary Cores
+    @usage |> #define <DEFINITION> to access libraries or alternate used libraries.
+*/
 
 #ifdef LCD_FALLBACK_I2C
     #include "AlternativeCore/LiquidCrystal_I2C.h"
@@ -81,20 +62,28 @@
     #include "PrimaryCore/MFRC522.h"
 #endif
 
-    /*!
-        Class Declaration |> IoTMesC_AVR_DRVR ~= IoTMesC Arduino Driver Class
-        @brief
-        @param
+
+// ! Definition |> Serial Output Handlers
+#define SerialH_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
+#define SerialR_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
+
+// * Definition Macros |> Universal Usage |> Correlated to RTC Module Output as Beautifier
+#define StrOtpt_RTCBeautify(ClassType, CommandGiven, StringOutput, ...) (snprintf(Formatter_Container, sizeof(Formatter_Container), StringOutput, __VA_ARGS__), ClassType.CommandGiven(Formatter_Container))
+
+/*!
+    Class Declaration |> IoTMesC_AVR_DRVR ~= IoTMesC Arduino Driver Class
+    @brief
+    @param
 
 
-        @note
-        // !
-        // !
+    @note
+    // !
+    // !
 
-        @returns Nothing. Seriously, the class.
+    @returns Nothing. Seriously, the class.
 
-    */
-class IotMesC_AVR_DRVR
+*/
+class IoTMesC_AVR_DRVR
 {
     private:
         // * ENUMs
@@ -267,10 +256,10 @@ class IotMesC_AVR_DRVR
 
 
     public:
-        IotMesC_AVR_DRVR(uint_fast32_t BAUD_RATE);
-        ~IotMesC_AVR_DRVR();
+        IoTMesC_AVR_DRVR(uint_fast32_t BAUD_RATE);
+        ~IoTMesC_AVR_DRVR();
 
-        uint_fast32_t sketchTimeHit(MILLIS_RETURN_VAL ParamCondition);
+        uint_fast32_t sketchTimeHit(MILLIS_RETURN_VAL ParameterCondition);
         void testDSD(/*ENUM or Choices Here.*/) noexcept;
         void DIP_PINStats() noexcept;
 

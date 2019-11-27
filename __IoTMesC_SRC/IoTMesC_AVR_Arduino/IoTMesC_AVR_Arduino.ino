@@ -10,14 +10,10 @@
   License: GPL-3.0
 */
 
-#define IOT_DEVICE_CONTROLLER_AVR_DATASENS 0x4e6f64654d4355
 #define DEBUG_ENABLED
-
 #include "IoTMesC_AVR_Core/IoTMesC_AVR_Core.h"
 
-// * Definitions Specifically Used for AVR | Arduino
-
-IotMesC_AVR_DRVR IoTMesC_AVR(115200);
+IoTMesC_AVR_DRVR IoTMesC_AVR(115200);
 
 void setup()
 {
@@ -26,9 +22,9 @@ void setup()
 
 void loop()
 {
-  while (1)
-  {
-    SerialH_Call(println, F("Awaiting for Function Calls."));
-    delay(1000);
-  }
+  //while (1)
+  //{
+  //  SerialH_Call(println, F("Awaiting for Function Calls."));
+  //  delay(1000);
+  //}
 }
