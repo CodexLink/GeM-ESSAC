@@ -111,59 +111,31 @@
 
     #endif // * Definition End Point |> IOT_AVR_GUARD
 
-/*
-    * namespace |> AVR_DEV_DECL ~= Arduino AVR Device Declarations
+    /*!
+        Class Declaration |> IoTMesC_AVR_DRVR ~= IoTMesC Arduino Driver Class
+        @brief
+        @param
 
-    *     -> It Contains All Sets of Device and Sensor Pins
-    *         -> Uses Namespace and ENUM for Call Identity Uniqueness
 
-    ! Hierarchy Device Definitions
+        @note
+        // !
+        // !
 
-    * |> 1. Controller
-    * |> 2. Seven Segmnet Decoder
-    * |> 3. SPI Interfacer
-    * |> 4. I^2C Interfacer
-    * |> 5. Various Sensor That Doesn't Need Any Interfacer (In short, Digital Read)
-    *
-    ! NOTE
-        * You can use all of those declarations in a following format.
-        *   |> AVR_DEV_DECL::<Device>_DEF::<PROTOCOL>_PIN_DEF
-        *   |> Values cannot be replaced.
-*/
+        @returns Nothing. Seriously, the class.
 
-/*
-    * definition |> IOT_AVR_GUARD ~= Library Initializer with #Define Guard
-
-    *   -> Use for Alternation of Library Use.
-    *       -> Library Hierarchy:
-    *           1. LCD Sensor
-    *           2. TEMP Sensor
-    *           3. GAS Sensor
-    *           4. Software Serial
-    *           4. Controllers and Stuff and Anything That Doesn't Need Any Fallback Library.
-    *
-    *       -> Definition Options To Declare at Arduino Sketch
-    *           1. LCD_FALLBACK_I2C
-    *           2. TEMP_FALLBACK_SENS
-    *           3. GAS_FALLBACK_SENS
-    *           4. SERIAL_DEV_UNO
-    *
-    ! NOTE
-        * Not definiting fall back definitions will automatically process the arduino sketch.
-        * To render with the latest sensor library that I currently have.
-*/
-
-    namespace IoTMesC_AVR_DEV_DECL
+    */
+    class IotMesC_AVR_DRVR
     {
-        class IotMesC_AVR_DRVR;
-        namespace SEVEN_SEG_CTRLLER_DEF
-        {
+        private:
+            // * ENUMs
+
             enum SEVEN_SEG_CONSTRAINTS : uint_fast8_t
             {
                 DATA_COUNTER_ITER = 6,
                 RESERVED_MAX_ITER = 7,
                 MAX_CURR_CANDIDATE_VAL = 17
             };
+
 
             const uint_fast8_t SevenSegment_Payload[SEVEN_SEG_CONSTRAINTS::MAX_CURR_CANDIDATE_VAL][SEVEN_SEG_CONSTRAINTS::RESERVED_MAX_ITER] = {
                 {1, 1, 1, 1, 1, 1, 0}, // 0
@@ -184,15 +156,22 @@
                 {1, 0, 1, 1, 0, 1, 1}, // S
                 {1, 1, 0, 0, 1, 0, 1}  // ?
             };
-        } // * namespace SEVEN_SEG_CTRLLER_DEF:uint_fast16_t
-
-        // ! |> 3. Sensors and Devices | Pin Declarations
-        namespace SENS_N_DEVS_PIN_DECL
-        {
+            // ! |> 3. Sensors and Devices | Pin Declarations
             enum TFT_LCD_PIN_DEF : uint_fast8_t
             {
                 TFT_LCD_DC = 38,
                 TFT_LCD_CS = 39
+            };
+
+            enum SHT3X_PIN_DEF : uint_fast16_t
+            {
+                SHT_ADDR = 0x44,
+                SHT_ADDR_ALTER = 0x45
+            };
+
+            enum CCS811_PIN_DEF : uint_fast8_t
+            {
+                CCS_NWAKE = 0
             };
 
             enum MFRC522_PIN_DEF : uint_fast8_t
@@ -219,32 +198,20 @@
                 GAS_DATA_PIN = 0
             };
 
-            namespace DIP_SWITCH_CONFIG_DEF
+            enum DIP_SWITCH_PIN_DEF : uint_fast8_t
             {
-                enum DIP_SWITCH_PIN_DEF : uint_fast8_t
-                {
-                    SWITCH_PIN_ONE = 0,
-                    SWITCH_PIN_TWO = 0,
-                    SWITCH_PIN_THREE = 0,
-                    SWITCH_PIN_FOUR = 0
-                };
-                enum SWITCH_DEFINED_MODE : uint_fast8_t
-                {
-                    MCU_RESIST_INPUT = INPUT_PULLUP,
-                    SWITCH_INPUT = INPUT
-                };
-            } // * namespace DIP_SWITCH_CONFIG_DEF
+                SWITCH_PIN_ONE = 0,
+                SWITCH_PIN_TWO = 0,
+                SWITCH_PIN_THREE = 0,
+                SWITCH_PIN_FOUR = 0
+            };
+            enum SWITCH_DEFINED_MODE : uint_fast8_t
+            {
+                MCU_RESIST_INPUT = INPUT_PULLUP,
+                SWITCH_INPUT = INPUT
+            };
 
-        } // * namespace SENS_PERIPS_PIN_DECL
-
-        /*
-            * namespace |> UTIL_CONST_DECL ~= Utility Constant Declarations
-            * -> All Declaratives are defined here specifically used for anti-magic numbers.
-
-        */
-        namespace UTIL_CONST_DECL
-        {
-            enum CONST_ANTI_MAGIC : uint_fast8_t
+            enum DEFINED_CONST_MAGIC : uint_fast8_t
             {
                 NULL_DATA = 0,
                 ZERO_REAL_INT = 0,
@@ -262,19 +229,17 @@
                 CST_RET_PREV_RESULT,
                 CST_RET_INTERV_HIT
             };
-
             // ! Potential Backup when TFTLCD Fails. Please Elaborate more...
-            enum LCD_I2C_CONSTRAINT : int_fast8_t
+            enum LCD_I2C_CONSTRAINTS : int_fast8_t
             {
                 LCD_I2C_ADDR = 0x67,
                 LCD_I2C_MAX_W = 20,
                 LCD_I2C_MAX_H = 4,
                 LCD_I2C_POS_START_X = 0,
                 LCD_I2C_POS_START_Y = 0,
-                LCD_I2C_POS_END_X = LCD_I2C_POS_START_X - CONST_ANTI_MAGIC::VAL_INDEX_OFFSET,
-                LCD_I2C_POS_END_y = LCD_I2C_POS_START_Y - CONST_ANTI_MAGIC::VAL_INDEX_OFFSET
+                LCD_I2C_POS_END_X = LCD_I2C_POS_START_X - DEFINED_CONST_MAGIC::VAL_INDEX_OFFSET,
+                LCD_I2C_POS_END_y = LCD_I2C_POS_START_Y - DEFINED_CONST_MAGIC::VAL_INDEX_OFFSET
             };
-
             enum AVR_SERIAL_DECL : uint_fast32_t
             {
                 DEFAULT_PRTRCL_BAUDRATE = 0x2580, // 9600
@@ -282,45 +247,23 @@
                 LISTEN_BAUDRATE = 0x01c200        // 115200
             };
 
-        } // namespace UTIL_CONST_DECL
-    }
 
-    // * Class Declarations
-    class IoTMesC_AVR_DEV_DECL::IotMesC_AVR_DRVR
-    {
-        public:
-        // * Constructor
-        //IoTMesC_AVR_DEV_DECL()
-        //{
-        //}
-        //// * Destructor
-        //~IoTMesC_AVR_DEV_DECL()
-        //{
-        //}
-            void begin() const;
-            uint_fast32_t sketchTimeHit(UTIL_CONST_DECL::MILLIS_RETURN_VAL ParamCondition);
-            void testDSD(/*ENUM or Choices Here.*/) noexcept;
-            void DIP_PINStats() noexcept;
-
-            void initSerial_POST() noexcept;
-            void serial_isCommsAlive() noexcept;
-
-            void rtc_CheckCorrectDiff() noexcept(false);
-            inline void rtc_DisplayTime() noexcept;
-
-        private:
-            uint_fast8_t DataCounter_Update[SEVEN_SEG_CTRLLER_DEF::SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {UTIL_CONST_DECL::CONST_ANTI_MAGIC::NULL_SET_DATA};
+            // * Variables
+            uint_fast8_t DataCounter_Update[SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {DEFINED_CONST_MAGIC::NULL_SET_DATA};
             static uint_fast32_t SketchTime_CurStats;
             static uint_fast8_t SerialByteCnt;
             static uint_fast16_t SRAM_FreeCnt;
+            bool _initErrorFlags;
+
+
             // * Device and Peripherals Initializers.
 
-            inline void init_DevSens() const;
-            inline void init_DevSPI() const; // ! Potential Deprecation
-            inline void init_DevWire() const; // ! Potential Deprecation, HIGH CHANCE
+            inline bool init_DevSens() const;
+            inline bool init_DevSPI() const; // ! Potential Deprecation
+            inline bool init_DevWire() const; // ! Potential Deprecation, HIGH CHANCE
 
-            void init_DevRTC() const;
-            void init_DSD() const; // ENUM Candidate
+            bool init_DevRTC() const;
+            bool init_DSD() const; // ENUM Candidate
 
             // Device Updaters FN Members
             void updateLCD() noexcept;
@@ -350,8 +293,24 @@
             void rtc_QueryTimeSerial() noexcept(false);
             void rtc_SerialReceiveTime() noexcept;
 
-    };
 
+        public:
+            IotMesC_AVR_DRVR(uint_fast32_t BAUD_RATE);
+            ~IotMesC_AVR_DRVR();
+
+            uint_fast32_t sketchTimeHit(MILLIS_RETURN_VAL ParamCondition);
+            void testDSD(/*ENUM or Choices Here.*/) noexcept;
+            void DIP_PINStats() noexcept;
+
+            void initSerial_POST() noexcept;
+            void serial_isCommsAlive() noexcept;
+
+            void rtc_CheckCorrectDiff() noexcept(false);
+            inline void rtc_DisplayTime() noexcept;
+
+
+
+    };
 #endif // * Definition End Point |> IOT_DEVICE_CONTROLLER_AVR_DATASENS
 
 /*
