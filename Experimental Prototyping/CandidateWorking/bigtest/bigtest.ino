@@ -9,7 +9,7 @@
 #define GREEN   0x07E0
 #define CYAN    0x07FF
 #define MAGENTA 0xF81F
-#define YELLOW  0xFFE0  
+#define YELLOW  0xFFE0
 #define WHITE   0xFFFF
 
 /*
@@ -51,11 +51,11 @@ void setup(void) {
 
   //lcdTestPattern();
   //delay(1000);
-
-  display.clearScreen();
-  display.setCursor(0,0);
-  display.print("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa");
-  delay(1000);
+//
+  //display.clearScreen();
+  //display.setCursor(0,0);
+  //display.print("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa");
+  //delay(1000);
 
   tftPrintTest();
   delay(2000);
@@ -66,11 +66,11 @@ void setup(void) {
 
   // line draw test
   testlines(YELLOW);
-  delay(500);    
+  delay(500);
 
   // optimized lines
   testfastlines(RED, BLUE);
-  delay(500);    
+  delay(500);
 
   testdrawrects(GREEN);
   delay(1000);
@@ -86,7 +86,7 @@ void setup(void) {
   delay(100);
   randomPoints();
   delay(500);
-  
+
   display.clearScreen();
   testfillcircles(10, BLUE);
   testdrawcircles(10, WHITE);
@@ -171,7 +171,7 @@ void testdrawtext(char *text, uint16_t color) {
     display.write(i);
     if ((i > 0) && (i % 21 == 0))
       display.println();
-  }    
+  }
 }
 
 void testfastlines(uint16_t color1, uint16_t color2) {
@@ -204,7 +204,7 @@ void testfillcircles(uint8_t radius, uint16_t color) {
     for (uint8_t y=radius; y < display.height()-1; y+=radius*2) {
       display.fillCircle(x, y, radius, color);
     }
-  }  
+  }
 }
 
 void testdrawcircles(uint8_t radius, uint16_t color) {
@@ -212,7 +212,7 @@ void testdrawcircles(uint8_t radius, uint16_t color) {
     for (int16_t y=0; y < (display.height())-1+radius; y+=radius*2) {
       display.drawCircle(x, y, radius, color);
     }
-  }  
+  }
 }
 
 void testtriangles() {
@@ -254,37 +254,44 @@ void testroundrects() {
   }
 }
 
+  // Max of 21 Char For Solid - Character for Size of 1
+  // Max of 10 Char for Size of 2
 void tftPrintTest() {
   display.clearScreen();
-  display.setCursor(0, 5);
-  display.setTextColor(RED);  
+  display.setCursor(0, 0);
   display.setTextSize(1);
-  display.println("Hello World!");
-  display.setTextColor(YELLOW, GREEN);
+  display.setTextColor(YELLOW);
+  display.print("---------------------");
+  display.setCursor(display.width() / 6, 15);
   display.setTextSize(2);
-  display.print("Hello Wo");
-  display.setTextColor(BLUE);
-  display.setTextSize(3);
-  display.print(12.57);
-  delay(1500);
-  display.setCursor(0, 5);
-  display.clearScreen();
-  display.setTextColor(WHITE);
-  display.setTextSize(0);
-  display.println("Hello World!");
+  display.setTextColor(YELLOW);
+  display.print("IoTMesC");
+
   display.setTextSize(1);
-  display.setTextColor(GREEN);
-  display.print(p, 5);
-  display.println(" Want pi?");
-  display.print(8675309, HEX); 
-  display.print(" Print HEX");
-  display.setTextColor(WHITE);
-  display.println("Sketch has been");
-  display.println("running for: ");
-  display.setTextColor(MAGENTA);
-  display.print(millis() / 1000);
-  display.setTextColor(WHITE);
-  display.print(" sec.");
+  display.setTextColor(CYAN);
+
+  display.setCursor(display.width() / 12, 40);
+  display.print("Internet of Things");
+  display.setCursor(display.width() / 9, 50);
+  display.print("Multi - Essential");
+  display.setCursor(display.width() / 12, 60);
+  display.print("Sensing Components");
+  display.setTextColor(RED);
+  display.println(" ");
+  display.setCursor(display.width() / 7, 75);
+  display.print("Version Unknown");
+  display.setCursor(display.width() / 4, 90);
+  display.setTextColor(YELLOW);
+  display.print("Created by");
+  display.setCursor(display.width() / 24, 100);
+  display.print("Janrey | 'CodexLink'");
+  display.setTextColor(YELLOW);
+  display.setTextSize(1);
+  display.setCursor(0, display.height());
+  display.println(" ");
+  display.println(" ");
+  display.print("---------------------");
+  while(1);
 }
 
 
@@ -310,7 +317,7 @@ void randomRect(bool fill){
       if (y + h > display.height()) h = display.height() - y;
       if (fill){
         display.fillRect(x, y, w, h,random(0x0010,0xFFFF));
-      } 
+      }
       else {
         display.drawRect(x, y, w, h,random(0x0010,0xFFFF));
       }
@@ -333,7 +340,7 @@ void randomCircles(bool fill){
       if (y + r > (display.height()-1)) r = (display.height() - 1) - y;
       if (fill){
         display.fillCircle(x, y, r,random(0x0010,0xFFFF));
-      } 
+      }
       else {
         display.drawCircle(x, y, r,random(0x0010,0xFFFF));
       }
