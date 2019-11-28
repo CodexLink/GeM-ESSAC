@@ -7,7 +7,6 @@
 */
 
 #pragma once
-#include "Arduino.h"
 // ! Libraries |> No Alternatives Declaration
 #include "PrimaryCore/MemoryFree.h"
 #include "PrimaryCore/DS1302.h"
@@ -177,7 +176,7 @@ class IoTMesC_AVR_DRVR
             NULL_SET_DATA = 0,
             VAL_INDEX_OFFSET = 1,
             ARR_INDEX_OFFSET = 1,
-            ENDLESS = 1,
+            INDEF_FUNC_POINT = 1,
             SEG_INDEX_DP_EXEMPT_OFFSET = 2,
             CHAR_SERIAL_BUFFER_SIZE = 128
         };
@@ -215,13 +214,13 @@ class IoTMesC_AVR_DRVR
 
         // * Variable Flag Error Holder
         bool _initErrorFlags;
+        uint_fast32_t _BAUD_GIVEN_RATE;
 
 
         // * Device and Peripherals Initializers.
-
-        inline bool init_DevSens() const;
-        inline bool init_DevSPI() const; // ! Potential Deprecation
-        inline bool init_DevWire() const; // ! Potential Deprecation, HIGH CHANCE
+        bool init_DevSens() const;
+        bool init_DevSPI() const; // ! Potential Deprecation
+        bool init_DevWire() const; // ! Potential Deprecation, HIGH CHANCE
 
         bool init_DevRTC() const;
         bool init_DSD() const; // ENUM Candidate
@@ -256,9 +255,14 @@ class IoTMesC_AVR_DRVR
 
 
     public:
+    /*
+        ! Class Constructor (Explicit Declaration) |> IoTMesC_AVR_DRVR()
+        * @brief |> When added, it puts given baud to another variable to initialize with.
+    */
         IoTMesC_AVR_DRVR(uint_fast32_t BAUD_RATE);
         ~IoTMesC_AVR_DRVR();
 
+        void begin() const;
         uint_fast32_t sketchTimeHit(MILLIS_RETURN_VAL ParameterCondition);
         void testDSD(/*ENUM or Choices Here.*/) noexcept;
         void DIP_PINStats() noexcept;

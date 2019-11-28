@@ -10,21 +10,20 @@
   License: GPL-3.0
 */
 
-#define DEBUG_ENABLED
-#include "IoTMesC_AVR_Core/IoTMesC_AVR_Core.h"
+#include "IoTMesC_Arduino_CoreDecl.h"
 
-IoTMesC_AVR_DRVR IoTMesC_AVR(115200);
+IoTMesC_AVR_DRVR IoTMesC_AVR(0x01c200);
 
 void setup()
 {
- ;
+  IoTMesC_AVR.begin();
 }
 
 void loop()
 {
-  //while (1)
-  //{
-  //  SerialH_Call(println, F("Awaiting for Function Calls."));
-  //  delay(1000);
-  //}
+  while (1)
+  {
+    SerialH_Call(println, F("Awaiting for Function Calls."));
+    delay(1000);
+  }
 }
