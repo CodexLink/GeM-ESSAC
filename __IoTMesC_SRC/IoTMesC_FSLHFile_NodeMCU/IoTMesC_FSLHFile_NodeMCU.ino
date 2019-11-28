@@ -15,7 +15,7 @@ NOTE: Current Stage (Procedural Program) will be the first step towards completi
 #define IOT_DEVICE_CONTROLLER_ESP_SERVICE_NET 0x41726475696e6f20415652
 #define DEBUG_ENABLED
 
-#include "IoTMesC_ESP_Core/IoTMesC_ESP_Core.h"
+#include "IoTMesC_NodeMCU_CoreDecl.h"
 
 void setup()
 {
