@@ -38,7 +38,7 @@ jobs:
         include:
         - mcu_candidate_fqbn: arduino:avr:mega:cpu=atmega2560
           mcu_platform_candidate: arduino:avr
-          mcu_platform_sketch:  __IoTMesC_SRC/IoTMesC_AVR_Arduino/IoTMesC_AVR_Arduino.ino
+          mcu_platform_sketch:  __IoTMesC_SRC/IoTMesC_FSLHFile_Arduino/IoTMesC_FSLHFile_Arduino.ino
 
     steps:
     - name: A.Stage 1 | Repository Checkout
@@ -67,7 +67,7 @@ jobs:
         include:
         - mcu_candidate_fqbn: esp8266:esp8266:nodemcuv2
           mcu_platform_candidate: esp8266:esp8266
-          mcu_platform_sketch:  __IoTMesC_SRC/IoTMesC_ESP_NodeMCU/IoTMesC_ESP_NodeMCU.ino
+          mcu_platform_sketch:  __IoTMesC_SRC/IoTMesC_FSLHFile_NodeMCU/IoTMesC_FSLHFile_NodeMCU.ino
           boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
 
     steps:
