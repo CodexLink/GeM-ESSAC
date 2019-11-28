@@ -217,19 +217,20 @@ class IoTMesC_AVR_DRVR
         uint_fast32_t _BAUD_GIVEN_RATE;
 
 
-        // * Device and Peripherals Initializers.
-        bool init_DevSens() const;
-        bool init_DevSPI() const; // ! Potential Deprecation
-        bool init_DevWire() const; // ! Potential Deprecation, HIGH CHANCE
-
-        bool init_DevRTC() const;
-        bool init_DSD() const; // ENUM Candidate
+        // * Device and Peripherals Initializers. Initialized By Order
+        bool init_DevTFT();
+        bool init_DevDSD();
+        bool init_DevMFRC522();
+        bool init_DevCCS811();
+        bool init_DevSHT3X();
+        bool init_DevPIR();
+        bool init_DevDS1302();
 
         // Device Updaters FN Members
         void updateLCD() noexcept;
 
         // * Seven Segment Division
-        void initDSD(/*Potential Beginning Sequence After Initialization Or Let Go*/) noexcept;
+        //void initDSD(/*Potential Beginning Sequence After Initialization Or Let Go*/) noexcept;
         void updateDSD(/**/) noexcept;
 
         // * SPI Tranmission FN Handlers - MFRC522 and TFT_ILI9163C FN Member Declarations
@@ -248,7 +249,7 @@ class IoTMesC_AVR_DRVR
 
 
         // * RTC FN Members
-        inline void rtc_PauseFN() const;
+        inline void rtc_PauseFN();
         inline void rtc_SetWriteProtect(bool TruthValGiven) noexcept;
         void rtc_QueryTimeSerial() noexcept(false);
         void rtc_SerialReceiveTime() noexcept;
