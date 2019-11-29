@@ -21,7 +21,10 @@
 
 #include "VariableSegmentDisplay.h"
 
-VariableSegment::VariableSegment()
+VariableSegment::VariableSegment(uint8_t UNKNOWN_YET) // Multiplexer Method
+{
+}
+VariableSegment::VariableSegment(uint8_t digitalRangeStart, uint8_t digitalRangeEnd) // ! Digital-Dependent Method
 {
 }
 

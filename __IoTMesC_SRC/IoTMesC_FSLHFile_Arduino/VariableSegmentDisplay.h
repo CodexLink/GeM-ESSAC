@@ -27,7 +27,7 @@
             RESERVED_MAX_ITER = 7,
             MAX_CURR_CANDIDATE_VAL = 17
         };
-
+uint_fast8_t DataCounter_Update[SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {DEFINED_CONST_MAGIC::NULL_SET_DATA};
 
         const uint_fast8_t SevenSegment_Payload[SEVEN_SEG_CONSTRAINTS::MAX_CURR_CANDIDATE_VAL][SEVEN_SEG_CONSTRAINTS::RESERVED_MAX_ITER] = {
             {1, 1, 1, 1, 1, 1, 0}, // 0
@@ -50,8 +50,9 @@
         };
 
 */
+#pragma once
 
-
+#include <stdint.h>
 
 #ifdef MULTIPLEXER_ENABLE
     #include "ShiftOut.h"
@@ -61,7 +62,7 @@
 class VariableSegment
 {
 private:
-    uint8_t Counter;
+    uint8_t CounterSegment;
     void updateSegment();
     void writeSegment();
 
@@ -72,9 +73,9 @@ private:
 
 
 public:
-    //VariableSD(uint8_t); // Multiplexer Method
-    //VariableSD(uint8_t digitalRangeStart, uint8_t digitalRangeEnd); // ! Digital-Dependent Method
-    //~VariableSD();
+    VariableSegment(uint8_t UNKNOWN_YET); // Multiplexer Method
+    VariableSegment(uint8_t digitalRangeStart, uint8_t digitalRangeEnd); // ! Digital-Dependent Method
+    ~VariableSegment();
     //void begin const();
     //inline void destroy const(); // Destructor-Like Function
     //inline void restart const();

@@ -185,7 +185,6 @@ class IoTMesC_AVR_DRVR
 
 
         // * Variables
-        uint_fast8_t DataCounter_Update[SEVEN_SEG_CONSTRAINTS::DATA_COUNTER_ITER] = {DEFINED_CONST_MAGIC::NULL_SET_DATA};
         static uint_fast32_t SketchTime_CurStats;
         static uint_fast8_t SerialByteCnt;
         static uint_fast16_t SRAM_FreeCnt;
