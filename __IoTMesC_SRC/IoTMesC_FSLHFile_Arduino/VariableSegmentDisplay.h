@@ -58,11 +58,27 @@
     ShiftOut<1> shift;
 #endif
 
-class VariableSD
+class VariableSegment
 {
 private:
-    /* data */
+    uint8_t Counter;
+    void updateSegment();
+    void writeSegment();
+
+    void shiftData();
+
+    void writeSequence();
+
+
+
 public:
-    VariableSD(/* args */);
+    VariableSD(uint8_t); // Multiplexer Method
+    VariableSD(uint8_t digitalRangeStart, uint8_t digitalRangeEnd); // ! Digital-Dependent Method
     ~VariableSD();
+
+    void begin const();
+    inline void destroy const(); // Destructor-Like Function
+    inline void restart const();
+    inline void clear const();
+    void test_Sequence(SequenceType SequenceGiven);
 };

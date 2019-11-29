@@ -198,7 +198,7 @@ class IoTMesC_AVR_DRVR
         Adafruit_SHT31 TempSens;
         //DHT TempSens(PIN_UNDECLARED, TYPE_UNDECLARED);
 
-        VariableSD SDDecoder {};
+        //VariableSegment SDDecoder {};
 
         // * Variable Flag Error Holder
         bool _initErrorFlags;

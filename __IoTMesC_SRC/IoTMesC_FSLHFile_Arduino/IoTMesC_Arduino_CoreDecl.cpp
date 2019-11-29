@@ -157,6 +157,10 @@ bool IoTMesC_AVR_DRVR::init_DevDS1302()
 // TFT Screen FN Members
 void IoTMesC_AVR_DRVR::TFT_POST()
 {
+    TFTScreen.clearScreen();
+    TFTScreen.setCursor(0, 0);
+    TFTScreen.setTextSize(1);
+    TFTScreen.setTextColor(TFT_DEFINED_COLORS::TFT_YELLOW);
 }
 
 void IoTMesC_AVR_DRVR::TFT_SCR_Sens() noexcept
