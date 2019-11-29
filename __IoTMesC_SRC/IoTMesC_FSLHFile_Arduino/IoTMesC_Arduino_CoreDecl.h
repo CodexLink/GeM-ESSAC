@@ -218,7 +218,8 @@ class IoTMesC_AVR_DRVR
         static uint_fast8_t SerialByteCnt;
         static uint_fast16_t SRAM_FreeCnt;
 
-        TFT_ILI9163C TFTScreen{TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC};    // Other Device Class / Objects Definition
+        TFT_ILI9163C TFTScreen {TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC};    // Other Device Class / Objects Definition
+        MFRC522 RFIDCmpnt {MFRC522_PIN_DEF::RFID_SS_PIN, MFRC522_PIN_DEF::RFID_RST_PIN};
 
         CCS811 GasSens;
         //MQ135 GasSens(PIN_MQ135);
