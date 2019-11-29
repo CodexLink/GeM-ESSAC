@@ -77,34 +77,6 @@ class IoTMesC_AVR_DRVR
 {
     private:
         // * ENUMs
-
-        enum SEVEN_SEG_CONSTRAINTS : uint_fast8_t
-        {
-            DATA_COUNTER_ITER = 6,
-            RESERVED_MAX_ITER = 7,
-            MAX_CURR_CANDIDATE_VAL = 17
-        };
-
-
-        const uint_fast8_t SevenSegment_Payload[SEVEN_SEG_CONSTRAINTS::MAX_CURR_CANDIDATE_VAL][SEVEN_SEG_CONSTRAINTS::RESERVED_MAX_ITER] = {
-            {1, 1, 1, 1, 1, 1, 0}, // 0
-            {0, 1, 1, 0, 0, 0, 0}, // 1
-            {1, 1, 0, 1, 1, 0, 1}, // 2
-            {1, 1, 1, 1, 0, 0, 1}, // 3
-            {0, 1, 1, 0, 0, 1, 1}, // 4
-            {1, 0, 1, 1, 0, 1, 1}, // 5
-            {1, 0, 1, 1, 1, 1, 1}, // 6
-            {1, 1, 1, 0, 0, 0, 0}, // 7
-            {1, 1, 1, 1, 1, 1, 1}, // 8
-            {1, 1, 1, 1, 0, 1, 1}, // 9
-            {0, 0, 0, 0, 0, 0, 1}, // Dash
-            {1, 1, 1, 0, 1, 1, 1}, // A
-            {1, 0, 0, 1, 1, 1, 1}, // E
-            {1, 0, 0, 0, 1, 1, 1}, // F
-            {0, 1, 1, 0, 0, 0, 0}, // I
-            {1, 0, 1, 1, 0, 1, 1}, // S
-            {1, 1, 0, 0, 1, 0, 1}  // ?
-        };
         // ! |> 3. Sensors and Devices | Pin Declarations
         enum TFT_LCD_PIN_DEF : uint_fast8_t
         {
@@ -225,6 +197,8 @@ class IoTMesC_AVR_DRVR
         //MQ135 GasSens(PIN_MQ135);
         Adafruit_SHT31 TempSens;
         //DHT TempSens(PIN_UNDECLARED, TYPE_UNDECLARED);
+
+        VariableSD SDDecoder {};
 
         // * Variable Flag Error Holder
         bool _initErrorFlags;
