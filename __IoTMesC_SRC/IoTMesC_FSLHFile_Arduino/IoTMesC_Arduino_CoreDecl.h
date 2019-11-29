@@ -220,6 +220,11 @@ class IoTMesC_AVR_DRVR
 
         TFT_ILI9163C TFTScreen{TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC};    // Other Device Class / Objects Definition
 
+        CCS811 GasSens;
+        //MQ135 GasSens(PIN_MQ135);
+        Adafruit_SHT31 TempSens;
+        //DHT TempSens(PIN_UNDECLARED, TYPE_UNDECLARED);
+
         // * Variable Flag Error Holder
         bool _initErrorFlags;
         uint_fast32_t _BAUD_GIVEN_RATE;
