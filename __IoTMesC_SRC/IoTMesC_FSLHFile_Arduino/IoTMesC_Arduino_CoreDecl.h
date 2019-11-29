@@ -8,9 +8,9 @@
 
 #pragma once
 // ! Libraries |> No Alternatives Declaration
-#include "PrimaryCore/MemoryFree.h"
-#include "PrimaryCore/DS1302.h"
-#include "PrimaryCore/SoftReset.h"
+#include "MemoryFree.h"
+#include "DS1302.h"
+#include "SoftReset.h"
 
 // ! Libraries |> System Compiler Libraries Provided.
 #include <Wire.h>
@@ -25,22 +25,22 @@
 */
 
 #ifdef LCD_FALLBACK_I2C
-    #include "AlternativeCore/LiquidCrystal_I2C.h"
+    #include "LiquidCrystal_I2C.h"
 #else
-    #include "PrimaryCore/Adafruit_GFX.h"
-    #include "PrimaryCore/TFT_ILI9163C.h"
+    #include "Adafruit_GFX.h"
+    #include "TFT_ILI9163C.h"
 #endif
 
 #ifdef TEMP_FALLBACK_SENS
-    #include "AlternativeCore/DHT.h"
+    #include "DHT.h"
 #else
-    #include "PrimaryCore/Adafruit_SHT31.h"
+    #include "Adafruit_SHT31.h"
 #endif
 
 #ifdef GAS_FALLBACK_SENS
-    #include "AlternativeCore/MQ135.h"
+    #include "MQ135.h"
 #else
-    #include "PrimaryCore/CCS811.h"
+    #include "CCS811.h"
 #endif
 
 #ifdef SERIAL_DEV_UNO
@@ -48,17 +48,17 @@
 #endif
 
 #ifdef SEGMENT_CUST_DECODER_ENABLE
-    #include "PrimaryCore/ShiftOut.h"
+    #include "ShiftOut.h"
 #endif
 
 #ifdef MULTIPLEXER_ENABLE
-    #include "PrimaryCore/ShiftIn.h"
+    #include "ShiftIn.h"
 #endif
 
 #ifdef MFRC_REQUIRE_EXTENDED_ENABLE
-    #include "AlternativeCore/MFRC522Extended.h"
+    #include "MFRC522Extended.h"
 #else
-    #include "PrimaryCore/MFRC522.h"
+    #include "MFRC522.h"
 #endif
 
 
@@ -180,6 +180,7 @@ class IoTMesC_AVR_DRVR
             SEG_INDEX_DP_EXEMPT_OFFSET = 2,
             CHAR_SERIAL_BUFFER_SIZE = 128
         };
+
         enum MILLIS_RETURN_VAL : uint_fast8_t
         {
             CST_RET_UNKNOWN_VAL,
@@ -187,6 +188,7 @@ class IoTMesC_AVR_DRVR
             CST_RET_PREV_RESULT,
             CST_RET_INTERV_HIT
         };
+
         // ! Potential Backup when TFTLCD Fails. Please Elaborate more...
         enum LCD_I2C_CONSTRAINTS : int_fast8_t
         {
@@ -198,6 +200,19 @@ class IoTMesC_AVR_DRVR
             LCD_I2C_POS_END_X = LCD_I2C_POS_START_X - DEFINED_CONST_MAGIC::VAL_INDEX_OFFSET,
             LCD_I2C_POS_END_y = LCD_I2C_POS_START_Y - DEFINED_CONST_MAGIC::VAL_INDEX_OFFSET
         };
+
+        enum TFT_DEFINED_COLORS : uint_fast32_t
+        {
+            TFT_BLACK =   0x0000,
+            TFT_BLUE =    0x001F,
+            TFT_RED =     0xF800,
+            TFT_GREEN =   0x07E0,
+            TFT_CYAN =    0x07FF,
+            TFT_MAGENTA = 0xF81F,
+            TFT_YELLOW =  0xFFE0,
+            TFT_WHITE =   0xFFFF
+        };
+
         enum AVR_SERIAL_DECL : uint_fast32_t
         {
             DEFAULT_PRTRCL_BAUDRATE = 0x2580, // 9600
@@ -211,6 +226,9 @@ class IoTMesC_AVR_DRVR
         static uint_fast32_t SketchTime_CurStats;
         static uint_fast8_t SerialByteCnt;
         static uint_fast16_t SRAM_FreeCnt;
+
+        //TFT_ILI9163C TFTScreen{TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC};    // Other Device Class / Objects Definition
+        TFT_ILI9163C TFTScreen = TFT_ILI9163C(TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC);
 
         // * Variable Flag Error Holder
         bool _initErrorFlags;
@@ -226,8 +244,12 @@ class IoTMesC_AVR_DRVR
         bool init_DevPIR();
         bool init_DevDS1302();
 
-        // Device Updaters FN Members
-        void updateLCD() noexcept;
+        // TFT Screen FN Members
+        void TFT_POST();
+        void TFT_SCR_Sens() noexcept;
+        void TFT_SCR_Tech() noexcept;
+        void TFT_SCR_DevStats() noexcept;
+        void TFT_SCR_Net() noexcept;
 
         // * Seven Segment Division
         //void initDSD(/*Potential Beginning Sequence After Initialization Or Let Go*/) noexcept;
@@ -262,6 +284,8 @@ class IoTMesC_AVR_DRVR
     */
         IoTMesC_AVR_DRVR(uint_fast32_t BAUD_RATE);
         ~IoTMesC_AVR_DRVR();
+
+        // Other Device Class / Objects Declaration
 
         void begin() const;
         uint_fast32_t sketchTimeHit(MILLIS_RETURN_VAL ParameterCondition);

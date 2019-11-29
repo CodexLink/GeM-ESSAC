@@ -3,10 +3,18 @@
 
 #include "IoTMesC_Arduino_CoreDecl.h"
 
+// Class Objects Declarations
+// ! This part contains multiple libraries that needs initialization of objects.
+// ! We cannot utilize those if we don't instantiate their objects.
+
 // Constructors and Destructors
 
 IoTMesC_AVR_DRVR::IoTMesC_AVR_DRVR(uint_fast32_t BAUD_RATE)
 {
+
+    //TFTScreen(TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC);
+
+
     SerialH_Call(println, F("IoTMesC |> IoT, Multi-Essential Sensing Components"));
     SerialH_Call(println, F("Author |> Janrey 'CodexLink' Licas"));
     SerialH_Call(println, F("Sketch Suitable |> Arduino Variants, Recommended: MEGA"));
@@ -34,6 +42,8 @@ IoTMesC_AVR_DRVR::~IoTMesC_AVR_DRVR()
 void IoTMesC_AVR_DRVR::begin() const
 {
     SerialH_Call(begin, _BAUD_GIVEN_RATE);
+
+    TFT_POST();
 
     SerialH_Call(println, F(""));
     SerialH_Call(print, F("Serial Communication, Begin @ "));
@@ -85,10 +95,46 @@ inline void IoTMesC_AVR_DRVR::rtc_DisplayTime() noexcept
 // * Device and Peripherals Initializers. Initialized By Order
 bool IoTMesC_AVR_DRVR::init_DevTFT()
 {
+    TFTScreen.clearScreen();
+    TFTScreen.setCursor(0, 0);
+    TFTScreen.setTextSize(1);
+    TFTScreen.setTextColor(TFT_DEFINED_COLORS::TFT_YELLOW);
+    TFTScreen.print("---------------------");
+    TFTScreen.setCursor(TFTScreen.width() / 6, 15);
+    TFTScreen.setTextSize(2);
+    TFTScreen.setTextColor(TFT_DEFINED_COLORS::TFT_YELLOW);
+    TFTScreen.print("IoTMesC");
+
+    TFTScreen.setTextSize(1);
+    TFTScreen.setTextColor(TFT_DEFINED_COLORS::TFT_CYAN);
+
+    TFTScreen.setCursor(TFTScreen.width() / 12, 40);
+    TFTScreen.print("Internet of Things");
+    TFTScreen.setCursor(TFTScreen.width() / 9, 50);
+    TFTScreen.print("Multi - Essential");
+    TFTScreen.setCursor(TFTScreen.width() / 12, 60);
+    TFTScreen.print("Sensing Components");
+    TFTScreen.setTextColor(TFT_DEFINED_COLORS::TFT_RED);
+    TFTScreen.println(" ");
+    TFTScreen.setCursor(TFTScreen.width() / 7, 75);
+    TFTScreen.print("Version Unknown");
+    TFTScreen.setCursor(TFTScreen.width() / 4, 90);
+    TFTScreen.setTextColor(TFT_DEFINED_COLORS::TFT_YELLOW);
+    TFTScreen.print("Created by");
+    TFTScreen.setCursor(TFTScreen.width() / 24, 100);
+    TFTScreen.print("Janrey | 'CodexLink'");
+    TFTScreen.setTextColor(TFT_DEFINED_COLORS::TFT_YELLOW);
+    TFTScreen.setTextSize(1);
+    TFTScreen.setCursor(0, TFTScreen.height());
+    TFTScreen.println(" ");
+    TFTScreen.println(" ");
+    TFTScreen.print("---------------------");
+    return true;
 }
 
 bool IoTMesC_AVR_DRVR::init_DevDSD()
 {
+    return true;
 }
 
 bool IoTMesC_AVR_DRVR::init_DevMFRC522()
@@ -97,23 +143,35 @@ bool IoTMesC_AVR_DRVR::init_DevMFRC522()
 
 bool IoTMesC_AVR_DRVR::init_DevCCS811()
 {
-
 }
 bool IoTMesC_AVR_DRVR::init_DevSHT3X()
 {
-
 }
 bool IoTMesC_AVR_DRVR::init_DevPIR()
 {
-
 }
 bool IoTMesC_AVR_DRVR::init_DevDS1302()
 {
 }
 
+// TFT Screen FN Members
+void IoTMesC_AVR_DRVR::TFT_POST()
+{
+}
 
-// Device Updaters FN Members
-void IoTMesC_AVR_DRVR::updateLCD() noexcept
+void IoTMesC_AVR_DRVR::TFT_SCR_Sens() noexcept
+{
+}
+
+void IoTMesC_AVR_DRVR::TFT_SCR_Tech() noexcept
+{
+}
+
+void IoTMesC_AVR_DRVR::TFT_SCR_DevStats() noexcept
+{
+}
+
+void IoTMesC_AVR_DRVR::TFT_SCR_Net() noexcept
 {
 }
 

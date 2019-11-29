@@ -257,40 +257,7 @@ void testroundrects() {
   // Max of 21 Char For Solid - Character for Size of 1
   // Max of 10 Char for Size of 2
 void tftPrintTest() {
-  display.clearScreen();
-  display.setCursor(0, 0);
-  display.setTextSize(1);
-  display.setTextColor(YELLOW);
-  display.print("---------------------");
-  display.setCursor(display.width() / 6, 15);
-  display.setTextSize(2);
-  display.setTextColor(YELLOW);
-  display.print("IoTMesC");
 
-  display.setTextSize(1);
-  display.setTextColor(CYAN);
-
-  display.setCursor(display.width() / 12, 40);
-  display.print("Internet of Things");
-  display.setCursor(display.width() / 9, 50);
-  display.print("Multi - Essential");
-  display.setCursor(display.width() / 12, 60);
-  display.print("Sensing Components");
-  display.setTextColor(RED);
-  display.println(" ");
-  display.setCursor(display.width() / 7, 75);
-  display.print("Version Unknown");
-  display.setCursor(display.width() / 4, 90);
-  display.setTextColor(YELLOW);
-  display.print("Created by");
-  display.setCursor(display.width() / 24, 100);
-  display.print("Janrey | 'CodexLink'");
-  display.setTextColor(YELLOW);
-  display.setTextSize(1);
-  display.setCursor(0, display.height());
-  display.println(" ");
-  display.println(" ");
-  display.print("---------------------");
   while(1);
 }
 
