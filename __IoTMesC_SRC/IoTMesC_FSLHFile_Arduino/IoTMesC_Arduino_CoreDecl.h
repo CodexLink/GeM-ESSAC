@@ -7,10 +7,17 @@
 */
 
 #pragma once
+
 // ! Libraries |> No Alternatives Declaration
 #include "MemoryFree.h"
 #include "DS1302.h"
 #include "SoftReset.h"
+#include "TFT_ILI9163C.h"
+#include "ShiftOut.h"
+#include "MFRC522.h"
+
+// ! Libraries |> No Alternatives Declaration |> Arduino Proper-Located Libraries | For Building In Actions CI.
+#include "Adafruit_GFX.h"
 
 // ! Libraries |> System Compiler Libraries Provided.
 #include <Wire.h>
@@ -18,15 +25,13 @@
 #include <EEPROM.h>
 
 /*
-    ! Various Libraries |> Sensors and Device
-    @protocols |> I2C and SPI
-    @includes |> Primary and Secondary Cores
-    @usage |> #define <DEFINITION> to access libraries or alternate used libraries.
+    ! Various Custom Libraries |> Sensors and Device
+    * @protocols |> I2C and SPI
+    * @includes |> Primary and Secondary Cores
+    * @usage |> #define <DEFINITION> to access libraries or alternate used libraries.
+    ! Some Custon Libraries Doesn't Need ALternative Modules.
 */
 
-#include "Adafruit_GFX.h"
-#include "TFT_ILI9163C.h"
-#include "ShiftOut.h"
 
 #ifdef TEMP_FALLBACK_SENS
     #include "DHT.h"
@@ -40,20 +45,15 @@
     #include "CCS811.h"
 #endif
 
+// ! REQUIRED |> For Arduino UNO Only For Communicating with ESP8266.
 #ifdef SERIAL_DEV_UNO
     #include <SoftwareSerial>
 #endif
 
+// ! Potentially REQUIRED |> Required For Future Usage When Implementing Buttons.
 #ifdef MULTIPLEXER_ENABLE
     #include "ShiftIn.h"
 #endif
-
-#ifdef MFRC_REQUIRE_EXTENDED_ENABLE
-    #include "MFRC522Extended.h"
-#else
-    #include "MFRC522.h"
-#endif
-
 
 // ! Definition |> Serial Output Handlers
 #define SerialH_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
