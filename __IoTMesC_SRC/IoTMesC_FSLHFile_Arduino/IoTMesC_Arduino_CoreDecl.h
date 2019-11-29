@@ -24,12 +24,9 @@
     @usage |> #define <DEFINITION> to access libraries or alternate used libraries.
 */
 
-#ifdef LCD_FALLBACK_I2C
-    #include "LiquidCrystal_I2C.h"
-#else
-    #include "Adafruit_GFX.h"
-    #include "TFT_ILI9163C.h"
-#endif
+#include "Adafruit_GFX.h"
+#include "TFT_ILI9163C.h"
+#include "ShiftOut.h"
 
 #ifdef TEMP_FALLBACK_SENS
     #include "DHT.h"
@@ -45,10 +42,6 @@
 
 #ifdef SERIAL_DEV_UNO
     #include <SoftwareSerial>
-#endif
-
-#ifdef SEGMENT_CUST_DECODER_ENABLE
-    #include "ShiftOut.h"
 #endif
 
 #ifdef MULTIPLEXER_ENABLE
