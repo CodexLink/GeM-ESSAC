@@ -13,7 +13,7 @@
 #include "DS1302.h"
 #include "MemoryFree.h"
 #include "MFRC522.h"
-#include "ShiftOut.h"
+#include "VariableSegmentDisplay.h"
 #include "SoftReset.h"
 #include "TFT_ILI9163C.h"
 

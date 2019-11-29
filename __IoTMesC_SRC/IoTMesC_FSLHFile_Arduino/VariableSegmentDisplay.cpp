@@ -19,12 +19,12 @@
                 |> U
 */
 
-#include "VariableSegmentD.h"
+#include "VariableSegmentDisplay.h"
 
-VariableSD::VariableSD()
+VariableSegment::VariableSegment()
 {
 }
 
-VariableSD::~VariableSD()
+VariableSegment::~VariableSegment()
 {
 }

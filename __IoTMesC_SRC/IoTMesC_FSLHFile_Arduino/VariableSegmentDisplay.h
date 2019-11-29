@@ -72,13 +72,12 @@ private:
 
 
 public:
-    VariableSD(uint8_t); // Multiplexer Method
-    VariableSD(uint8_t digitalRangeStart, uint8_t digitalRangeEnd); // ! Digital-Dependent Method
-    ~VariableSD();
-
-    void begin const();
-    inline void destroy const(); // Destructor-Like Function
-    inline void restart const();
-    inline void clear const();
-    void test_Sequence(SequenceType SequenceGiven);
+    //VariableSD(uint8_t); // Multiplexer Method
+    //VariableSD(uint8_t digitalRangeStart, uint8_t digitalRangeEnd); // ! Digital-Dependent Method
+    //~VariableSD();
+    //void begin const();
+    //inline void destroy const(); // Destructor-Like Function
+    //inline void restart const();
+    //inline void clear const();
+    //void test_Sequence(SequenceType SequenceGiven);
 };
