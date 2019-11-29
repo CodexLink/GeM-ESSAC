@@ -72,7 +72,6 @@
  * 		Pages 42-43 Authentication configuration
  * 		Pages 44-47 Authentication key
  */
-#pragma once
 #ifndef MFRC522_h
 #define MFRC522_h
 /*

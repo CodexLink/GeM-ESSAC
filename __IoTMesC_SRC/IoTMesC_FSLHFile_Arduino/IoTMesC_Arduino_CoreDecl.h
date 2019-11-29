@@ -9,20 +9,18 @@
 #pragma once
 
 // ! Libraries |> No Alternatives Declaration
-#include "MemoryFree.h"
+#include "Adafruit_GFX.h"
 #include "DS1302.h"
+#include "MemoryFree.h"
+#include "MFRC522.h"
+#include "ShiftOut.h"
 #include "SoftReset.h"
 #include "TFT_ILI9163C.h"
-#include "ShiftOut.h"
-#include "MFRC522.h"
-
-// ! Libraries |> No Alternatives Declaration |> Arduino Proper-Located Libraries | For Building In Actions CI.
-#include "Adafruit_GFX.h"
 
 // ! Libraries |> System Compiler Libraries Provided.
-#include <Wire.h>
-#include <SPI.h>
 #include <EEPROM.h>
+#include <SPI.h>
+#include <Wire.h>
 
 /*
     ! Various Custom Libraries |> Sensors and Device
@@ -72,7 +70,7 @@
     // !
     // !
 
-    @returns Nothing. Seriously, the class.
+    @returns Nothing. Seriously, it's class.
 
 */
 class IoTMesC_AVR_DRVR
@@ -220,13 +218,11 @@ class IoTMesC_AVR_DRVR
         static uint_fast8_t SerialByteCnt;
         static uint_fast16_t SRAM_FreeCnt;
 
-        //TFT_ILI9163C TFTScreen{TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC};    // Other Device Class / Objects Definition
-        TFT_ILI9163C TFTScreen = TFT_ILI9163C(TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC);
+        TFT_ILI9163C TFTScreen{TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC};    // Other Device Class / Objects Definition
 
         // * Variable Flag Error Holder
         bool _initErrorFlags;
         uint_fast32_t _BAUD_GIVEN_RATE;
-
 
         // * Device and Peripherals Initializers. Initialized By Order
         bool init_DevTFT();
@@ -250,11 +246,9 @@ class IoTMesC_AVR_DRVR
 
         // * SPI Tranmission FN Handlers - MFRC522 and TFT_ILI9163C FN Member Declarations
 
-
         // * I2C Tranmission FN Handlers – CCS811 and SHT3X FN Member Declarations
         void return_CCS811_I2C(/* Possible ENUM */) noexcept;
         void return_SHT3X_I2C(/* Possible ENUM */) noexcept;
-
 
         // * Serial Communication FN Members
         void serialHost_Send() noexcept;
@@ -262,13 +256,11 @@ class IoTMesC_AVR_DRVR
         void serialHost_ReEstablish() noexcept;
         void serialHost_Reset() noexcept; // ! POTENTIAL Removal.
 
-
         // * RTC FN Members
         inline void rtc_PauseFN();
         inline void rtc_SetWriteProtect(bool TruthValGiven) noexcept;
         void rtc_QueryTimeSerial() noexcept(false);
         void rtc_SerialReceiveTime() noexcept;
-
 
     public:
     /*
