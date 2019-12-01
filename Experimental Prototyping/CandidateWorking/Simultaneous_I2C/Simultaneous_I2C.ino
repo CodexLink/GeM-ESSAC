@@ -34,11 +34,20 @@ void loop()
     float Temp_t = TempSens.readTemperature();
     float Temp_h = TempSens.readHumidity();
 
+     // ! This was for experimental purpose of randomizing instance of delay.
+    float delay_time = random(300, 1100);
+
+    // ! About Delay Inconsistent Effects
+    // ! The cause of inconsistent delay time shows string of 'awaiting new data. for sensor CCS811'
+    // ! We could filter that out by not processing the string to change.
+
+    // ! Also the time report is NOT VERY accurate! Keep in mind of that. We did this just to check if delay time works in different case of delay time.
+
     uint16_t GAS_ECO2, GAS_ETVOC, GAS_ERRSTAT, GAS_RAW; // ! We could put this one in struct based container instead of individual seperated variable container.
     GasSens.read(&GAS_ECO2, &GAS_ETVOC, &GAS_ERRSTAT, &GAS_RAW);
 
     Serial.print("[ Sensor Reading Process ] | Runtime Report @ ");
-    Serial.print(millis() / 1000); // ! We should make formatter for this one. Will be done on another sketch.
+    Serial.print((float)(millis() / delay_time)); // ! We should make formatter for this one. Will be done on another sketch.
     Serial.println("s.");
     Serial.println();
 
@@ -84,9 +93,21 @@ void loop()
         Serial.println(GasSens.errstat_str(GAS_ERRSTAT));
     }
 
+    Serial.print("PIR MS | Presence Status |> ");
+    if (digitalRead(27) == HIGH) // ! DATA PIN of PIR is 27.
+    {
+        Serial.println("[ TRIGGERED ]");
+    }
+
+    else
+    {
+        Serial.println("[ NOT-TRIGGERED ]");
+
+    }
+
     Serial.println();
     Serial.println("[ Sensor Reading Done. ]");
     Serial.println();
 
-    delay(1000);
+    delay(delay_time);
 }
