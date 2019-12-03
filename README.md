@@ -1,6 +1,6 @@
 <h1 align="center">IoTMesC</h1>
 <h4 align="center">IoT Multi-Essential Sensing Components<br>
-For Personal Benefits and Embedded Systems Experience, Built on Arduino with ESP8266 (NodeMUCU)</h4>
+For Personal Benefits and Embedded Systems Experience, Built on Arduino MEGA | Communicating with NodeMCU</h4>
 <p align="center">
 
 <a href="https://github.com/CodexLink/IoTMesC/actions">
@@ -29,16 +29,23 @@ For Personal Benefits and Embedded Systems Experience, Built on Arduino with ESP
 </p>
 
 # Welcome!
-Hello! This is my first Arduino Personal Project for Personal Benefits #1 (APP_PB_#1). This project is currently under slow progression status. Meaning I'm basically in a state of being busy wherein I don't have most of my time dedicated to this project. Even though it takes me about a year to do something about it.
-
-
-# TLDR; What does this project do? / What so special about it?
-It does report only sensor data and there's nothing special about it, seriously. But there will be an implementation where I have to use RFID to unlock my laptop and control its some functionality such as locking, unlocking (obviously), mode setting and other such. I just want to create a simple prototype that can be hardened by the use of connecting it to the web. By the means of reporting data from the internet. This way I could get concept of returning data from app to hardware or vice-versa. I just want to get the main glipse of reporting and returning data from any platform by the use of this one as my base concept.
+Hello! This is my first Arduino Personal Project for Personal Benefits. his project is currently under slow progression status. Meaning I'm basically in a state of being busy wherein I don't have most of my time dedicated to this project. Even though it takes me about a year to do something about it. Please read TL;DRs for more information about this repo.
 
 ## Table of Contents
 
 This README will be seperated in accordance with formality and content quality. Those two are: Non-Formal and Formal
 Non-formal was done to answer peoples thought or my thoughts with the use informal words. Some sections in non-formal is basically not fitted to the formal section.
+
+
+
+# TL;DR | The project is very simple but made things harder by my implementation
+The project does report only sensor data and there's nothing special about it, seriously. What make things harder is the implementation where I have to use RFID to unlock my laptop and control its some functionality such as locking, unlocking (obviously), mode setting and other such. I just want to create a simple prototype that can be hardened by the use of connecting it to the web. By the means of reporting data from the internet. This way I could get concept of returning data from app to hardware or vice-versa. I just want to get the glipse of reporting and returning data from any platform by the use of this one as my base concept.
+
+# TL;DR | I'm making things harder just to learn something for myself.
+You know, there will be a time where you have to make things implemented in a way of not founding out that you intended to do something that is obvious enough. I want to practice implementing different instead of directly declaring it and leaving it as is. Sometimes we need to put things in container even though there's no need to. Basically my point is, you have to make things a lil bit difficult even though it is easy enough to implement it. Right now, I don't know if I'm making things harder anymore by double-layering a function just to get called. Hope you understand.
+
+# TL;DR | I'm basically maintaining the repository like I'm working with different people.
+I'm very interested at collaborating with people even though I don't have that kind of thing yet or have people who wants to work with me at the moment. Basically, I'm interested how versioning control works or basically GitHub works. I like how I can manage my projects just by declaring issues, milestones or even pull request. Things you may notice here is that, I'm detailed at commit message and even issues. Why? Because that benefits me the most. Like, I know what I've to do even though I'm clueless asf.
 
 
 ## Formal Introduction
@@ -89,22 +96,17 @@ But for sometime, I might use semantic software versioning system where I have t
 
 ## Authors
 
-Here are the current list of authors who are taking part in the project.
+Here are the list of authors who are taking part of the project.
 
 * **Janrey Licas** - *Initial Work / Project Lead* - [CodexLink](https://github.com/CodexLink)
 
 ## Acknowledgments
-Unknown for now...
+Unknown
 
 ## License
 
 This project is licensed under the GNU v3 License - see the [LICENSE.md](https://github.com/CodexLink/IoTMesC/blob/master/README.md) file for details
 
 
-
 ## Credits
 - Online Markdown TOC hosted by [Ecotrust-Canada](https://github.com/Ecotrust-Canada/markdown-toc) at [this site](https://ecotrust-canada.github.io/markdown-toc/) and created by [https://github.com/jonschlinkert/markdown-toc](jonschlinkert/markdown-toc)
-
-
-
-A Personal Project by Janrey Licas
