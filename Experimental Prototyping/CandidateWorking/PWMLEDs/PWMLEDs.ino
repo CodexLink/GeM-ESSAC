@@ -22,7 +22,7 @@
 #define OFF_STATE(LED_PIN) digitalWrite(LED_PIN, LOW)
 #define PWM_STATE(LED_PIN, BRIGHTNESS) analogWrite(LED_PIN, BRIGHTNESS)
 void init_LEDs();
-
+inline void PowerLED_UP(uint8_t pin, uint16_t delayseq = 1, uint16_t delayframe = 1);
 void setup()
 {
     Serial.begin(115200);
@@ -35,6 +35,7 @@ void setup()
 void loop()
 {
     // * Tuning EACH UP
+    /*
     for (int i = 10; i < 13; i++)
     {
         for (int a = 0; a <= 255; a++)
@@ -43,7 +44,7 @@ void loop()
             Serial.print(" | ");
             Serial.println(a);
             PWM_STATE(i, a);
-            delay(2);
+            //delay(2);
         }
         //delay(300);
     }
@@ -56,9 +57,33 @@ void loop()
             Serial.print(" | ");
             Serial.println(a);
             PWM_STATE(i, a);
-            delay(2);
+            //delay(2);
         }
         //delay(1500);
+    }
+    */
+
+    PowerLED_UP(10);
+    PowerLED_UP(11);
+    PowerLED_UP(12);
+}
+
+/*
+! The delayseq and delayframe can be used in millis() correlated to custom functions. So that we can run other functions other than this.
+! But for now, we implement it in delay stock function.
+*/
+inline void PowerLED_UP(uint8_t pin, uint16_t delayseq = 1, uint16_t delayframe = 1)
+{
+    for (int a = 0; a <= 255; a++)
+    {
+        PWM_STATE(pin, a);
+        delay(delayframe);
+    }
+    delay(delayseq);
+    for (int a = 255; a >= 0; a--)
+    {
+        PWM_STATE(pin, a);
+        delay(delayframe);
     }
 }
 
