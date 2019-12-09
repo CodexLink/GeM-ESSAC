@@ -12,22 +12,7 @@
 IoTMesC_AVR_DRVR::IoTMesC_AVR_DRVR(uint_fast32_t BAUD_RATE)
 {
 
-    //TFTScreen(TFT_LCD_PIN_DEF::TFT_LCD_CS, TFT_LCD_PIN_DEF::TFT_LCD_DC);
-
-
-    SerialH_Call(println, F("IoTMesC |> IoT, Multi-Essential Sensing Components"));
-    SerialH_Call(println, F("Author |> Janrey 'CodexLink' Licas"));
-    SerialH_Call(println, F("Sketch Suitable |> Arduino Variants, Recommended: MEGA"));
-    SerialH_Call(println, F("Version |> Unknown"));
-
     _BAUD_GIVEN_RATE = BAUD_RATE;
-    SerialH_Call(println, F(""));
-    SerialH_Call(print, F("Baud Rate Set |> "));
-    SerialH_Call(println, _BAUD_GIVEN_RATE);
-
-    //! Initializes Displays First Before Anything. This was mandatory to check if devices are properly working.
-    if (!init_DevTFT() && !init_DevDSD())
-        return;
 }
 
 IoTMesC_AVR_DRVR::~IoTMesC_AVR_DRVR()
@@ -42,13 +27,21 @@ IoTMesC_AVR_DRVR::~IoTMesC_AVR_DRVR()
 void IoTMesC_AVR_DRVR::begin() const
 {
     SerialH_Call(begin, _BAUD_GIVEN_RATE);
+    SerialH_Call(println, F("IoTMesC |> IoT, Multi-Essential Sensing Components"));
+    SerialH_Call(println, F("Author |> Janrey 'CodexLink' Licas"));
+    SerialH_Call(println, F("Sketch Suitable |> Arduino Variants, MEGA"));
+    SerialH_Call(println, "");
+    SerialH_Call(print, F("Serial Communication Baud Rate Set @ "));
+    SerialH_Call(println, _BAUD_GIVEN_RATE);
+    TFTScreen.begin();
+    init_DevTFT();
 
-    TFT_POST();
+    //TFT_POST();
+    //! Initializes Displays First Before Anything. This was mandatory to check if devices are properly working.
+    //if (!init_DevTFT() && !init_DevDSD())
+    //    return;
 
     SerialH_Call(println, F(""));
-    SerialH_Call(print, F("Serial Communication, Begin @ "));
-    SerialH_Call(println, _BAUD_GIVEN_RATE);
-
     SerialH_Call(println, F("Library Initialization |> RFID (MFRC522) Interface |> "));
 
     SerialH_Call(println, F("Library Initialization |> CCS811 Sensor |>"));
@@ -95,6 +88,9 @@ inline void IoTMesC_AVR_DRVR::rtc_DisplayTime() noexcept
 // * Device and Peripherals Initializers. Initialized By Order
 bool IoTMesC_AVR_DRVR::init_DevTFT()
 {
+    digitalWrite(8, HIGH);
+    delay(1000);
+    digitalWrite(8, LOW);
     TFTScreen.clearScreen();
     TFTScreen.setCursor(0, 0);
     TFTScreen.setTextSize(1);
