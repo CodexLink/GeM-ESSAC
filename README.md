@@ -1,24 +1,24 @@
 <h1 align="center">IoTMesC</h1>
 <h4 align="center">IoT Multi-Essential Sensing Components<br>
-For Personal Benefits and Embedded Systems Experience, Built on Arduino MEGA | Communicating with NodeMCU</h4>
+For Personal Benefits and Embedded Experience, Built on Arduino MEGA | Communicating with NodeMCU</h4>
 <p align="center">
 
 <a href="https://github.com/CodexLink/IoTMesC/actions">
   <img src="https://github.com/CodexLink/IoTMesC/workflows/Sketch%20Build%20Worker/badge.svg">
 </a>
-<a href='https://coveralls.io/github/CodexLink/IoTMesC?branch=master'><img src='https://coveralls.io/repos/github/CodexLink/IoTMesC/badge.svg?branch=master' alt='Coverage Status' />
-</a>
 
 <a href="https://www.codefactor.io/repository/github/codexlink/iotmesc">
-  <img src="https://www.codefactor.io/repository/github/codexlink/iotmesc/badge" alt="CodeFactor"/>
+  <img src="https://www.codefactor.io/repository/github/codexlink/iotmesc/badge" alt="CodeFactor">
 </a>
 
 <a href="https://www.codacy.com/app/CodexLink/IoTMesC?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CodexLink/IoTMesC&amp;utm_campaign=Badge_Grade">
-  <img src="https://badgen.net/codacy/grade/d8efe2b67dac445d918e277601e801b8"/>
+  <img src="https://badgen.net/codacy/grade/d8efe2b67dac445d918e277601e801b8">
 </a>
+
 <a href="https://github.com/CodexLink/IoTMesC">
   <img src="https://badgen.net/github/closed-issues/CodexLink/IoTMesC"alt="Closed Issues">
 </a>
+
 <a href="https://github.com/CodexLink/IoTMesC">
   <img src="https://badgen.net/github/license/CodexLink/IoTMesC" alt="Repository License">
 </a>
