@@ -6,6 +6,8 @@ For Personal Benefits and Embedded Systems Experience, Built on Arduino MEGA | C
 <a href="https://github.com/CodexLink/IoTMesC/actions">
   <img src="https://github.com/CodexLink/IoTMesC/workflows/Sketch%20Build%20Worker/badge.svg">
 </a>
+<a href='https://coveralls.io/github/CodexLink/IoTMesC?branch=master'><img src='https://coveralls.io/repos/github/CodexLink/IoTMesC/badge.svg?branch=master' alt='Coverage Status' />
+</a>
 
 <a href="https://www.codefactor.io/repository/github/codexlink/iotmesc">
   <img src="https://www.codefactor.io/repository/github/codexlink/iotmesc/badge" alt="CodeFactor"/>
@@ -15,13 +17,7 @@ For Personal Benefits and Embedded Systems Experience, Built on Arduino MEGA | C
   <img src="https://badgen.net/codacy/grade/d8efe2b67dac445d918e277601e801b8"/>
 </a>
 <a href="https://github.com/CodexLink/IoTMesC">
-  <img src="https://badgen.net/github/status/CodexLink/IoTMesC" alt="RepositoryStatus">
-</a>
-<a href="https://github.com/CodexLink/IoTMesC">
   <img src="https://badgen.net/github/closed-issues/CodexLink/IoTMesC"alt="Closed Issues">
-</a>
-<a href="https://github.com/CodexLink/IoTMesC">
-  <img src="https://badgen.net/github/last-commit/CodexLink/IoTMesC" alt="Repository Last Commit">
 </a>
 <a href="https://github.com/CodexLink/IoTMesC">
   <img src="https://badgen.net/github/license/CodexLink/IoTMesC" alt="Repository License">
