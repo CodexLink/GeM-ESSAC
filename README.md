@@ -49,9 +49,27 @@ I'm very interested at collaborating with people even though I don't have that k
 
 ## Requirements
 
-Just in case what it feels to be a beginner and tries building something he doesn't know. Here are the requirements and materials needed to build this project.
+Here are the requirements and materials needed to build this project.
 
-### MATERIALS / Parts
+### Microcontrollers |> Required
+1. Arduino MEGA
+2. NodeMCU ESP8266 (Prefers ESP-12/E with 4MB SPI)
+
+```
+Sidenotes:
+  (1) - We need to use Arduino MEGA instead of any Arduino Variants. That was due to
+    (a) PINs that needs to be used are more than 10+ digital i/o pins.
+    And also,
+    (b) Sketch sizes is expected to rise more than 50% of the actual Arduino MEGA size.
+    (c) I required all of you to use HoodLoader2 and HID Project by NicoHood for this project to work.
+
+  (2) - Requires any ESP8266 variants that has the size of 4MB SPI flash.
+        - Because we have to use *MicroPython* here. And we have to deploy a web server on it.
+        This MCU serves as a server and data receiver from the following platforms:
+          (a) Android Application and
+          (b) Web Application (Literally)
+```
+### MATERIALS / Parts |> Partial Parts Required
 ```
 ```
 ### TOOLS For Software
