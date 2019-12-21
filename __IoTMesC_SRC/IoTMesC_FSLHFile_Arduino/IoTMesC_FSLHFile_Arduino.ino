@@ -11,8 +11,14 @@
 */
 
 #include "IoTMesC_Arduino_CoreDecl.h"
+#define ON_STATE(LED_PIN) digitalWrite(LED_PIN, HIGH)
+#define OFF_STATE(LED_PIN) digitalWrite(LED_PIN, LOW)
+#define PWM_STATE(LED_PIN, BRIGHTNESS) analogWrite(LED_PIN, BRIGHTNESS)
 
 IoTMesC_AVR_DRVR IoTMesC_AVR(0x01c200);
+
+//inline void PowerLED_UP(uint8_t pin, uint16_t delayseq = 1, uint16_t delayframe = 1);
+inline void PowerLED_Wait();
 
 void setup()
 {
@@ -24,6 +30,47 @@ void loop()
   while (1)
   {
     SerialH_Call(println, F("Awaiting for Function Calls."));
-    delay(1000);
+    PowerLED_Wait();
+    //PowerLED_UP(10);
+    //PowerLED_UP(11);
+    //PowerLED_UP(12);
+    //delay(1000);
+  }
+}
+
+inline void PowerLED_Wait()
+{
+  for (int i = 10; i < 13; i++)
+  {
+
+    for (int a = 0; a <= 254; a = a + 2)
+    {
+      PWM_STATE(i, a);
+      delay(1);
+    }
+  }
+  delay(5);
+  for (int i = 10; i < 13; i++)
+  {
+    for (int a = 254; a >= 0; a = a - 2)
+    {
+      PWM_STATE(i, a);
+      delay(1);
+    }
+  }
+  delay(100);
+}
+inline void PowerLED_UP(uint8_t pin, uint16_t delayseq = 1, uint16_t delayframe = 1)
+{
+  for (int a = 0; a <= 255; a++)
+  {
+    PWM_STATE(pin, a);
+    delay(delayframe);
+  }
+  delay(delayseq);
+  for (int a = 255; a >= 0; a--)
+  {
+    PWM_STATE(pin, a);
+    delay(delayframe);
   }
 }
