@@ -11,19 +11,19 @@ name: Sketch Build Worker
 on:
   push:
     paths:
-    - '**.cpp'
-    - '**.ino'
-    - '**.h'
-    - '**.yml'
-    - '**.yaml'
+    - '__IoTMesC_SRC/**/*.cpp'
+    - '__IoTMesC_SRC/**/*.ino'
+    - '__IoTMesC_SRC/**/*.h'
+    - '**/*SketchBuildWorker.yml'
+    - '**/*SketchBuildWorker.yaml'
 
   pull_request:
     paths:
-    - '**.cpp'
-    - '**.ino'
-    - '**.h'
-    - '**.yml'
-    - '**.yaml'
+    - '__IoTMesC_SRC/**/*.cpp'
+    - '__IoTMesC_SRC/**/*.ino'
+    - '__IoTMesC_SRC/**/*.h'
+    - '**/*SketchBuildWorker.yml'
+    - '**/*SketchBuildWorker.yaml'
 
 jobs:
 
@@ -33,11 +33,11 @@ jobs:
 
     strategy:
       matrix:
-        mcu_candidate_fqbn: ["arduino:avr:mega:cpu=atmega2560"]
+        mcu_candidate_fqbn: ["arduino:samd:nano_33_iot"]
 
         include:
-        - mcu_candidate_fqbn: arduino:avr:mega:cpu=atmega2560
-          mcu_platform_candidate: arduino:avr
+        - mcu_candidate_fqbn: arduino:samd:nano_33_iot
+          mcu_platform_candidate: arduino:samd
           mcu_platform_sketch:  __IoTMesC_SRC/IoTMesC_FSLHFile_Arduino/IoTMesC_FSLHFile_Arduino.ino
 
     steps:
