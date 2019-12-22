@@ -46,6 +46,8 @@ jobs:
 
     - name: A.Stage 2 | Arduino-CLI Setup
       uses: arduino/setup-arduino-cli@master
+      with:
+        version: '0.6.0'
 
     - name: A.Stage 3 | Arduino Setup on Arduino-CLI
       run: |
@@ -76,6 +78,8 @@ jobs:
 
     - name: B.Stage 2 | Arduino-CLI Setup
       uses: arduino/setup-arduino-cli@master
+      with:
+        version: '0.6.0'
 
     - name: B.Stage 3 | ESP8266 Setup on Arduino-CLI
       run : |
