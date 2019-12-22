@@ -45,7 +45,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: A.Stage 2 | Arduino-CLI Setup
-      uses: arduino/setup-arduino-cli@v1.0.0
+      uses: arduino/setup-arduino-cli@master
 
     - name: A.Stage 3 | Arduino Setup on Arduino-CLI
       run: |
@@ -75,7 +75,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: B.Stage 2 | Arduino-CLI Setup
-      uses: arduino/setup-arduino-cli@v1.0.0
+      uses: arduino/setup-arduino-cli@master
 
     - name: B.Stage 3 | ESP8266 Setup on Arduino-CLI
       run : |
