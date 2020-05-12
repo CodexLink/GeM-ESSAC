@@ -1,7 +1,7 @@
-# !Sketch Build Worker YAML
+# ! Sketch Build Worker YAML
 # ! Author: Janrey Licas | CodexLink
 # ! Date Created: 11-22-2019
-# * Used for Building NodeMCU and Arduino Sketches
+# * Used for Building NodeMCU and Arduino Nano 33 IoT Deployable Sketches
 # * Description: Builds both Arduino and NodeMCU Sketches and Libraries
 # * for every commit and pull request we do. Without actually trying to do it manually.
 
