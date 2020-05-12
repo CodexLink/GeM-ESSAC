@@ -1,22 +1,18 @@
 <h1 align="center">GeM-ESSAC</h1>
-<h4 align="center">IoT Multi-Essential Sensing Components<br>
-For Personal Benefits and Embedded Experience, Built in Compact with Arduino Nano 33 IoT and NodeMCU.</h4>
+<h4 align="center">General Multi-Essential Sensing and Automating Components For Personal Benefits | Made Exclusively for NodeMCU v2 Lua / ESP32 Modules</h4>
 
 <div align="center">
 
-![Main Sketch Build Worker](https://github.com/CodexLink/GeM-ESSAC/workflows/Main%20Sketch%20Build%20Worker/badge.svg?branch=master)
+![Experimental Components Build Worker](https://github.com/CodexLink/GeM-ESSAC/workflows/Experimental%20Components%20Build%20Worker/badge.svg)
+![Main Sketch Build Worker](https://github.com/CodexLink/GeM-ESSAC/workflows/Main%20Sketch%20Build%20Worker/badge.svg)
 
-<a href="https://www.codefactor.io/repository/github/codexlink/iotmesc">
-  <img src="https://www.codefactor.io/repository/github/codexlink/iotmesc/badge" alt="CodeFactor">
-</a>
+[![Codacy Overall Sketch Code Quality](https://img.shields.io/codacy/grade/d8efe2b67dac445d918e277601e801b8?label=Codacy%20Overall%20Sketch%20Code%20Quality&logo=codacy)](https://app.codacy.com/manual/CodexLink/GeM-ESSAC/)
+[![CodeFactor Overall Sketch Code Quality](https://img.shields.io/codefactor/grade/github/CodexLink/GeM-ESSAC?label=CodeFactor%20Overall%20Sketch%20Code%20Quality&logo=codefactor)](https://www.codefactor.io/repository/github/codexlink/gem-essac/)
 
-<a href="https://www.codacy.com/app/CodexLink/IoTMesC?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CodexLink/IoTMesC&amp;utm_campaign=Badge_Grade">
-  <img src="https://badgen.net/codacy/grade/d8efe2b67dac445d918e277601e801b8">
-</a>
-
-<a href="https://github.com/CodexLink/IoTMesC">
-  <img src="https://badgen.net/github/license/CodexLink/IoTMesC" alt="Repository License">
-</a>
+![GeM-ESSAC Opened Issues](https://img.shields.io/github/issues-raw/CodexLink/GeM-ESSAC?color=Orange&label=Opened%20Issues)
+![GeM-ESSAC Closed Issues](https://img.shields.io/github/issues-closed-raw/CodexLink/GeM-ESSAC?label=Closed%20Issues)
+![GeM-ESSAC Closed Pull Requests](https://img.shields.io/github/issues-pr-closed-raw/CodexLink/GeM-ESSAC?label=Finished%20Pull%20Requests)
+[![GeM-ESSAC Repository License](https://img.shields.io/github/license/CodexLink/GeM-ESSAC?color=purple&label=Repository%20License&logo=libreoffice)](https://github.com/CodexLink/GeM-ESSAC/blob/master/LICENSE)
 
 </div>
 
