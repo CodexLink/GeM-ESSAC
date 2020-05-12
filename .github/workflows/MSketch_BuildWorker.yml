@@ -4,7 +4,7 @@
 # * Used for Building NodeMCU v2 Lua ESP8266EX / v3 LoLin / ESP32 Sketch
 # * Description: Builds NodeMCU v2 Lua ESP8266EX / v3 LoLin / ESP32 Sketches and Libraries
 
-name: GeM-ESSAC Main Sketch Build Worker
+name: Main Sketch Build Worker
 
 on:
   push:
