@@ -1,11 +1,10 @@
-<h1 align="center">IoTMesC</h1>
+<h1 align="center">GeM-ESSAC</h1>
 <h4 align="center">IoT Multi-Essential Sensing Components<br>
 For Personal Benefits and Embedded Experience, Built in Compact with Arduino Nano 33 IoT and NodeMCU.</h4>
-<p align="center">
 
-<a href="https://github.com/CodexLink/IoTMesC/actions">
-  <img src="https://github.com/CodexLink/IoTMesC/workflows/Sketch%20Build%20Worker/badge.svg">
-</a>
+<div align="center">
+
+![Main Sketch Build Worker](https://github.com/CodexLink/GeM-ESSAC/workflows/Main%20Sketch%20Build%20Worker/badge.svg?branch=master)
 
 <a href="https://www.codefactor.io/repository/github/codexlink/iotmesc">
   <img src="https://www.codefactor.io/repository/github/codexlink/iotmesc/badge" alt="CodeFactor">
@@ -16,44 +15,32 @@ For Personal Benefits and Embedded Experience, Built in Compact with Arduino Nan
 </a>
 
 <a href="https://github.com/CodexLink/IoTMesC">
-  <img src="https://badgen.net/github/closed-issues/CodexLink/IoTMesC"alt="Closed Issues">
-</a>
-
-<a href="https://github.com/CodexLink/IoTMesC">
   <img src="https://badgen.net/github/license/CodexLink/IoTMesC" alt="Repository License">
 </a>
-</p>
 
-# Welcome!
-Hello! and Welcome~! to my repo that contains my first Microcontroller Device Project for Personal Benefits. This project is currently under slow progression status. And in a state of major breaking transistion. This repo exists becauses some component github services are free when you set them in public. Which means, my project is exposed in under open-source. Please give at least a look of my project!
+</div>
+
+# Welcome
+
+Hello! and Welcome~!
 
 ## Table of Contents
 
-This README will contain a lot of sub-topics of a topic denoted by their title size. Please check the list and you can go to that content by clicking them.
+This README will contain a lot of sub-topics about particular topics denoted by their title size. Please check the list and you can go to that content by clicking them.
 
-  * [Requirements](#requirements)
-    + [Microcontrollers > Required](#microcontrollers---required)
-    + [MATERIALS / Components |> Partial Parts Required](#materials---components----partial-parts-required)
-    + [TOOLS For Software](#tools-for-software)
-    + [Skills](#skills)
-  * [Deployment](#deployment)
-    + [For Arduino Nano 33 IoT](#for-arduino-nano-33-iot)
-    + [For NodeMCU](#for-nodemcu)
-  * [Continous Integration](#continous-integration)
-    + [How does it work in your sketch?](#how-does-it-work-in-your-sketch-)
-  * [Contributing](#contributing)
-  * [Versioning](#versioning)
-  * [Authors](#authors)
-  * [Acknowledgments](#acknowledgments)
-  * [License](#license)
-  * [Credits](#credits)
-- [Extra Information About This Project](#extra-information-about-this-project)
-  * [TL;DR | The project is very simple but made things harder by my implementation](#tl-dr---the-project-is-very-simple-but-made-things-harder-by-my-implementation)
-  * [TL;DR | I'm making things harder just to learn something for myself.](#tl-dr---i-m-making-things-harder-just-to-learn-something-for-myself)
-  * [TL;DR | I'm basically maintaining the repository like I'm working with different people.](#tl-dr---i-m-basically-maintaining-the-repository-like-i-m-working-with-different-people)
+* [Requirements](#requirements)
+  + [Skills](#skills)
+* [Deployment](#deployment)
+  + [For NodeMCU](#for-nodemcu)
+* [Contributing](#contributing)
+* [Versioning](#versioning)
+* [Authors](#authors)
+* [License](#license)
+* [Credits](#credits)
 
 ## Requirements
-This section documents all required components to be used in this project.
+
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
 
 ### Microcontrollers > Required
 
@@ -78,12 +65,16 @@ Sidenotes:
           (b) Web Application (Literally)
           (c) Data Sensor MCU Handler (Literally, Arduino Nano 33 IoT)
 ```
+
 **Note / Warning**
 
 Keep in mind that, you can use your preferred MCUs. But the thing is, this is the only configuration that I have, therefore I'm requiring you to do it. So pin configurations and some sketch adjustments is a **MUST** if you wish to do so.
 
-### MATERIALS / Components |> Partial Parts Required
-Based on **Issue** #27, here are the following materials that are used in this project. The list items also contains of which MCU they will be residing.
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
+
+### Partially Required Components
+
+Based on ~~**Issue** #27~~, here are the following materials that are used in this project. The list items also contains of which MCU they will be residing.
 
 1. MFRC522 RFID Module >> NodeMCU ESP8266
 2. SPI TFT 128x128 (TFT_ILI9163C) >> NodeMCU ESP8266
@@ -93,15 +84,20 @@ Based on **Issue** #27, here are the following materials that are used in this p
 6. Mini PIR Motion Sensor >> Arduino Nano 33 IoT
 7. Single Digit Digital Segment x2 (**Primary** | Arduino Nano 33 IoT, **Secondary** | NodeMCU ESP8266)
 8. Screen Adjustment Brightness (Potentiometer) >> NodeMCU ESP8266
+
 * (10) LED Outputter
   * LED_1 | Red >> Sensor Reading Status Indicator, Arduino Nano 33 IoT
   * LED_2 | Yellow >> Data Processing Over The Air, NodeMCU ESP8266
   * LED_3 | Green >> ESP Connection Status, NodeMCU ESP8266
 
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
+
 ### TOOLS For Software
+
 In this section you will need to install and configure them the way you want to. All of the software indicated in this section are required except for its sub component such as extension / modules / etc which is indicated on the side.
 
 **Pre-requisites**
+
 - You must have the capacity / knowledge to configure all modules / extensions and the IDE itself. All result depends based on your configuration. For instance, if you had issues compiling my project to yours. It is most likely due to misconfiguration. For any reports, please create **ISSUE TICKET**.
 - You must have the Microcontrollers and the Components.
 
@@ -117,8 +113,10 @@ In this section you will need to install and configure them the way you want to.
   * Additional Board | Arduino SAMD Boards
   * Library / Headers | ESP8266 (Bundled When Board Installed)
 
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
 
 ### Skills
+
 In order to clarify of what you will need. You must have the following knowledge in order to reduce tension over understanding my code.
 
 1. #define Functionality
@@ -129,45 +127,41 @@ In order to clarify of what you will need. You must have the following knowledge
 6. File Linking (How #include works and how their directories affects the compiler)
 7. Hardware PIN Optimization (**Optional**, Used for designing the circuit.)
 
-**Disclaimer**
+Disclaimer...
 
-The list items only contains that halts me to do something on this project. Keep in mind that I did learn some of those while I was making this project (Which right now, I'm on third major transition). Keep in mind that some of them represents how I code which indicates that I just learned those on how to do it.
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
 
 ## Deployment
 
 In this section, I'll talk about on how would I deploy them and what are the variables to configure / to make things working.
 
-All deployable code is residing in the directory of **__IoTMesC_SRC/IoTMesC_FSLHFile_XXXX(Arduino OR NodeMCU)/__IoTMesC_SRC/IoTMesC_FSLHFile_XXXX(Arduino OR NodeMCU).ino**
+All deployable code is residing in the directory of ...
 
-### For Arduino Nano 33 IoT
-We don't have the final header yet. Coming Soon. Currently at halt due to MCU Change.
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
 
 ### For NodeMCU
+
 We don't have the final header yet. Coming Soon. Currently on work.
 
-## Continous Integration
-In this section, I'll talk about on how my sketch worker works.
-**This does not** however, talks about how you would build one.
-
-### How does it work in your sketch?
-Before reading this, you can take a look at the Sketch Builder residing in **.github\workflows\SketchBuildWorker.yml**
-
-So as you notice, if you researched, you'll find out that I make my CI in Github Actions. Github Actions is a new CI where you can easily integrated it to your projects that resides in github repositories.
-
-The project has only 1 file worker that does the job. And the job of that file is to ensure that the deployable code both for Arduino and NodeMCU can be executed without any problems. There will be another future file worker for Experimental files that ensure that all code provided can be used as an unique example.
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
 
 ## Contributing
 
-There are no plans for contributions yet.
+***There are no plans for contributions.*** No one knows how they would run this project without the device itself. However, contributions for **security flaws** or **codebase flaws** is possible. Just hit me up with **Issues** and once we got into agreements, I, myself, creates the PR or even you, who is responsible to create a PR with your own fixes. This was just an indication that an issue is being fixed instead of pushing commits and do normal issue reference along with PR on it.
+
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
 
 ## Versioning
 
-Currently, I don't use any guidelines regarding software versioning, such as **Semantic Versioning**. But instead, I usually do time-date base versioning. For example:
-```
-When Build is done: at 4:51 PM at 08/21/2018
-Result Versioning is: 108212018
-```
-Keep in mind, I may or may not deploy my own versioning or use semantic versioning for my projects soon. Also, the format may change as well without making my own versioning.
+Currently, I don't use any guidelines regarding software versioning, such as **Semantic Versioning**. But I might reconsider it. Please check issue #**NaN**(Not Available Yet) here...
+
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
+
+## Extra Information / Probably Questionnable
+
+This section contains the truth about this project specially its exposure to open-source state.
+
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
 
 ## Authors
 
@@ -175,25 +169,16 @@ Here are the list of authors who are taking part of the project.
 
 * **Janrey Licas** - *Initial Work / Project Lead* - [CodexLink](https://github.com/CodexLink)
 
-## Acknowledgments
-Unknown for now. :)
+**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
 
 ## License
 
 This project is licensed under the GNU v3 License - see the [LICENSE.md](https://github.com/CodexLink/IoTMesC/blob/master/README.md) file for details
 
+**[Go Back to TOC](#table-of-contents)**
 
 ## Credits
-- Online Markdown TOC hosted by [Ecotrust-Canada](https://github.com/Ecotrust-Canada/markdown-toc) at [this site](https://ecotrust-canada.github.io/markdown-toc/) and created by [https://github.com/jonschlinkert/markdown-toc](jonschlinkert/markdown-toc)
 
-# Extra Information About This Project
-This section contains the truth about this project specially its exposure to open-source state.
+* [Github Wiki TOC Generator](https://ecotrust-canada.github.io/markdown-toc/) for  Generating TOC Stuff Automatically, based on README Headers and Subheaders.
 
-## TL;DR | The project is very simple but made things harder by my implementation
-The project does report only sensor data and there's nothing special about it, seriously. What make things harder is the implementation where I have to use RFID to unlock my laptop and control its some functionality such as locking, unlocking (obviously), mode setting and other such. I just want to create a simple prototype that can be hardened by the use of connecting it to the web. By the means of reporting data from the internet. This way I could get concept of returning data from app to hardware or vice-versa. I just want to get the glipse of reporting and returning data from any platform by the use of this one as my base concept.
-
-## TL;DR | I'm making things harder just to learn something for myself.
-You know, there will be a time where you have to make things implemented in a way of not founding out that you intended to do something that is obvious enough. I want to practice implementing different instead of directly declaring it and leaving it as is. Sometimes we need to put things in container even though there's no need to. Basically my point is, you have to make things a lil bit difficult even though it is easy enough to implement it. Right now, I don't know if I'm making things harder anymore by double-layering a function just to get called. Hope you understand.
-
-## TL;DR | I'm basically maintaining the repository like I'm working with different people.
-I'm very interested at collaborating with people even though I don't have that kind of thing yet or have people who wants to work with me at the moment. Basically, I'm interested how versioning control works or basically GitHub works. I like how I can manage my projects just by declaring issues, milestones or even pull request. Things you may notice here is that, I'm detailed at commit message and even issues. Why? Because that benefits me the most. Like, I know what I've to do even though I'm clueless asf.
+**[Go Back to TOC](#table-of-contents)**
