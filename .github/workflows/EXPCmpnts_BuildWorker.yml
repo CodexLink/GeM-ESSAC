@@ -11,24 +11,24 @@ name: Experimental Components Build Worker
 on:
   push:
     paths:
-    - 'Experimental Prototyping/**/*.cpp'
-    - 'Experimental Prototyping/**/*.ino'
-    - 'Experimental Prototyping/**/*.h'
-    - '**/*ExperimentalWorker.yml'
-    - '**/*ExperimentalWorker.yaml'
+    - 'Experimentals/**/*.cpp'
+    - 'Experimentals/**/*.ino'
+    - 'Experimentals/**/*.h'
+    - '**/*EXPCmpnts_BuildWorker.yml'
+    - '**/*EXPCmpnts_BuildWorker.yaml'
 
   pull_request:
     paths:
-    - 'Experimental Prototyping/**/*.cpp'
-    - 'Experimental Prototyping/**/*.ino'
-    - 'Experimental Prototyping/**/*.h'
-    - '**/*ExperimentalWorker.yml'
-    - '**/*ExperimentalWorker.yaml'
+    - 'Experimentals/**/*.cpp'
+    - 'Experimentals/**/*.ino'
+    - 'Experimentals/**/*.h'
+    - '**/*EXPCmpnts_BuildWorker.yml'
+    - '**/*EXPCmpnts_BuildWorker.yaml'
 
 jobs:
   CandidateWorker:
-    name: Candidate Sketch Builder
-    runs: windows-latest
+    name: Candidate Components Sketch Builder
+    runs: ubuntu-18.04
 
     strategy:
       matrix:
@@ -44,8 +44,8 @@ jobs:
 # Make some here with if and else.
 
   NonCandidateWorker:
-    name: Non-Candidate Sketch Builder
-    runs: windows-latest
+    name: Unstable Components Sketch Builder
+    runs: ubuntu-18.04
 
     strategy:
       matrix:
