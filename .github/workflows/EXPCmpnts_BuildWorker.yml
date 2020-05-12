@@ -1,4 +1,4 @@
-# ! Experimental Component Build Worker YAML
+# ! Experimental Components Build Worker YAML
 # ! Author: Janrey Licas | CodexLink
 # ! Date Created: 12-22-2019
 # * Used for Building NodeMCU and Arduino Nano 33 IoT Experimental Sketches
@@ -6,7 +6,7 @@
 # * This does not require Sketch Build Wokrer To Finish as they were seperated.
 
 
-name: Experimental Component Build Worker
+name: Experimental Components Build Worker
 
 on:
   push:
