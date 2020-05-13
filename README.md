@@ -24,7 +24,7 @@ Hello! and Welcome~!
 
 This README will contain a lot of sub-topics about particular topics denoted by their title size. Please check the list and you can go to that content by clicking them.
 
-### Components Used
+## Components Used
 
 Based on ~~**Issue**, here are the following materials that are used in this project. The list items also contains of which MCU they will be residing.
 
