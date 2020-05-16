@@ -18,15 +18,20 @@
 #include "Adafruit_SHT31.h"
 #include "CCS811.h"
 
-CCS811 GasSens(-1, CCS811_SLAVEADDR_0); // ! We could make another overloaded constructor to pass only the address of the sensor.
+CCS811 GasSens(CCS811_SLAVEADDR_0); // ! We could make another overloaded constructor to pass only the address of the sensor.
 Adafruit_SHT31 TempSens;
 
 void setup()
 {
-    Serial.begin(115200);
+    Serial.begin(9600);
     TempSens.begin(0x44);
     GasSens.begin();
     GasSens.start(CCS811_MODE_1SEC); // ! Needed
+
+    Serial.print("[ Preparing ] | Wait for Startup Indication. ");
+    delay(1000);
+    Serial.print("[ Ready ] | ... ");
+    delay(300);
 }
 
 void loop()
@@ -34,8 +39,8 @@ void loop()
     float Temp_t = TempSens.readTemperature();
     float Temp_h = TempSens.readHumidity();
 
-     // ! This was for experimental purpose of randomizing instance of delay.
-    float delay_time = random(300, 1100);
+    // ! This was for experimental purpose of randomizing instance of delay.
+    short delay_time = 1000;
 
     // ! About Delay Inconsistent Effects
     // ! The cause of inconsistent delay time shows string of 'awaiting new data. for sensor CCS811'
@@ -45,7 +50,6 @@ void loop()
 
     uint16_t GAS_ECO2, GAS_ETVOC, GAS_ERRSTAT, GAS_RAW; // ! We could put this one in struct based container instead of individual seperated variable container.
     GasSens.read(&GAS_ECO2, &GAS_ETVOC, &GAS_ERRSTAT, &GAS_RAW);
-
     Serial.print("[ Sensor Reading Process ] | Runtime Report @ ");
     Serial.print((float)(millis() / delay_time)); // ! We should make formatter for this one. Will be done on another sketch.
     Serial.println("s.");
@@ -102,7 +106,6 @@ void loop()
     else
     {
         Serial.println("[ NOT-TRIGGERED ]");
-
     }
 
     Serial.println();

@@ -21,7 +21,7 @@ You are using 4 wire SPI here, so:
  the rest of pin below:
  */
 #define SDA_MOSI
-#define __CS D3
+#define __CS D6
 #define __DC D8
 /*
 Arduino MEGA
@@ -43,6 +43,7 @@ float p = 3.1415926;
 
 void setup(void)
 {
+  Serial.begin(9600);
   display.begin();
 
   uint16_t time = millis();
@@ -50,6 +51,62 @@ void setup(void)
 
   //  lcdTestPattern();
   //  delay(1000);
+
+  display.clearScreen();
+  Serial.println(F("Showing Setup...."));
+  digitalWrite(8, HIGH);
+  delay(1000);
+  digitalWrite(8, LOW);
+  display.clearScreen();
+  display.setCursor(0, 0);
+  display.setTextSize(1);
+  display.setTextColor(YELLOW);
+  display.print("---------------------");
+  display.setCursor(display.width() / 6, 15);
+  display.setTextSize(2);
+  display.setTextColor(YELLOW);
+  display.print("GeM-ESSAC");
+
+  display.setTextSize(1);
+  display.setTextColor(CYAN);
+
+  display.setCursor(display.width() / 12, 40);
+  display.print("Internet of Things");
+  display.setCursor(display.width() / 9, 50);
+  display.print("Multi - Essential");
+  display.setCursor(display.width() / 12, 60);
+  display.print("Sensing Components");
+  display.setTextColor(RED);
+  display.println(" ");
+  display.setCursor(display.width() / 7, 75);
+  display.print("Version Unknown");
+  display.setCursor(display.width() / 4, 90);
+  display.setTextColor(YELLOW);
+  display.print("Created by");
+  display.setCursor(display.width() / 24, 100);
+  display.print("Janrey | 'CodexLink'");
+  display.setTextColor(YELLOW);
+  display.setTextSize(1);
+  display.setCursor(0, display.height());
+  display.println(" ");
+  display.println(" ");
+  display.print("---------------------");
+  Serial.println(F("Show Setup Done."));
+  display.clearScreen();
+  Serial.println(F("Display Clear Screen"));
+  testfillcircles(10, BLUE);
+  Serial.println(F("Test Fill Circles 10, BLUE"));
+  testdrawcircles(10, WHITE);
+  Serial.println(F("Test Draw Circles 10, WHITE"));
+  delay(1000);
+
+  testroundrects();
+  Serial.println(F("Test Round Rects"));
+  delay(500);
+
+  testtriangles();
+  Serial.println(F("Test Triangles"));
+  delay(500);
 
   display.clearScreen();
   display.setCursor(0, 0);
@@ -65,57 +122,71 @@ void setup(void)
 
   // line draw test
   testlines(YELLOW);
+  Serial.println(F("Test Lines Yellow"));
   delay(500);
 
   // optimized lines
   testfastlines(RED, BLUE);
+  Serial.println(F("Test Fast Lines Red and Blue"));
   delay(500);
 
   testdrawrects(GREEN);
+  Serial.println(F("Test Draw Rects GREEN"));
   delay(1000);
 
   testfillrects(BLUE, YELLOW);
+  Serial.println(F("Test Fill Rects BLUE, YELLOW"));
   delay(1000);
 
   randomRect(0);
+  Serial.println(F("Random Rect 0"));
   delay(100);
   randomCircles(0);
+  Serial.println(F("Random Circles 0"));
   delay(100);
   randomLines();
+  Serial.println(F("Random Lines 0"));
   delay(100);
   randomPoints();
-  delay(500);
-
-  display.clearScreen();
-  testfillcircles(10, BLUE);
-  testdrawcircles(10, WHITE);
-  delay(1000);
-
-  testroundrects();
-  delay(500);
-
-  testtriangles();
+  Serial.println(F("Random Points 0"));
   delay(500);
 }
 
 void loop()
 {
   testlines(random(0x0010, 0xFFFF));
+  Serial.println(F("TestLines at Random of 0x0010 to 0xFFFF"));
   randomLines();
+  Serial.println(F("Random Lines"));
   //randomCircles(1);
+  Serial.println(F("... Skipped"));
   randomCircles(0);
+  Serial.println(F("Random Circles 0"));
   randomRect(1);
+  Serial.println(F("Random Rects 1 #1"));
   randomRect(1);
+  Serial.println(F("Random Rects 1 #3"));
   randomRect(1);
+  Serial.println(F("Random Rects 1 #4"));
   randomRect(1);
+  Serial.println(F("Random Rects 1 #5"));
   randomRect(1);
+  Serial.println(F("Random Rects 1 #6"));
   randomRect(0);
+  Serial.println(F("Random Rects 1 #7"));
   randomRect(0);
+  Serial.println(F("Random Rects 1 #8"));
   randomRect(0);
+  Serial.println(F("Random Rects 1 #9"));
   randomRect(0);
+  Serial.println(F("Random Rects 1 #10"));
   randomRect(0);
+  Serial.println(F("Random Rects 1 #11"));
   randomRect(0);
+  Serial.println(F("Random Rects 1 #12"));
   randomPoints();
+  Serial.println(F("Random Points Null"));
+  Serial.println(F("Big Test Done."));
 }
 
 void testlines(uint16_t color)
