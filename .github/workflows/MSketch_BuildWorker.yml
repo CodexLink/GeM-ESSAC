@@ -4,7 +4,7 @@
 # * Used for Building NodeMCU v2 Lua ESP8266EX / v3 LoLin / ESP32 Sketch
 # * Description: Builds NodeMCU v2 Lua ESP8266EX / v3 LoLin / ESP32 Sketches and Libraries
 
-name: Main Sketch and Component Build Worker
+name: Sketch and Component Build Verifier
 
 on:
   push:
@@ -24,11 +24,19 @@ on:
     - '**/MSketch_BuildWorker.yaml'
 
 jobs:
-  NodeMCUSketchWorker:
+  SketchWorker:
     name: ESP Variant Sketch Build Worker
     runs-on: ubuntu-18.04
 
+    env:
+
+
     steps:
+      - name: Stage 0 | Commit Parameter Checking
+        run: echo "TBA"
+
+      - name: Stage 1 | Event Track
+
       - name: Stage 1 | Repository Checkout
         uses: actions/checkout@master
 
@@ -36,9 +44,14 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
           JOB_CONTEXT: ${{ toJson(job) }}
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+
         run: |
           echo "$GITHUB_CONTEXT"
           echo "$JOB_CONTEXT"
+          echo "$STEPS_CONTEXT"
+          run: echo "$RUNNER_CONTEXT"
 
       - name: Stage 2 | Arduino CLI Setup
         uses: arduino/setup-arduino-cli@master
@@ -48,11 +61,11 @@ jobs:
           mcu_platform_candidate: esp8266:esp8266
           boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
         run: |
-          arduino-cli core update-index --additional-urls ${{ matrix.boardAdditionals }}
-          arduino-cli core install ${{ matrix.mcu_platform_candidate }} --additional-urls ${{ matrix.boardAdditionals }}
+          arduino-cli core update-index --additional-urls $boardAdditionals
+          arduino-cli core install $mcu_platform_candidate --additional-urls $boardAdditionals
 
       - name: B.Stage 4 | Sketch Verification
         env:
           mcu_candidate_fqbn: esp8266:esp8266:nodemcuv2
           mcu_platform_sketch:  SketchSRC/FLSHF_NodeMCU/FLSHF_NodeMCU.ino
-        run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ${{ matrix.mcu_platform_sketch }}
+        run: arduino-cli compile --fqbn $mcu_candidate_fqbn $mcu_platform_sketch
