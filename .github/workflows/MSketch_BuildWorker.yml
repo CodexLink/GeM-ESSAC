@@ -44,6 +44,7 @@ jobs:
         run: echo "TBA"
 
       - name: Stage 1 | Event Track
+        run: echo "TBA"
 
       - name: Stage 1 | Repository Checkout
         uses: actions/checkout@master
@@ -68,6 +69,7 @@ jobs:
         env:
           mcu_platform_candidate: esp8266:esp8266
           boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+
         run: |
           arduino-cli core update-index --additional-urls $boardAdditionals
           arduino-cli core install $mcu_platform_candidate --additional-urls $boardAdditionals
@@ -76,4 +78,5 @@ jobs:
         env:
           mcu_candidate_fqbn: esp8266:esp8266:nodemcuv2
           mcu_platform_sketch:  SketchSRC/FLSHF_NodeMCU/FLSHF_NodeMCU.ino
+
         run: arduino-cli compile --fqbn $mcu_candidate_fqbn $mcu_platform_sketch
