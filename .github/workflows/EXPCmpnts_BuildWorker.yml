@@ -11,17 +11,17 @@ name: Experimental Components Build Worker
 on:
   push:
     paths:
-    - 'Experimentals/**/*.cpp'
-    - 'Experimentals/**/*.ino'
-    - 'Experimentals/**/*.h'
+    - 'Experimentals/Candidates/**/*.cpp'
+    - 'Experimentals/Candidates/**/*.ino'
+    - 'Experimentals/Candidates/**/*.h'
     - '**/EXPCmpnts_BuildWorker.yml'
     - '**/EXPCmpnts_BuildWorker.yaml'
 
   pull_request:
     paths:
-    - 'Experimentals/**/*.cpp'
-    - 'Experimentals/**/*.ino'
-    - 'Experimentals/**/*.h'
+    - 'Experimentals/Candidates/**/*.cpp'
+    - 'Experimentals/Candidates/**/*.ino'
+    - 'Experimentals/Candidates/**/*.h'
     - '**/EXPCmpnts_BuildWorker.yml'
     - '**/EXPCmpnts_BuildWorker.yaml'
 
@@ -30,32 +30,10 @@ jobs:
     name: Candidate Components Sketch Builder
     runs: ubuntu-18.04
 
-    strategy:
-      matrix:
-
     steps:
     - name: A.Stage 1 | Repository Checkout
       uses: actions/checkout@master
 
     - name: A.Stage 2 | Arduino-CLI Setup
       uses: arduino/setup-arduino-cli@master
-      with:
-        version: '0.6.0'
-# Make some here with if and else.
-
-  NonCandidateWorker:
-    name: Unstable Components Sketch Builder
-    runs: ubuntu-18.04
-
-    strategy:
-      matrix:
-
-    steps:
-    - name: A.Stage 1 | Repository Checkout
-      uses: actions/checkout@master
-
-    - name: A.Stage 2 | Arduino-CLI Setup
-      uses: arduino/setup-arduino-cli@master
-      with:
-        version: '0.6.0'
 # Make some here with if and else.

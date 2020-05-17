@@ -23,21 +23,21 @@ on:
     - '**/MSketch_BuildWorker.yml'
     - '**/MSketch_BuildWorker.yaml'
 
+env:
+  PARAM_DELIMITER_START: "["
+  PARAM_DELIMITER_END: "]"
+  PARAM_SEPERATOR: ","
+  PARAM_ARGS_DELIMITER: "--"
+
+  IGNORE_RUN_TEST: "--IGNORE_COMMIT"
+  FORCE_EXP: "--FORCE_CHECK_EXPERIMENTALS"
+  FORCE_MAIN: "--FORCE_CHECK_MAIN"
+  FORCE_ALL: "--FORCE_CHECK_ALL"
+
 jobs:
   SketchWorker:
-    name: ESP Variant Sketch Build Worker
+    name: NodeMCU Sketch and Components Verifier
     runs-on: ubuntu-18.04
-
-    env:
-      PARAM_DELIMITER_START: "["
-      PARAM_DELIMITER_END: "]"
-      PARAM_SEPERATOR: ","
-      PARAM_ARGS_DELIMITER: "--"
-
-      IGNORE_RUN_TEST: --IGNORE_COMMIT
-      FORCE_EXP: --FORCE_CHECK_EXPERIMENTALS
-      FORCE_MAIN: --FORCE_CHECK_MAIN
-      FORCE_ALL: --FORCE_CHECK_ALL
 
     steps:
       - name: Stage 0 | Commit Parameter Checking
