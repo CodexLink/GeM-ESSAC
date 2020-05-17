@@ -4,7 +4,7 @@
 # * Used for Building NodeMCU v2 Lua ESP8266EX / v3 LoLin / ESP32 Sketch
 # * Description: Builds NodeMCU v2 Lua ESP8266EX / v3 LoLin / ESP32 Sketches and Libraries
 
-name: Main Sketch Build Worker
+name: Main Sketch and Component Build Worker
 
 on:
   push:
@@ -24,30 +24,35 @@ on:
     - '**/SketchBuildWorker.yaml'
 
 jobs:
-  ESP_VariantSketchWorker:
+  NodeMCUSketchWorker:
     name: ESP Variant Sketch Build Worker
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        mcu_candidate_fqbn: "esp8266:esp8266:nodemcuv2"
-
-        include:
-        - mcu_candidate_fqbn: esp8266:esp8266:nodemcuv2
-          mcu_platform_candidate: esp8266:esp8266
-          mcu_platform_sketch:  __IoTMesC_SRC/IoTMesC_FSLHFile_NodeMCU/IoTMesC_FSLHFile_NodeMCU.ino
-          boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
 
     steps:
-    - name: Stage 1 | Repository Checkout
-      uses: actions/checkout@master
+      - name: Stage 1 | Repository Checkout
+        uses: actions/checkout@master
 
-    - name: Stage 2 | Arduino CLI Setup
-      uses: arduino/setup-arduino-cli@master
+      - name: Stage - | Debug Mode | Dump Actions Info
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+          echo "$JOB_CONTEXT"
 
-    - name: Stage 3 | Hardware Arch Setup on Arduino CLI
-      run : |
-        arduino-cli core update-index --additional-urls ${{ matrix.boardAdditionals }}
-        arduino-cli core install ${{ matrix.mcu_platform_candidate }} --additional-urls ${{ matrix.boardAdditionals }}
+      - name: Stage 2 | Arduino CLI Setup
+        uses: arduino/setup-arduino-cli@master
 
-    - name: B.Stage 4 | Sketch Verification
-      run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ${{ matrix.mcu_platform_sketch }}
+      - name: Stage 3 | Hardware Arch Setup on Arduino CLI
+        env:
+          mcu_platform_candidate: esp8266:esp8266
+          boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+        run: |
+          arduino-cli core update-index --additional-urls ${{ matrix.boardAdditionals }}
+          arduino-cli core install ${{ matrix.mcu_platform_candidate }} --additional-urls ${{ matrix.boardAdditionals }}
+
+      - name: B.Stage 4 | Sketch Verification
+        env:
+          mcu_candidate_fqbn: esp8266:esp8266:nodemcuv2
+          mcu_platform_sketch:  SketchSRC/FLSHF_NodeMCU/FLSHF_NodeMCU.ino
+        run: arduino-cli compile --fqbn ${{ matrix.mcu_candidate_fqbn }} ${{ matrix.mcu_platform_sketch }}
