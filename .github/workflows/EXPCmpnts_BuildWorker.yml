@@ -14,16 +14,16 @@ on:
     - 'Experimentals/**/*.cpp'
     - 'Experimentals/**/*.ino'
     - 'Experimentals/**/*.h'
-    - '**/*EXPCmpnts_BuildWorker.yml'
-    - '**/*EXPCmpnts_BuildWorker.yaml'
+    - '**/EXPCmpnts_BuildWorker.yml'
+    - '**/EXPCmpnts_BuildWorker.yaml'
 
   pull_request:
     paths:
     - 'Experimentals/**/*.cpp'
     - 'Experimentals/**/*.ino'
     - 'Experimentals/**/*.h'
-    - '**/*EXPCmpnts_BuildWorker.yml'
-    - '**/*EXPCmpnts_BuildWorker.yaml'
+    - '**/EXPCmpnts_BuildWorker.yml'
+    - '**/EXPCmpnts_BuildWorker.yaml'
 
 jobs:
   CandidateWorker:

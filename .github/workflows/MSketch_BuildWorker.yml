@@ -9,19 +9,19 @@ name: Main Sketch Build Worker
 on:
   push:
     paths:
-    - '__IoTMesC_SRC/**/*.cpp'
-    - '__IoTMesC_SRC/**/*.ino'
-    - '__IoTMesC_SRC/**/*.h'
-    - '**/*SketchBuildWorker.yml'
-    - '**/*SketchBuildWorker.yaml'
+    - 'SketchSRC/FLSHF_NodeMCU/**/*.cpp'
+    - 'SketchSRC/FLSHF_NodeMCU/**/*.ino'
+    - 'SketchSRC/FLSHF_NodeMCU/**/*.h'
+    - '**/SketchBuildWorker.yml'
+    - '**/SketchBuildWorker.yaml'
 
   pull_request:
     paths:
-    - '__IoTMesC_SRC/**/*.cpp'
-    - '__IoTMesC_SRC/**/*.ino'
-    - '__IoTMesC_SRC/**/*.h'
-    - '**/*SketchBuildWorker.yml'
-    - '**/*SketchBuildWorker.yaml'
+    - 'SketchSRC/FLSHF_NodeMCU/**/*.cpp'
+    - 'SketchSRC/FLSHF_NodeMCU/**/*.ino'
+    - 'SketchSRC/FLSHF_NodeMCU/**/*.h'
+    - '**/SketchBuildWorker.yml'
+    - '**/SketchBuildWorker.yaml'
 
 jobs:
   ESP_VariantSketchWorker:
