@@ -9,74 +9,120 @@ name: Sketch and Component Build Verifier
 on:
   push:
     paths:
-    - 'SketchSRC/FLSHF_NodeMCU/**/*.cpp'
-    - 'SketchSRC/FLSHF_NodeMCU/**/*.ino'
-    - 'SketchSRC/FLSHF_NodeMCU/**/*.h'
-    - '**/MSketch_BuildWorker.yml'
-    - '**/MSketch_BuildWorker.yaml'
+      - 'SketchSRC/FLSHF_NodeMCU/*'
+      - 'Experimentals/Candidates/*'
+      - '.github/workflows/*.yml'
 
   pull_request:
     paths:
-    - 'SketchSRC/FLSHF_NodeMCU/**/*.cpp'
-    - 'SketchSRC/FLSHF_NodeMCU/**/*.ino'
-    - 'SketchSRC/FLSHF_NodeMCU/**/*.h'
-    - '**/MSketch_BuildWorker.yml'
-    - '**/MSketch_BuildWorker.yaml'
-
-env:
-  PARAM_DELIMITER_START: "["
-  PARAM_DELIMITER_END: "]"
-  PARAM_SEPERATOR: ","
-  PARAM_ARGS_DELIMITER: "--"
-
-  IGNORE_RUN_TEST: "--IGNORE_COMMIT"
-  FORCE_EXP: "--FORCE_CHECK_EXPERIMENTALS"
-  FORCE_MAIN: "--FORCE_CHECK_MAIN"
-  FORCE_ALL: "--FORCE_CHECK_ALL"
+      - 'SketchSRC/FLSHF_NodeMCU/*'
+      - 'Experimentals/Candidates/*'
+      - '.github/workflows/*.yml'
 
 jobs:
-  SketchWorker:
-    name: NodeMCU Sketch and Components Verifier
-    runs-on: ubuntu-18.04
+  RepoStateChecker:
+    name: Repository Context State Checker
+    runs-on: ubuntu-latest
+    env:
+      FORCE_ALL_TESTS: --FORCE_ALL_TESTS
+      FORCE_EXP_TEST: --FORCE_EXP_TEST
+      FORCE_MAIN_TEST: --FORCE_MAIN_TEST
+      IGNORE_RUN_TEST: --IGNORE_COMMIT
+      SKETCH_CONTEXT_HAS_CHANGED: false
+      EXPERIMENTALS_CONTEXT_HAS_CHANGED: false
+      FORCE_CHECK_SKETCH_CONTEXT: false
+      FORCE_CHECK_EXPERIMENTALS_CONTEXT: false
+      EXPERIMENTALS_DEFAULT_DIR: 'Experimentals/Candidates/'
+      SKETCH_DEFAULT_DIR: 'SketchSRC/'
+    outputs:
+      SKETCH_CMPNT_CANDIDATES: ${{ steps.exp_cmpnt_data.outputs.EXP_CMPNT_MATRIX }}
 
     steps:
-      - name: Stage 0 | Commit Parameter Checking
-        run: echo "TBA"
-
-      - name: Stage 1 | Event Track
-        run: echo "TBA"
-
-      - name: Stage 1 | Repository Checkout
-        uses: actions/checkout@master
-
-      - name: Stage - | Debug Mode | Dump Actions Info
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-          JOB_CONTEXT: ${{ toJson(job) }}
-          STEPS_CONTEXT: ${{ toJson(steps) }}
-          RUNNER_CONTEXT: ${{ toJson(runner) }}
-
+      - name: Stage A-0 | Ignore Commit Parameter Checking
+        if: contains(github.event.commits[0].message, env.IGNORE_RUN_TEST)
         run: |
-          echo "$GITHUB_CONTEXT"
-          echo "$JOB_CONTEXT"
-          echo "$STEPS_CONTEXT"
-          run: echo "$RUNNER_CONTEXT"
+          echo "::warning::User Throws "--IGNORE_COMMIT" Parameter! Sketch Test Automatically Set To Failed! This was intended as we're ignoring this commit for testing sketches and experimental components."
+          exit 69
 
-      - name: Stage 2 | Arduino CLI Setup
+      - name: Stage A-1 | Processing Repository Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 10
+
+      - name: Stage A-2 | Context Path Checking for Sketches
+        uses: marceloprado/has-changed-path@master
+        id: sketchStatus
+        with:
+          paths: SketchSRC/FLSHF_NodeMCU
+
+      - name: Stage A-2.1 | Context Path Checking for Experimental Components
+        uses: marceloprado/has-changed-path@master
+        id: expComponentStatus
+        with:
+          paths: Experimentals/Candidates
+
+      - name: Stage A-2.2 | Status Checking Both Sketches and Experimental Components
+        run: |
+          echo "Sketch Context Change State: ${{ steps.sketchStatus.outputs.changed }}"
+          echo "Experimental Context Change State: ${{ steps.expComponentStatus.outputs.changed }}"
+          echo "::set-env name=SKETCH_CONTEXT_HAS_CHANGED::${{ steps.sketchStatus.outputs.changed }}"
+          echo "::set-env name=EXPERIMENTALS_CONTEXT_HAS_CHANGED::${{ steps.expComponentStatus.outputs.changed }}"
+
+      - name: Stage A-2.3 | Condition 1 | Condition Checking | Is Sketch Context Changed? | Is "--FORCE_MAIN_TEST" or "--FORCE_ALL_TESTS" Casted?
+        if: env.SKETCH_CONTEXT_HAS_CHANGED == true || contains(github.event.commits[0].message, env.FORCE_EXP_TEST) || contains(github.event.commits[0].message, env.FORCE_ALL_TESTS)
+        run: echo "::set-env name=FORCE_CHECK_SKETCH_CONTEXT::true"
+
+      - name: Stage A-2.3 | Condition 2 | Condition Checking | Is Experimental Components Context Changed? | Is "--FORCE_MAIN_TEST" or "--FORCE_ALL_TESTS" Casted?
+        if: env.EXPERIMENTALS_CONTEXT_HAS_CHANGED == true || contains(github.event.commits[0].message, env.FORCE_MAIN_TEST) || contains(github.event.commits[0].message, env.FORCE_ALL_TESTS)
+        run: echo "::set-env name=FORCE_CHECK_EXPERIMENTALS_CONTEXT::true"
+
+      - name: Stage A-2.4 | Gathering Qualified Components / Sketches for Verification Process
+        id: exp_cmpnt_data
+        run: |
+          if [ ${{ env.SKETCH_CONTEXT_HAS_CHANGED }} == false ] && [ ${{ env.FORCE_CHECK_SKETCH_CONTEXT }} == false ] && [ ${{ env.EXPERIMENTALS_CONTEXT_HAS_CHANGED }} == false ] && [ ${{ env.FORCE_CHECK_EXPERIMENTALS_CONTEXT }} == false ]; then
+            echo "::warning:: RepoStateChecker Job at Stage A-2.4 Detects No Changes Nor Forced Commands Applied! Sketch Test Automatically Set To Failed! Please insert "--IGNORE_COMMIT" at the commit message or description if you're debugging this workflow!"
+            exit 69
+          else
+            DIR_CANDIDATES=''
+            if [ ${{ env.SKETCH_CONTEXT_HAS_CHANGED }} == true ] || [ ${{ env.FORCE_CHECK_SKETCH_CONTEXT }} == true ]; then
+              DIR_CANDIDATES+=' ${{ env.SKETCH_DEFAULT_DIR }}'
+              echo $DIR_CANDIDATES
+            fi;
+            if [ ${{ env.EXPERIMENTALS_CONTEXT_HAS_CHANGED }} == true ] || [ ${{ env.FORCE_CHECK_EXPERIMENTALS_CONTEXT }} == true ]; then
+              DIR_CANDIDATES+=' ${{ env.EXPERIMENTALS_DEFAULT_DIR }}'
+              echo $DIR_CANDIDATES
+            fi;
+            echo $DIR_CANDIDATES
+            CMPNT_ARR=$(cIter=1; printf "{\"DIR_FILE_CANDIDATES\":["; for FILE_DIR in $(find $DIR_CANDIDATES -name *.ino); do printf "{\"FILE_CANDIDATE\":\"$FILE_DIR\"}, "; ((cIter++)); done;);
+            echo "::set-output name=EXP_CMPNT_MATRIX::${CMPNT_ARR::-2}]}"
+          fi;
+
+  SketchnCompWorker:
+    name: ExpComponent / Sketch Verification
+    needs: RepoStateChecker
+    runs-on: ubuntu-latest
+    env:
+      mcu_platform_base: esp8266:esp8266
+      mcu_candidate_fqbn: esp8266:esp8266:nodemcuv2
+      boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.RepoStateChecker.outputs.SKETCH_CMPNT_CANDIDATES) }}
+
+    steps:
+      - name: Stage A-1 | Processing Repository Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 10
+
+      - name: Stage 2 | Setting up Arduino-CLI
         uses: arduino/setup-arduino-cli@master
 
-      - name: Stage 3 | Hardware Arch Setup on Arduino CLI
-        env:
-          mcu_platform_candidate: esp8266:esp8266
-          boardAdditionals: https://arduino.esp8266.com/stable/package_esp8266com_index.json
-
+      - name: Stage 3 | Processing MCU Board Setup on Arduino CLI
         run: |
           arduino-cli core update-index --additional-urls $boardAdditionals
-          arduino-cli core install $mcu_platform_candidate --additional-urls $boardAdditionals
+          arduino-cli core install $mcu_platform_base --additional-urls $boardAdditionals
 
-      - name: B.Stage 4 | Sketch Verification
-        env:
-          mcu_candidate_fqbn: esp8266:esp8266:nodemcuv2
-          mcu_platform_sketch:  SketchSRC/FLSHF_NodeMCU/FLSHF_NodeMCU.ino
-
-        run: arduino-cli compile --fqbn $mcu_candidate_fqbn $mcu_platform_sketch
+      - name: B.Stage 4 | Verifying Main Sketch or Experimental Components
+        run: arduino-cli compile --fqbn $mcu_candidate_fqbn ${{ matrix.DIR_FILE_CANDIDATES.FILE_CANDIDATE }}

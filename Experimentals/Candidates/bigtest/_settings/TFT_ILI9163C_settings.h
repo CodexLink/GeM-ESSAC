@@ -28,7 +28,7 @@ you can copy those parameters and create setup for different displays.
 	#define _GRAMSIZE		_GRAMWIDTH * _GRAMHEIGH//*see note 1
 	#define __COLORSPC		1// 1:GBR - 0:RGB
 	#define __GAMMASET3		//uncomment for another gamma
-	#define __OFFSET		0//*see note 2
+	#define __OFFSET		32//*see note 2
 	//Tested!
 #elif defined (__144_BLACK_PCB__)
 	#define _TFTWIDTH  		128//the REAL W resolution of the TFT

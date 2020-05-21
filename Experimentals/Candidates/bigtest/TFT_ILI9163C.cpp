@@ -1108,3 +1108,7 @@ void TFT_ILI9163C::setRotation(uint8_t m) {
 		writedata(_Mactrl_Data);
 	#endif
 }
+
+
+
+
