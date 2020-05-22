@@ -95,7 +95,7 @@ jobs:
           fi;
 
   SketchnCompWorker:
-    name: ExpComponent / Sketch Verification
+    name: Verification |
     needs: RepoStateChecker
     runs-on: ubuntu-latest
     env:
