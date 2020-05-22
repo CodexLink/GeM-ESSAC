@@ -35,7 +35,7 @@ jobs:
       FORCE_CHECK_EXPERIMENTALS_CONTEXT: false
       EXPERIMENTALS_DEFAULT_DIR: 'Experimentals/Candidates/'
       SKETCH_DEFAULT_DIR: 'SketchSRC/'
-    continue-on-error: ${{ env.IGNORE_COMMIT_TRIGGER }}
+    continue-on-error: ${{ IGNORE_COMMIT_TRIGGER }}
     outputs:
       SKETCH_CMPNT_CANDIDATES: ${{ steps.exp_cmpnt_data.outputs.EXP_CMPNT_MATRIX }}
 
