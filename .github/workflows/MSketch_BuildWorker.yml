@@ -34,6 +34,9 @@ jobs:
       EXPERIMENTALS_DEFAULT_DIR: 'Experimentals/Candidates/'
       SKETCH_DEFAULT_DIR: 'SketchSRC/'
 
+    outputs:
+      SKETCH_CMPNT_CANDIDATES: ${{ steps.exp_cmpnt_data.outputs.EXP_CMPNT_MATRIX }}
+
     steps:
       - name: Stage A-0 | Ignore Commit Parameter Checking
         if: contains(github.event.commits[0].message, env.IGNORE_RUN_TEST)
