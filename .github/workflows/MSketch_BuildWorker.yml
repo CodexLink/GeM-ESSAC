@@ -1,8 +1,7 @@
 # ! Sketch Build Worker YAML
 # ! Author: Janrey Licas | CodexLink
 # ! Date Created: 11-22-2019
-# * Used for Building NodeMCU v2 Lua ESP8266EX / v3 LoLin / ESP32 Sketch
-# * Description: Builds NodeMCU v2 Lua ESP8266EX / v3 LoLin / ESP32 Sketches and Libraries
+# * Used for Verifying NodeMCU v2 Lua ESP8266EX Sketch and Experimental Components
 
 name: Sketch and Component Build Verifier
 
@@ -24,7 +23,6 @@ jobs:
     name: Repository Context State Checker
     runs-on: ubuntu-latest
     env:
-      IGNORE_COMMIT_TRIGGER: false
       FORCE_ALL_TESTS: --FORCE_ALL_TESTS
       FORCE_EXP_TEST: --FORCE_EXP_TEST
       FORCE_MAIN_TEST: --FORCE_MAIN_TEST
@@ -35,16 +33,12 @@ jobs:
       FORCE_CHECK_EXPERIMENTALS_CONTEXT: false
       EXPERIMENTALS_DEFAULT_DIR: 'Experimentals/Candidates/'
       SKETCH_DEFAULT_DIR: 'SketchSRC/'
-    continue-on-error: ${{ IGNORE_COMMIT_TRIGGER }}
-    outputs:
-      SKETCH_CMPNT_CANDIDATES: ${{ steps.exp_cmpnt_data.outputs.EXP_CMPNT_MATRIX }}
 
     steps:
       - name: Stage A-0 | Ignore Commit Parameter Checking
         if: contains(github.event.commits[0].message, env.IGNORE_RUN_TEST)
         run: |
-          echo "::set-env name=IGNORE_COMMIT_TRIGGER::true"
-          echo "::warning::User Throws "--IGNORE_COMMIT" Parameter! Sketch Test Automatically Set To Failed! This was intended as we're ignoring this commit for testing sketches and experimental components."
+          echo "::warning file=MSketch_BuildWorker.yml,line=42,col=11::User Throws "--IGNORE_COMMIT" Parameter! Sketch Test Automatically Set To Failed! This was intended as we're ignoring this commit for testing sketches and experimental components."
           exit 69
 
       - name: Stage A-1 | Processing Repository Checkout
@@ -83,7 +77,7 @@ jobs:
         id: exp_cmpnt_data
         run: |
           if [ ${{ env.SKETCH_CONTEXT_HAS_CHANGED }} == false ] && [ ${{ env.FORCE_CHECK_SKETCH_CONTEXT }} == false ] && [ ${{ env.EXPERIMENTALS_CONTEXT_HAS_CHANGED }} == false ] && [ ${{ env.FORCE_CHECK_EXPERIMENTALS_CONTEXT }} == false ]; then
-            echo "::warning:: RepoStateChecker Job at Stage A-2.4 Detects No Changes Nor Forced Commands Applied! Sketch Test Automatically Set To Failed! Please insert "--IGNORE_COMMIT" at the commit message or description if you're debugging this workflow!"
+            echo "::warning file=MSketch_BuildWorker.yml,line=81,col=13::RepoStateChecker Job at Stage A-2.4 Detects No Changes Nor Forced Commands Applied! Sketch Test Automatically Set To Failed! Please insert "--IGNORE_COMMIT" at the commit message or description if you're debugging this workflow!"
             exit 69
           else
             DIR_CANDIDATES=''

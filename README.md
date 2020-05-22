@@ -3,8 +3,7 @@
 
 <div align="center">
 
-![Experimental Components Build Worker](https://github.com/CodexLink/GeM-ESSAC/workflows/Experimental%20Components%20Build%20Worker/badge.svg)
-![Main Sketch Build Worker](https://github.com/CodexLink/GeM-ESSAC/workflows/Main%20Sketch%20Build%20Worker/badge.svg)
+![Sketch and Component Build Verifier](https://github.com/CodexLink/GeM-ESSAC/workflows/Sketch%20and%20Component%20Build%20Verifier/badge.svg)
 
 [![Codacy Overall Sketch Code Quality](https://img.shields.io/codacy/grade/d8efe2b67dac445d918e277601e801b8?label=Codacy%20Overall%20Sketch%20Code%20Quality&logo=codacy)](https://app.codacy.com/manual/CodexLink/GeM-ESSAC/)
 [![CodeFactor Overall Sketch Code Quality](https://img.shields.io/codefactor/grade/github/CodexLink/GeM-ESSAC?label=CodeFactor%20Overall%20Sketch%20Code%20Quality&logo=codefactor)](https://www.codefactor.io/repository/github/codexlink/gem-essac/)
