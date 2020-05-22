@@ -23,7 +23,7 @@ jobs:
   RepoStateChecker:
     name: Repository Context State Checker
     runs-on: ubuntu-latest
-    continue-on-error: ${{ env.IGNORE_COMMIT_TRIGGER }}
+    continue-on-error: $IGNORE_COMMIT_TRIGGER
     env:
       IGNORE_COMMIT_TRIGGER: false
       FORCE_ALL_TESTS: --FORCE_ALL_TESTS
