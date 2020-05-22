@@ -23,7 +23,9 @@ jobs:
   RepoStateChecker:
     name: Repository Context State Checker
     runs-on: ubuntu-latest
+    continue-on-error: ${{ env.IGNORE_COMMIT_TRIGGER }}
     env:
+      IGNORE_COMMIT_TRIGGER: false
       FORCE_ALL_TESTS: --FORCE_ALL_TESTS
       FORCE_EXP_TEST: --FORCE_EXP_TEST
       FORCE_MAIN_TEST: --FORCE_MAIN_TEST
@@ -41,6 +43,7 @@ jobs:
       - name: Stage A-0 | Ignore Commit Parameter Checking
         if: contains(github.event.commits[0].message, env.IGNORE_RUN_TEST)
         run: |
+          echo "::set-env -name=IGNORE_COMMIT_TRIGGER::true"
           echo "::warning::User Throws "--IGNORE_COMMIT" Parameter! Sketch Test Automatically Set To Failed! This was intended as we're ignoring this commit for testing sketches and experimental components."
           exit 69
 
