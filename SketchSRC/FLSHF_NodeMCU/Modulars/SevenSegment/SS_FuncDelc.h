@@ -10,7 +10,7 @@
 #pragma once
 
 #include <inttypes.h>
-#include "..\Cores\GEMCore\GeMCore_TypeDefs.h"
+#include "..\Cores\GEMCore\GeMCore_TypeDecl.h"
 
 class SevenSegment
 {
