@@ -10,7 +10,7 @@
 #include "SS_FuncDelc.h"
 #define TIME_TRANSISTION 2000
 #define LOADING_BAR_TRANSISTION 10000
-SevenSegment SS(true, true);
+SevenSegment ssDriver(true, true);
 
 void displayInit();
 void displayWholeNum();

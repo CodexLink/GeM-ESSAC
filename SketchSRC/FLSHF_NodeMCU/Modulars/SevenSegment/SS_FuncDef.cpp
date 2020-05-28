@@ -8,16 +8,20 @@
 ============================================================================= */
 
 #include "SS_FuncDelc.h"
-SevenSegment::SevenSegment(byte_p SHOULD_DEBUG = false, byte_p INLINE_SERIAL_INIT = false)
+#include "arduino.h"
+
+SevenSegment::SevenSegment(bool SHOULD_DEBUG, bool INLINE_SERIAL_INIT)
 {
     if (INLINE_SERIAL_INIT)
         Serial.begin(9600);
+
     Serial.println(F("Sevent Segment | Constructor Initialized w/ Inline Serial Begin (Value of 9600"));
 
     if (SHOULD_DEBUG)
-        Serial.println(F("Seven Segment | Debugging Mode Activated!"))
+        Serial.println(F("Seven Segment | Debugging Mode Activated!"));
 }
 
+template <typename Des_DType>
 void SevenSegment::ssReadUpdate(Des_DType rData)
 {
 }
@@ -26,7 +30,7 @@ inline void SevenSegment::ssUpdateDisplay()
 {
 }
 
-bool SevenSegment::Update_SSDisplay(byte_p)
+bool SevenSegment::Update_SSDisplay(uint8_t)
 {
 }
 
