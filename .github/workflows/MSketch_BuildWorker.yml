@@ -69,11 +69,11 @@ jobs:
           echo "::set-env name=EXPERIMENTALS_CONTEXT_HAS_CHANGED::${{ steps.expComponentStatus.outputs.changed }}"
 
       - name: Stage A-2.3 | Condition 1 | Condition Checking | Is Sketch Context Changed? | Is "--FORCE_MAIN_TEST" or "--FORCE_ALL_TESTS" Casted?
-        if: env.SKETCH_CONTEXT_HAS_CHANGED == true || contains(github.event.commits[0].message, env.FORCE_EXP_TEST) || contains(github.event.commits[0].message, env.FORCE_ALL_TESTS)
+        if: env.SKETCH_CONTEXT_HAS_CHANGED == true || contains(github.event.commits[0].message, env.FORCE_MAIN_TEST) || contains(github.event.commits[0].message, env.FORCE_ALL_TESTS)
         run: echo "::set-env name=FORCE_CHECK_SKETCH_CONTEXT::true"
 
-      - name: Stage A-2.3 | Condition 2 | Condition Checking | Is Experimental Components Context Changed? | Is "--FORCE_MAIN_TEST" or "--FORCE_ALL_TESTS" Casted?
-        if: env.EXPERIMENTALS_CONTEXT_HAS_CHANGED == true || contains(github.event.commits[0].message, env.FORCE_MAIN_TEST) || contains(github.event.commits[0].message, env.FORCE_ALL_TESTS)
+      - name: Stage A-2.3 | Condition 2 | Condition Checking | Is Experimental Components Context Changed? | Is "--FORCE_EXP_TEST" or "--FORCE_ALL_TESTS" Casted?
+        if: env.EXPERIMENTALS_CONTEXT_HAS_CHANGED == true || contains(github.event.commits[0].message, env.FORCE_EXP_TEST) || contains(github.event.commits[0].message, env.FORCE_ALL_TESTS)
         run: echo "::set-env name=FORCE_CHECK_EXPERIMENTALS_CONTEXT::true"
 
       - name: Stage A-2.4 | Gathering Qualified Components / Sketches for Verification Process
