@@ -10,6 +10,7 @@
 #pragma once
 
 #include <inttypes.h>
+#include <SoftwareSerial.h> // ! Use for Self-Library Debugging Usage!
 
 class SevenSegment
 {
