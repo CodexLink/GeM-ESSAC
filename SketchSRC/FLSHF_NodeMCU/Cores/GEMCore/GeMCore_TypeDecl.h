@@ -21,3 +21,7 @@ typedef const struct struct_c;
 // # Constant Expressions at Compile Time
 constexpr byte_p FUNC_SUCCESS = 0;
 constexpr byte_p FUNC_FAILED = 69;
+constexpr byte_p INTERNAL_ERR = -1; // ! Unconfirmed...
+
+constexpr byte_p OFFSET_BY_ONE = 1;
+constexpr byte_p INCREMENT_BY_ONE = 1;
