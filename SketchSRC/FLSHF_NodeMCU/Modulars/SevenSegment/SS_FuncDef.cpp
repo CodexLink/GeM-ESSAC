@@ -8,7 +8,6 @@
 ============================================================================= */
 
 #include "SS_FuncDelc.h"
-#include "arduino.h"
 
 SevenSegment::SevenSegment(bool SHOULD_DEBUG, bool INLINE_SERIAL_INIT)
 {
