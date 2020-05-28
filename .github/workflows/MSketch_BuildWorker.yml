@@ -8,14 +8,14 @@ name: Sketch and Component Build Verifier
 on:
   push:
     paths:
-      - 'SketchSRC/FLSHF_NodeMCU/*'
-      - 'Experimentals/Candidates/*'
+      - 'SketchSRC/FLSHF_NodeMCU/**'
+      - 'Experimentals/Candidates/**'
       - '.github/workflows/*.yml'
 
   pull_request:
     paths:
-      - 'SketchSRC/FLSHF_NodeMCU/*'
-      - 'Experimentals/Candidates/*'
+      - 'SketchSRC/FLSHF_NodeMCU/**'
+      - 'Experimentals/Candidates/**'
       - '.github/workflows/*.yml'
 
 jobs:
