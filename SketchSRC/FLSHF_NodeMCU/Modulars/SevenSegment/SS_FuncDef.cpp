@@ -15,7 +15,7 @@ SevenSegment::SevenSegment(bool SHOULD_DEBUG, bool INLINE_SERIAL_INIT)
     if (INLINE_SERIAL_INIT)
         Serial.begin(9600);
 
-    Serial.println(F("Sevent Segment | Constructor Initialized w/ Inline Serial Begin (Value of 9600"));
+    Serial.println(F("Seven Segment | Constructor Initialized w/ Inline Serial Begin (Value of 9600"));
 
     if (SHOULD_DEBUG)
         Serial.println(F("Seven Segment | Debugging Mode Activated!"));
