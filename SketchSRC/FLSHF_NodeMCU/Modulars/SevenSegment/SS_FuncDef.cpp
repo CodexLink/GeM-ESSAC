@@ -8,3 +8,28 @@
 ============================================================================= */
 
 #include "SS_FuncDelc.h"
+SevenSegment::SevenSegment(byte_p SHOULD_DEBUG = false, byte_p INLINE_SERIAL_INIT = false)
+{
+    if (INLINE_SERIAL_INIT)
+        Serial.begin(9600);
+    Serial.println(F("Sevent Segment | Constructor Initialized w/ Inline Serial Begin (Value of 9600"));
+
+    if (SHOULD_DEBUG)
+        Serial.println(F("Seven Segment | Debugging Mode Activated!"))
+}
+
+void SevenSegment::ssReadUpdate(Des_DType rData)
+{
+}
+
+inline void SevenSegment::ssUpdateDisplay()
+{
+}
+
+bool SevenSegment::Update_SSDisplay(byte_p)
+{
+}
+
+void SevenSegment::Toggle_SSDisplay(SS_TOGGLEABLES ledState)
+{
+}
