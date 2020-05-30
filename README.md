@@ -17,59 +17,77 @@
 
 # Welcome
 
-Hello! and Welcome~!
+**Hello! and Welcome~!** This is my very first planned project regarding IoT that went alot of iterations due to personal issues regarding life decisions on how this project should really work. This project is built for personal usage! It was built for reporting environmental data, and automation. Also it was built on how far should I go when it comes to building the codebase. Because I want to make things quite flexible and adjustable. So to summarise, this was built just for fun and quite competitive for codebase quality by doing lots of abstraction in general.
+
+## Features
+
+Since, this was so random to the point that I can't explain what's really up to this project, here is the following list.
+
+- Soon...
 
 ## Table of Contents
 
-This README will contain a lot of sub-topics about particular topics denoted by their title size. Please check the list and you can go to that content by clicking them.
+This README will contain a few of sub-topics about particulars denoted by their header size. Please check the list and you can go to that content by clicking them.
 
-## Components Used
-
-Based on ~~**Issue**, here are the following materials that are used in this project. The list items also contains of which MCU they will be residing.
-
-1. MFRC522 RFID Module
-2. SPI TFT 128x128 (TFT_ILI9163C)
-3. Rotary Encoder
-4. SHT3X Temperature and Humidity Sensor
-5. CCS811 Gas Sensor
-6. Single Digit Digital Segment
-7. Screen Adjustment Brightness (Potentiometer)
-
-**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
-
-## Deployment
-
-In this section, I'll talk about on how would I deploy them and what are the variables to configure / to make things working.
-
-All deployable code is residing in the directory of ...
-
-**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
+- [Contributing](#contributing)
+- [Versioning](#versioning)
+- [Possible Questions](#possible-questions)
+  * [Where's The Instructions](#wheres-the-instructions)
+  * [Can I steal some modular components you made on this project](#can-i-steal-some-modular-components-you-made-on-this-project)
+  * [Why did you make your project open-source'd when you don't provide necessary instructions to build it in hardware side](#why-did-you-make-your-project-open-sourced-when-you-dont-provide-necessary-instructions-to-build-it-in-hardware-side)
+- [Authors](#authors)
+- [License](#license)
+- [Credits](#credits)
 
 ## Contributing
 
-***There are no plans for contributions.*** No one knows how they would run this project without the device itself. However, contributions for **security flaws** or **codebase flaws** is possible. Just hit me up with **Issues** and once we got into agreements, I, myself, creates the PR or even you, who is responsible to create a PR with your own fixes. This was just an indication that an issue is being fixed instead of pushing commits and do normal issue reference along with PR on it.
+***There are no plans for contributions.*** No one knows how they would run this project without the device / prototype itself. However, contributions for **security flaws** or **codebase flaws** is possible. Just hit me up with **Issues** and once we got into agreements, I, myself, creates the PR or even you, who is responsible to create a PR with your own fixes. This was just an indication that an issue is being fixed instead of pushing commits and do normal issue reference along with PR on it.
 
-**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
+**[Go Back to TOC](#table-of-contents)**
 
 ## Versioning
 
-Currently, I don't use any guidelines regarding software versioning, such as **Semantic Versioning**. But I might reconsider it. Please check issue #**NaN**(Not Available Yet) here...
+Currently, I don't use any guidelines regarding software versioning, such as **Semantic Versioning**. But I might reconsider it.
 
-**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
+**[Go Back to TOC](#table-of-contents)**
 
-## Extra Information / Probably Questionnable
+## Possible Questions
 
-This section contains the truth about this project specially its exposure to open-source state.
+This section contains the extra information that you need to know and the truth about this project specially its exposure to open-source state.
 
-**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
+**[Go Back to TOC](#table-of-contents)**
+
+### Where's The Instructions
+
+I won't give much of info about this project as it was personal and possibly no one would want to replicate this because its stupid. ***How stupid?*** Well, I want something **feature** that does something. Trust me, you wouldn't want to know. You can go and check the project if you want to learn more. I won't bother.
+
+**[Go Back to TOC](#table-of-contents)**
+
+### Can I steal some modular components you made on this project
+
+Sure. But **FIRST**, credit me about it. Since this was a GPL-3.0. You should have the authority to make changes but list the changes within the same file on the top of the header. ***Be sure to notify / PM me about it at [Twitter](twitter.com/@CodexLink).***
+
+**[Go Back to TOC](#table-of-contents)**
+
+### Why did you make your project open-source'd when you don't provide necessary instructions to build it in hardware side
+
+First of all, I just want this one to be exposed to make use cases of another people. For instance, the components provided in the modular subdirectory can be used by some people as long as they credit me to it.
+
+Why you won't let someone replicate it in the first place then?
+
+**I just don't want to.**
+
+Look, you have the ability to check my code. No complaints. If you have any questions, be sure to ask me on PM via [Twitter.](twitter.com/@CodexLink)
+
+**[Go Back to TOC](#table-of-contents)**
 
 ## Authors
 
 Here are the list of authors who are taking part of the project.
 
-* **Janrey Licas** - *Initial Work / Project Lead* - [CodexLink](https://github.com/CodexLink)
+- **Janrey Licas** - *Initial Work / Project Lead* - [CodexLink](https://github.com/CodexLink)
 
-**[Go Back To Top of the SubTopic](#--file-structure-deconstruction)** | **[Go Back to TOC](#table-of-contents)**
+**[Go Back to TOC](#table-of-contents)**
 
 ## License
 
@@ -79,6 +97,6 @@ This project is licensed under the GNU v3 License - see the [LICENSE.md](https:/
 
 ## Credits
 
-* [Github Wiki TOC Generator](https://ecotrust-canada.github.io/markdown-toc/) for  Generating TOC Stuff Automatically, based on README Headers and Subheaders.
+- [Github Wiki TOC Generator](https://ecotrust-canada.github.io/markdown-toc/) for  Generating TOC Stuff Automatically, based on README Headers and Subheaders.
 
 **[Go Back to TOC](#table-of-contents)**
