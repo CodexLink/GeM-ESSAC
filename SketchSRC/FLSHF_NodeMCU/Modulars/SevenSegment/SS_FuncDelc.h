@@ -7,12 +7,19 @@
 *  History:         05/16/2020 - First File Init
 ============================================================================= */
 
+/*
+# @technical
+! This does not uses ShiftOut Custom Library with Daisy Chain Support nor Using Internal Function Version of ShiftOut of Arduino!
+* Certain Conditions were not! One of them is being able to overwrriten MSB (Last Part / 8th).
+* When in fact it was being used as blinking only state. Indication of running sketch.
+*/
+
 #pragma once
 
 #include <inttypes.h>
 #include <SoftwareSerial.h> // ! Use for Self-Library Debugging Usage!
 
-class SevenSegment
+class SevenSegment : (public, public)
 {
     enum SS_STATUS
     {
@@ -26,8 +33,16 @@ class SevenSegment
         SS_ON_ITER,
     };
 
-    // # Usable by void Toggle_SSDisplay();
-    enum SS_TOGGLEABLES
+    // @o | This could be done in boolean in function. Further inspection of how enum accessibility is required.
+    // ! If unable then proceed with boolean parameter on that function.
+    enum BIT_SHIFT_DIRECTION // # Usable by inline void shiftData() __attribute__((always_inlined))
+    {
+        MSB,
+        LSB,
+    };
+
+    // @o | Indicator State Usable for Seven Segment Functionaliyt.
+    enum SS_TOGGLEABLES // # Usable by void Toggle_SSDisplay();
     {
         SS_ACTIVATE_LEDS,
         SS_DEACTIVATE_LEDS,
@@ -45,16 +60,17 @@ class SevenSegment
         SS_OK_HAND, // ! Keep in mind, this animation might be quite complex. Go for 0 sequence, and on 3 middle bars from bottom to top.
     };
 
+    // ! Struct Containing Set of Values To Display and Manipulate Later On.
     struct SS_DEBUG_STATES
     {
-        uint8_t SS_STATE; // # Value must be Enum.
-        uint8_t SS_LEDS[7];
+        uint8_t SS_STATE;         // # Value must be Enum.
+        uint8_t SS_LEDS[7];       // # Shows Whole Array Which One is On and Off.
         int16_t SS_RATE_ITER = 0; // # Shows Refresh Count | For Debugging.
     } SS_STATE_DEBUGGER;
 
     struct SS_DISP_ARRAY
     {
-        static const uint8_t SS_LED_AVAILABLE = 7; // ! This does not include DP. Since DP is manageable by different functions.
+        static constexpr uint8_t SS_LED_AVAILABLE = 7; // ! This does not include DP (8th). Since DP is manageable by different functions.
         // # SS Whole Number | Here's the Physical Mapping    = {a, b, c, d, e, f, g};
         uint8_t SS_DISP_NUM_1[SS_LED_AVAILABLE] = {0, 1, 1, 0, 0, 0, 0};
         uint8_t SS_DISP_NUM_2[SS_LED_AVAILABLE] = {1, 1, 0, 1, 1, 0, 1};
@@ -93,14 +109,35 @@ class SevenSegment
         uint8_t MR_PIN = 0;  // * Just For Reference | Controllable, But not preferred at this kind of situation.
     } DEMUX_REQUIRED_PINS;
 
+    // ! Possibly Default Settings. Might check.
+    // @todo | Double Check Sketch on this particular setting.
+    static constexpr uint16_t TIME_TRANSISTION = 2000;
+    static constexpr uint16_t LOADING_BAR_TRANSISTION = 10000;
+
 private:
-    template <typename Des_DType = uint8_t>
-    // ! @todo | Restrict Data Type for string and uint8_t
-    void ssReadUpdate(Des_DType rData); // ! Reads Any Value<string, > and Interpret It. Interpretation Application is done by ssUpdateDisplay().
-    inline void ssUpdateDisplay();      //# Launched by SevenSegment::ssReadUpdate | Requires Array of SS_DISP...
+    template <typename Des_DType = uint8_t> // # Constricts and Sets Desirable Default Argument. Further Assert Check Will Be Implmeneted.
+    // ! @todo | Restrict Data Type for string and uint8_t | Use Assert!
+
+    // # General Functions For Use.
+    void ss_ReadUpdate(Des_DType rData);                            // ! Reads Any Value<string, > and Interpret It. Interpretation Application is done by ssUpdateDisplay().
+    inline void ss_UpdateDisplay() __attribute__((always_inlined)); //# Launched by SevenSegment::ssReadUpdate | Requires Array of SS_DISP...
+
+    // # DEMUX Functions
+    inline void clearData() __attribute__((always_inlined));                              // # Primary Function, For use of Master Reclear Data on Low (~MR) Pin.
+    inline void clearDataAlt() __attribute__((always_inlined));                           // # Secondary Function, For General Purpose Only! Not Designed for Master Reclear on Low (~MR) Pin!
+    inline void releaseData() __attribute__((always_inlined));                            // # For use of Latch (ST_CP) Pin Only!
+    inline void setData() __attribute__((always_inlined));                                // # For use of Data Pin (SD / DS) Pin Only!
+    inline void shiftData(BIT_SHIFT_DIRECTION direction) __attribute__((always_inlined)); // # Shifts Data Based from LSB or MSB Output.
+    inline void toggleIC() __attribute__((always_inlined));                               // # For use of Output Enable on Low (~OE) Pin Only!
+
+    // # Serial / Debugging Functions | Virtual Function is Usable Here. | SerialDisplayOnce Specialized Please.
+    void setErrorCode();
+    void printErrorCode();
+    void printMsg();
 
 public:
-    SevenSegment(bool SHOULD_DEBUG = false, bool INLINE_SERIAL_INIT = false);
-    bool Update_SSDisplay(uint8_t);                 // # Returns 0 | 1 for FUNC_SUCCESS | FUNC_FAILED.
+    SevenSegment(bool SHOULD_DEBUG = false, bool INLINE_SERIAL_INIT = false); // ! Constructor.
+    void(String Message);
+    bool Update_SSDisplay(uint8_t);                 // # Returns false | true, FUNC_SUCCESS else FUNC_FAILED. Subset of DEMUX Functions will be used in this function.
     void Toggle_SSDisplay(SS_TOGGLEABLES ledState); // # Returns Nothing. This function is a toggle function! Toggle each feature by each call. Refer to enum SS_TOGGLEABLES.
 };
