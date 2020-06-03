@@ -97,6 +97,7 @@ This project is licensed under the GNU v3 License - see the [LICENSE.md](https:/
 
 ## Credits
 
-- [Github Wiki TOC Generator](https://ecotrust-canada.github.io/markdown-toc/) for  Generating TOC Stuff Automatically, based on README Headers and Subheaders.
-
+- [Github Wiki TOC Generator](https://ecotrust-canada.github.io/markdown-toc/) for Generating TOC Stuff Automatically, based on README Headers and Subheaders.
+- [Firebase-ESP8266](https://github.com/mobizt/Firebase-ESP8266) for creating a library that is quite understandable and realiable, to be used for communicating with the Firebase associated in this project
+.
 **[Go Back to TOC](#table-of-contents)**
