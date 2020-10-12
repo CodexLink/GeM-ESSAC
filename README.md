@@ -1,28 +1,28 @@
 <h1 align="center">MESCDS</h1>
-<h4 align="center">A Modular Essential Sensing Components Display System for NodeMCU v2.</h4>
-<h4 align="center">It is a system display that can handle both external and internal sensing components. Contains Web Viewable Data with Customizable Behaviors for Personal Needs. Powered by Firebase.</h4>
+<h4 align="center">A Modular Essential Sensing Components Display System for NodeMCU v2 and ESP32.</h4>
+<h4 align="center">It is a display system that can handle both external and internal sensing components. Contains Web Viewable Data with Customizable Behaviors for Personal Needs. Powered by Firebase.</h4>
 
 <div align="center">
 
-![Sketch and Component Build Verifier](https://github.com/CodexLink/GeM-ESSAC/workflows/Sketch%20and%20Component%20Build%20Verifier/badge.svg)
+![Sketch Build Verifier](https://github.com/CodexLink/MESCDS/workflows/Sketch%20Build%20Verifier/badge.svg)
 
-[![Codacy Overall Sketch Code Quality](https://img.shields.io/codacy/grade/d8efe2b67dac445d918e277601e801b8?label=Codacy%20Overall%20Sketch%20Code%20Quality&logo=codacy)](https://app.codacy.com/manual/CodexLink/GeM-ESSAC/)
-[![CodeFactor Overall Sketch Code Quality](https://img.shields.io/codefactor/grade/github/CodexLink/GeM-ESSAC?label=CodeFactor%20Overall%20Sketch%20Code%20Quality&logo=codefactor)](https://www.codefactor.io/repository/github/codexlink/gem-essac/)
+[![Codacy Overall Sketch Code Quality](https://img.shields.io/codacy/grade/d8efe2b67dac445d918e277601e801b8?label=Codacy%20Overall%20Sketch%20Code%20Quality&logo=codacy)](https://app.codacy.com/manual/CodexLink/MESCDS/)
+[![CodeFactor Overall Sketch Code Quality](https://img.shields.io/codefactor/grade/github/CodexLink/MESCDS?label=CodeFactor%20Overall%20Sketch%20Code%20Quality&logo=codefactor)](https://www.codefactor.io/repository/github/codexlink/gem-essac/)
 
-![GeM-ESSAC Opened Issues](https://img.shields.io/github/issues-raw/CodexLink/GeM-ESSAC?color=Orange&label=Opened%20Issues)
-![GeM-ESSAC Closed Issues](https://img.shields.io/github/issues-closed-raw/CodexLink/GeM-ESSAC?label=Closed%20Issues)
-![GeM-ESSAC Closed Pull Requests](https://img.shields.io/github/issues-pr-closed-raw/CodexLink/GeM-ESSAC?label=Finished%20Pull%20Requests)
-[![GeM-ESSAC Repository License](https://img.shields.io/github/license/CodexLink/GeM-ESSAC?color=purple&label=Repository%20License&logo=libreoffice)](https://github.com/CodexLink/GeM-ESSAC/blob/master/LICENSE)
+![MESCDS Opened Issues](https://img.shields.io/github/issues-raw/CodexLink/MESCDS?color=Orange&label=Opened%20Issues)
+![MESCDS Closed Issues](https://img.shields.io/github/issues-closed-raw/CodexLink/MESCDS?label=Closed%20Issues)
+![MESCDS Closed Pull Requests](https://img.shields.io/github/issues-pr-closed-raw/CodexLink/MESCDS?label=Finished%20Pull%20Requests)
+[![MESCDS Repository License](https://img.shields.io/github/license/CodexLink/MESCDS?color=purple&label=Repository%20License&logo=libreoffice)](https://github.com/CodexLink/MESCDS/blob/master/LICENSE)
 
 </div>
 
 # Welcome
 
-A repository that contains my first personal project that currently involves in handling external data and built-in sensing component's data. The project was currently in **open-source** for education and personal use when looking for alternative data sensing viewers (such as Arduino Cloud) and is currently looking forward for having a custom behavior without recreating a particular UI (Oh, and UI is customizable as well.)
+A repository that contains my first personal project that currently involves in handling external data and built-in sensing component's data. The project was currently in **open-source** for education and personal use when looking for alternative data sensing viewers (such as Arduino Cloud) and is currently looking forward for having a custom behavior without recreating a particular UI. (***Oh, and UI is customizable as well.***)
 
 ## Features
 
-So far, this project currently involves my personal preference. And when I say personal preference, it is my usual environment sensors and other unusual features (such as Deauthering someone in a WiFi-Network) that I plan to embed on this project. So far here's the planned set of features to be done.
+So far, this project currently involves in my personal preference. And when I say personal preference, it is my usual environment sensors and other unusual features (such as Deauthering someone in a WiFi-Network) that I plan to embed on this project. So far here's the planned set of features to be done.
 
 - **Built-In**
   - **Real Time Scan an Update with AJAX Implementation for Web Display**
@@ -35,7 +35,7 @@ So far, this project currently involves my personal preference. And when I say p
   - **TFT Screen** (Model is TFT ILI9163C)
   - **WiFi Deauther Capability** (More on that Soon.)
 
-- External (See [Modulars README](https://github.com/))
+- **External** (See [Modulars README](https://github.com/))
   - **Desktop and Microcontroller Payload Capability**
   - **Customizable Data and Web Display**
   - **Customizable Behavior on Click and Other Signal Behaviors**
