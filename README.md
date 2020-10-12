@@ -1,5 +1,6 @@
-<h1 align="center">GeM-ESSAC</h1>
-<h4 align="center">General Multi-Essential Sensing and Automating Components For Personal Benefits | Made Exclusively for NodeMCU v2 Lua / ESP32 Modules</h4>
+<h1 align="center">MESCDS</h1>
+<h4 align="center">A Modular Essential Sensing Components Display System for NodeMCU v2.</h4>
+<h4 align="center">It is a system display that can handle both external and internal sensing components. Contains Web Viewable Data with Customizable Behaviors for Personal Needs. Powered by Firebase.</h4>
 
 <div align="center">
 
@@ -17,69 +18,93 @@
 
 # Welcome
 
-**Hello! and Welcome~!** This is my very first planned project regarding IoT that went alot of iterations due to personal issues regarding life decisions on how this project should really work. This project is built for personal usage! It was built for reporting environmental data, and automation. Also it was built on how far should I go when it comes to building the codebase. Because I want to make things quite flexible and adjustable. So to summarise, this was built just for fun and quite competitive for codebase quality by doing lots of abstraction in general.
+A repository that contains my first personal project that currently involves in handling external data and built-in sensing component's data. The project was currently in **open-source** for education and personal use when looking for alternative data sensing viewers (such as Arduino Cloud) and is currently looking forward for having a custom behavior without recreating a particular UI (Oh, and UI is customizable as well.)
 
 ## Features
 
-Since, this was so random to the point that I can't explain what's really up to this project, here is the following list.
+So far, this project currently involves my personal preference. And when I say personal preference, it is my usual environment sensors and other unusual features (such as Deauthering someone in a WiFi-Network) that I plan to embed on this project. So far here's the planned set of features to be done.
 
-- Soon...
+- **Built-In**
+  - **Real Time Scan an Update with AJAX Implementation for Web Display**
+  - **Usual Environmental Sensors** (CCS811 and SHT3X, Customizable)
+  - **Firebase Data Integration for Data Viewing**
+  - **Functional Timer Debugger** (For Other Uses)
+  - **EEPROM Manager** (Web Manageable and Code Usable)
+  - **Fingerprint Reader** (GT-521F32, For Wake-On-Lan and PC Locking / Unlocking Purposes)
+  - **Serial DRY Display** (Don't Display Redundant Data)
+  - **TFT Screen** (Model is TFT ILI9163C)
+  - **WiFi Deauther Capability** (More on that Soon.)
 
-## Table of Contents
+- External (See [Modulars README](https://github.com/))
+  - **Desktop and Microcontroller Payload Capability**
+  - **Customizable Data and Web Display**
+  - **Customizable Behavior on Click and Other Signal Behaviors**
 
-This README will contain a few of sub-topics about particulars denoted by their header size. Please check the list and you can go to that content by clicking them.
+## Pinouts
 
-- [Contributing](#contributing)
-- [Versioning](#versioning)
-- [Possible Questions](#possible-questions)
-  * [Where's The Instructions](#wheres-the-instructions)
-  * [Can I steal some modular components you made on this project](#can-i-steal-some-modular-components-you-made-on-this-project)
-  * [Why did you make your project open-source'd when you don't provide necessary instructions to build it in hardware side](#why-did-you-make-your-project-open-sourced-when-you-dont-provide-necessary-instructions-to-build-it-in-hardware-side)
-- [Authors](#authors)
-- [License](#license)
-- [Credits](#credits)
+This project might involve the hardware pinouts since I'm providing the software. This is intended if someone wants to know what I'm trying to do. ~~I don't even know bro, I just want to read some data and that's all.~~
+
+**Coming Soon.**
+
+## Demo (Restricted Mode)
+
+The following demo is just an instantiated working version of the program along with hardware with specific attached sensors and transducers to it.
+
+Keep in mind that, to keep myself away in Expenses, Firebase Database is **disabled.** And would rely only on EEPROM Data that is currently in store.
+
+**Coming Soon.**
+
+## Showcase
+
+**Coming Soon.**
+
+## Unexpectable Asked Questions
+
+In this subsection, answers any occurring confusions, what-ifs, what about, concerns that I ever thought when prepping on this project.
+
+Q1. Aren't you aware of how small the RAM is to serve multiple functionalities of the system?
+A1. Yes, I was aware. Although with few DRY principles in the pocket, I would see this myself while in the process of building the project. I want to make it possible in a single-threaded operation way.
+
+Q2. Is this project even battery-operated or wall-plugged when it comes to a power source?
+A2. When it comes to the NodeMCU itself, **it is not battery-operated** but rather will be powered on a wall-plugged power source. Why? Because there's a built-in module that could bring power resource use factors while on wait. I cannot turn it off since we have limited pins and to control some rails, and I cannot put the NodeMCU is any sleep modes.
+
+Q3. (Correlated to Q2) How about in External Modules?
+A3. I'm planning to make them power-limited by using sleep modes and try to make it battery-operated as best as possible. But designing a circuit that involves with battery-charge and other battery-related concern and safety applications. The development for external modules would take a while as a module. But when it comes to application, it may just take a while.
+
+Q4. How much does it cost on the final product itself?
+A4. More on that soon. I haven't made a final product design sign I was on the development of the code. There may be changes so I won't attempt to make a circuit unless there's a doubt in decisions.
+
+Q5. Why not use ESP32 instead of NodeMCU, specifically v2 and not v3?
+A5. There was two questions involved here so I have to answer them one-by-one. So, I used NodeMCU v2 specifically instead of NodeMCU v3 is because I haven't found any official documentation and release regarding V3. Some in the sites that I found said that it has a LoLin's approach to circuit design and made fixes to some wirings in components that I can't remember what specifically. (presumably, Voltage Regulator???). But, the board is labeled as Version 0.1, which makes me do not believe that it is a v3 of NodeMCU. Plus, the board itself is not breadboard friendly, I won't keeping an eye to it.
+
+A5.1. Why NodeMCU > ESP32? So far, I know what issues I have to deal with NodeMCU v2. I know so far that ESP32 is really better because more accessible PINs and Dual-Core Processors. But I have to reconsider that MCU because I should've been earlier than expected. It should've been but all of my attempted transactions from other countries when buying ESP32 were failed. I have one left as successfully delivered but I really haven't had that yet. I can't do anything about it, because it was expired. Maybe sooner or later, after the development stage, I really have to do it. So **stay tuned**.
+
+More questions to ask myself soon.
+
+If you have something against that is debatable in any of the UAQs, please hit it up in Issue Section or Contact Me via Email or any Socials that it mentioned in my Profile README.
 
 ## Contributing
 
-***There are no plans for contributions.*** No one knows how they would run this project without the device / prototype itself. However, contributions for **security flaws** or **codebase flaws** is possible. Just hit me up with **Issues** and once we got into agreements, I, myself, creates the PR or even you, who is responsible to create a PR with your own fixes. This was just an indication that an issue is being fixed instead of pushing commits and do normal issue reference along with PR on it.
-
-**[Go Back to TOC](#table-of-contents)**
+Since we are in the preparation state, ***There are no plans for contributions for now.*** No one knows how they would run this project without the device / prototype itself. However, contributions for **security flaws** or **codebase flaws** is possible. Just hit me up with **Issues** and we'll talk about it.
 
 ## Versioning
 
-Currently, I don't use any guidelines regarding software versioning, such as **Semantic Versioning**. But I might reconsider it.
+As of now (October 08, 2020), I don't seem to know how **Semantic Versioning** works. And I don't use any guidelines regarding software versioning. But I might reconsider it.
 
-**[Go Back to TOC](#table-of-contents)**
+But for now, here's my formatting.
 
-## Possible Questions
+```text
+Version: MMDDYYYY.HHMM.<STATE>.<TAGS>
+```
 
-This section contains the extra information that you need to know and the truth about this project specially its exposure to open-source state.
+For example:
+Today is ***October 09, 2020 1:48PM*** Currently In ***RC1.1*** Tags with Prep State as ***Beta***.
 
-**[Go Back to TOC](#table-of-contents)**
+So the version of the project update is...
 
-### Where's The Instructions
-
-I won't give much of info about this project as it was personal and possibly no one would want to replicate this because its stupid. ***How stupid?*** Well, I want something **feature** that does something. Trust me, you wouldn't want to know. You can go and check the project if you want to learn more. I won't bother.
-
-**[Go Back to TOC](#table-of-contents)**
-
-### Can I steal some modular components you made on this project
-
-Sure. But **FIRST**, credit me about it. Since this was a GPL-3.0. You should have the authority to make changes but list the changes within the same file on the top of the header. ***Be sure to notify / PM me about it at [Twitter](twitter.com/@CodexLink).***
-
-**[Go Back to TOC](#table-of-contents)**
-
-### Why did you make your project open-source'd when you don't provide necessary instructions to build it in hardware side
-
-First of all, I just want this one to be exposed to make use cases of another people. For instance, the components provided in the modular subdirectory can be used by some people as long as they credit me to it.
-
-Why you won't let someone replicate it in the first place then?
-
-**I just don't want to.**
-
-Look, you have the ability to check my code. No complaints. If you have any questions, be sure to ask me on PM via [Twitter.](twitter.com/@CodexLink)
-
-**[Go Back to TOC](#table-of-contents)**
+```text
+Version: 10092020.1348.BETA.RC1.1
+```
 
 ## Authors
 
@@ -87,17 +112,13 @@ Here are the list of authors who are taking part of the project.
 
 - **Janrey Licas** - *Initial Work / Project Lead* - [CodexLink](https://github.com/CodexLink)
 
-**[Go Back to TOC](#table-of-contents)**
-
 ## License
 
 This project is licensed under the GNU v3 License - see the [LICENSE.md](https://github.com/CodexLink/IoTMesC/blob/master/README.md) file for details
 
-**[Go Back to TOC](#table-of-contents)**
 
 ## Credits
 
-- [Github Wiki TOC Generator](https://ecotrust-canada.github.io/markdown-toc/) for Generating TOC Stuff Automatically, based on README Headers and Subheaders.
 - [Firebase-ESP8266](https://github.com/mobizt/Firebase-ESP8266) for creating a library that is quite understandable and reliable, to be used for communicating with the Firebase associated in this project
 .
-**[Go Back to TOC](#table-of-contents)**
+**[Go Back To The Top](#Welcome)**

@@ -3,19 +3,19 @@
 # ! Date Created: 11-22-2019
 # * Used for Verifying NodeMCU v2 Lua ESP8266EX Sketch and Experimental Components
 
-name: Sketch and Component Build Verifier
+name: Sketch Build Verifier
 
 on:
   push:
     paths:
-      - 'SketchSRC/FLSHF_NodeMCU/**'
-      - 'Experimentals/Candidates/**'
+      - 'SketchSRC/FLSHF_NodeMCUv2_ESP32/**'
+      - 'C.Experiments/**'
       - '.github/workflows/*.yml'
 
   pull_request:
     paths:
-      - 'SketchSRC/FLSHF_NodeMCU/**'
-      - 'Experimentals/Candidates/**'
+      - 'SketchSRC/FLSHF_NodeMCUv2_ESP32/**'
+      - 'C.Experiments/**'
       - '.github/workflows/*.yml'
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
       EXPERIMENTALS_CONTEXT_HAS_CHANGED: false
       FORCE_CHECK_SKETCH_CONTEXT: false
       FORCE_CHECK_EXPERIMENTALS_CONTEXT: false
-      EXPERIMENTALS_DEFAULT_DIR: 'Experimentals/Candidates/'
+      EXPERIMENTALS_DEFAULT_DIR: 'C.Experiments/'
       SKETCH_DEFAULT_DIR: 'SketchSRC/'
 
     outputs:
