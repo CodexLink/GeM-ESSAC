@@ -6,7 +6,7 @@
 
 ![Sketch Build Verifier](https://github.com/CodexLink/MESCDS/workflows/Sketch%20Build%20Verifier/badge.svg)
 
-[![Codacy Overall Sketch Code Quality](https://img.shields.io/codacy/grade/d8efe2b67dac445d918e277601e801b8?label=Codacy%20Overall%20Sketch%20Code%20Quality&logo=codacy)](https://app.codacy.com/manual/CodexLink/MESCDS/)
+[![Codacy Overall Sketch Code Quality](https://img.shields.io/codacy/grade/ac43727544b849c3aba647081f3742af?label=Codacy%20Overall%20Sketch%20Code%20Quality&logo=codacy)](https://app.codacy.com/manual/CodexLink/MESCDS/)
 [![CodeFactor Overall Sketch Code Quality](https://img.shields.io/codefactor/grade/github/CodexLink/MESCDS?label=CodeFactor%20Overall%20Sketch%20Code%20Quality&logo=codefactor)](https://www.codefactor.io/repository/github/codexlink/gem-essac/)
 
 ![MESCDS Opened Issues](https://img.shields.io/github/issues-raw/CodexLink/MESCDS?color=Orange&label=Opened%20Issues)
@@ -35,7 +35,7 @@ So far, this project currently involves in my personal preference. And when I sa
   - **TFT Screen** (Model is TFT ILI9163C)
   - **WiFi Deauther Capability** (More on that Soon.)
 
-- **External** (See [Modulars README](https://github.com/))
+- **External** (See [Modulars README](https://github.com/CodexLink/MESCDS/blob/master/SketchSRC/FLSHF_NodeMCUv2_ESP32/src/Modulars/README.md))
   - **Desktop and Microcontroller Payload Capability**
   - **Customizable Data and Web Display**
   - **Customizable Behavior on Click and Other Signal Behaviors**
@@ -116,9 +116,17 @@ Here are the list of authors who are taking part of the project.
 
 This project is licensed under the GNU v3 License - see the [LICENSE.md](https://github.com/CodexLink/IoTMesC/blob/master/README.md) file for details
 
-
 ## Credits
+
+In this section, I would like to thank the following articles / guides, and libraries that
+
+### Libraries
 
 - [Firebase-ESP8266](https://github.com/mobizt/Firebase-ESP8266) for creating a library that is quite understandable and reliable, to be used for communicating with the Firebase associated in this project
 .
+
+### Articles / Guides
+
+-
+
 **[Go Back To The Top](#Welcome)**
