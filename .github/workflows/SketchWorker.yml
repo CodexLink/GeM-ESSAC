@@ -8,13 +8,13 @@ name: Sketch Build Verifier
 on:
   push:
     paths:
-      - 'SketchSRC/FLSHF_NodeMCUv2_ESP32/**'
+      - 'SketchSRC/FLSHF_MESCDS_ESP32_Sketch/**'
       - 'C.Experiments/**'
       - '.github/workflows/*.yml'
 
   pull_request:
     paths:
-      - 'SketchSRC/FLSHF_NodeMCUv2_ESP32/**'
+      - 'SketchSRC/FLSHF_MESCDS_ESP32_Sketch/**'
       - 'C.Experiments/**'
       - '.github/workflows/*.yml'
 

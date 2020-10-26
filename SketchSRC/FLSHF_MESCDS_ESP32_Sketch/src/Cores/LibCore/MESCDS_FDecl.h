@@ -1,5 +1,5 @@
 /*
-    Name: IoT Multi-Essential Sensing Components | For Personal Benefits
+    Name: MESCDS | A Modular Essential Sensing Components Display System
     Type: Library Core Header | Declarations Only For NodeMCU (ESP8266)
 
     Created by: Janrey "CodexLink" Licas
@@ -7,26 +7,17 @@
 */
 #pragma once
 
-// ! Libraries |> Main Dependency
-#include "../MCUCore/ESP8266WiFi/ESP8266WiFi.h"
-#include "../MCUCore/ESP8266mDNS/ESP8266mDNS.h"
-#include "../MCUCore/ESP8266WebServer/ESP8266WebServer.h"
+// * ESP-Supported Additional Libraries
+#include "../ESPCore/ESP8266WiFi/ESP8266WiFi.h"
+#include "../ESPCore/ESP8266mDNS/ESP8266mDNS.h"
+#include "../ESPCore/ESP8266WebServer/ESP8266WebServer.h"
+
 //#include <WiFiClient.h>
 
-// ! Libraries |> System Compiler Libraries Provided.
+// * Arduino — ESP Reimported Default Headers
 #include <SPI.h>
 
-#ifdef DEBUG_ENABLED
-#if Cmd_Func == println || print
-#define SerialH_Call(Cmd_Func, Params) Serial.Cmd_Func(Params)
-#define SerialR_Call(Cmd_Func, Params) Serial1.Cmd_Func(Params)
-#else
-#define SerialH_Call(Cmd_Func, Params)
-#define SerialR_Call(Cmd_Func, Params)
-#endif
-#endif
-
-class IoTMesC_NMCU_DRVR
+class MESCDS_NMCU_DRVR
 {
 private:
     // typedef struct UserCredentials;
@@ -38,6 +29,7 @@ private:
 
     // * Initializers
     void begin() const;
+
     // void init_ESPDev(ESP_PROPERTIES::ModeFlags FlagGiven);
     void init_ESPWiFi();
     // * setState FN Members
@@ -53,9 +45,9 @@ private:
     // Site Handler
 public:
     // Constructor
-    IoTMesC_NMCU_DRVR(void) {}
+    MESCDS_NMCU_DRVR(void) {}
     // Destructor
-    ~IoTMesC_NMCU_DRVR(void) {}
+    ~MESCDS_NMCU_DRVR(void) {}
 };
 
 // Struct Declarations
@@ -87,7 +79,7 @@ public:
 //     RESET_FLAG = 8
 // };
 /*
-    Name: IoT Multi-Essential Sensing Components | For Personal Benefits
+    Name: MESCDS | A Modular Essential Sensing Components Display System
     Type: Library Core Header | Declarations Only For NodeMCU (ESP8266)
 
     Created by: Janrey "CodexLink" Licas

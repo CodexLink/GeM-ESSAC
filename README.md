@@ -25,7 +25,7 @@ A repository that contains my first personal project that currently involves in 
 So far, this project currently involves in my personal preference. And when I say personal preference, it is my usual environment sensors and other unusual features (such as Deauthering someone in a WiFi-Network) that I plan to embed on this project. So far here's the planned set of features to be done.
 
 - **Built-In**
-  - **Real Time Scan an Update with AJAX Implementation for Web Display**
+  - **Real-Time Scan an Update with AJAX Implementation for Web Display**
   - **Usual Environmental Sensors** (CCS811 and SHT3X, Customizable)
   - **Firebase Data Integration for Data Viewing**
   - **Functional Timer Debugger** (For Other Uses)
@@ -65,9 +65,10 @@ In this subsection, answers any occurring confusions, what-ifs, what about, conc
 Q1. Aren't you aware of how small the RAM is to serve multiple functionalities of the system?
 A1. Yes, I was aware. Although with few DRY principles in the pocket, I would see this myself while in the process of building the project. I want to make it possible in a single-threaded operation way.
 
-**This Question to be Revised.**
-~~Q2. Is this project even battery-operated or wall-plugged when it comes to a power source?
-A2. When it comes to the NodeMCU itself, **it is not battery-operated** but rather will be powered on a wall-plugged power source. Why? Because there's a built-in module that could bring power resource use factors while on wait. I cannot turn it off since we have limited pins and to control some rails, and I cannot put the NodeMCU is any sleep modes.~~
+~~Q2. Is the main module itself is even battery-operated or wall-plugged when it comes to a power source?
+A2. When it comes to the ESP32 itself, **it may be battery-operated**, but technically it will be powered on a wall-plugged power source.
+
+There are potentially two modes here since there will be more pins that I can use in ESP32 MCU. And with that, I could potentially utilize the Sleep modes, which I never found possible in NodeMCU since I used all of the PINs.
 
 Q3. (Correlated to Q2) How about in External Modules?
 A3. I'm planning to make them power-limited by using sleep modes and try to make it battery-operated as best as possible. But designing a circuit that involves with battery-charge and other battery-related concern and safety applications. The development for external modules would take a while as a module. But when it comes to application, it may just take a while.
@@ -76,7 +77,7 @@ Q4. How much does it cost on the final product itself?
 A4. More on that soon. I haven't made a final product design sign I was on the development of the code. There may be changes so I won't attempt to make a circuit unless there's a doubt in decisions.
 
 Q5. Why did you dropped support for NodeMCU v2?
-A5. ————
+A5. Different Architectures of MCU makes it hard for me to construct this whole system for me. And since, NodeMCU v2 is quite obsolete in my perspective (with the fact that it has security vulnerabilities (I can't citate, but it has an article, which I will look at it later.)), I think it's best to use the stable latest version of MCU which is the ESP32-S1 or ESP32 WROOM, generally. There might be a possibility of me using it in ESP32-S2 but its gonna be **a while** before attempting to have it.
 
 More questions to ask myself soon.
 
