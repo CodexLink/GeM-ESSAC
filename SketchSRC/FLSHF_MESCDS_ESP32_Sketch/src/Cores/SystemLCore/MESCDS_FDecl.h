@@ -8,9 +8,9 @@
 #pragma once
 
 // * ESP-Supported Additional Libraries
-#include "../ESPCore/ESP8266WiFi/ESP8266WiFi.h"
-#include "../ESPCore/ESP8266mDNS/ESP8266mDNS.h"
-#include "../ESPCore/ESP8266WebServer/ESP8266WebServer.h"
+// #include "../ESPCore/ESP8266WiFi/ESP8266WiFi.h"
+// #include "../ESPCore/ESP8266mDNS/ESP8266mDNS.h"
+// #include "../ESPCore/ESP8266WebServer/ESP8266WebServer.h"
 
 //#include <WiFiClient.h>
 
