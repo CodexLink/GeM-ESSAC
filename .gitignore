@@ -4,7 +4,7 @@
 
 *.ipch
 *.bin
-.vscode/*
+.vscode/
 *.fzz
 *.html
 *.default

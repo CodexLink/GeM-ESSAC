@@ -1,9 +1,15 @@
 /*
-    Name: MESCDS | A Modular Essential Sensing Components Display System
-    Type: Library Core Header | Declarations Only For NodeMCU (ESP8266)
+    # Name: MESCDS | A Modular Essential Sensing Components Display System
+    * Type: .h | Library Core Header | Declarations Only For NodeMCU (ESP8266)
+    ! Version:
 
-    Created by: Janrey "CodexLink" Licas
-    Created on: 11/14/2019 - 21:23
+    * Description:
+
+    ! Created by: Janrey "CodexLink" Licas
+    ! Created on: 11/14/2019 - 21:23
+
+    # License: GNU-3.0 License
+
 */
 #pragma once
 
