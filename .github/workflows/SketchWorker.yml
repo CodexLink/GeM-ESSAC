@@ -8,14 +8,14 @@ name: Sketch Build Verifier
 on:
   push:
     paths:
-      - 'SketchSRC/FLSHF_MESCDS_ESP32_Sketch/**'
-      - 'C.Experiments/**'
+      - 'MESCDS.ino'
+      - 'experiments/**'
       - '.github/workflows/*.yml'
 
   pull_request:
     paths:
-      - 'SketchSRC/FLSHF_MESCDS_ESP32_Sketch/**'
-      - 'C.Experiments/**'
+      - 'MESCDS.ino'
+      - 'experiments/**'
       - '.github/workflows/*.yml'
 
 jobs:
@@ -31,8 +31,8 @@ jobs:
       EXPERIMENTALS_CONTEXT_HAS_CHANGED: false
       FORCE_CHECK_SKETCH_CONTEXT: false
       FORCE_CHECK_EXPERIMENTALS_CONTEXT: false
-      EXPERIMENTALS_DEFAULT_DIR: 'C.Experiments/'
-      SKETCH_DEFAULT_DIR: 'SketchSRC/'
+      EXPERIMENTALS_DEFAULT_DIR: 'experiments/'
+      SKETCH_DEFAULT_DIR: './'
 
     outputs:
       SKETCH_CMPNT_CANDIDATES: ${{ steps.exp_cmpnt_data.outputs.EXP_CMPNT_MATRIX }}
@@ -53,13 +53,13 @@ jobs:
         uses: marceloprado/has-changed-path@master
         id: sketchStatus
         with:
-          paths: SketchSRC/FLSHF_NodeMCU
+          paths: ./
 
       - name: Stage A-2.1 | Context Path Checking for Experimental Components
         uses: marceloprado/has-changed-path@master
         id: expComponentStatus
         with:
-          paths: Experimentals/Candidates
+          paths: experiments/
 
       - name: Stage A-2.2 | Status Checking Both Sketches and Experimental Components
         run: |
